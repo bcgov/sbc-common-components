@@ -53,7 +53,7 @@
                         label="Street Address"
                         v-model="address.street"
                         :rules="streetRules"
-          />
+          ></v-text-field>
         </div>
         <div class="form__row">
           <v-textarea auto-grow
@@ -71,14 +71,14 @@
                         required
                         v-model="address.city"
                         :rules="cityRules"
-          />
+          ></v-text-field>
           <v-select box
                     class="item"
                     id="region"
                     label="Province"
                     v-model="address.region"
                     :items="regions"
-          />
+          ></v-select>
           <v-text-field box
                         class="item"
                         id="postal-code"
@@ -86,7 +86,7 @@
                         required
                         v-model="address.postalCode"
                         :rules="regionRules"
-          />
+          ></v-text-field>
         </div>
         <div class="form__row">
           <v-text-field box
@@ -95,7 +95,7 @@
                         required
                         v-model="address.country"
                         :rules="countryRules"
-          />
+          ></v-text-field>
         </div>
       </v-form>
     </v-expand-transition>
