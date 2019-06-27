@@ -98,6 +98,23 @@ test('Empty address', async () => {
   expect(getLastEvent(addressWrapper, 'valid')).not.toBeTruthy()
 })
 
+test('Address object isolation', async () => {
+  let address: object = {}
+
+  const addressWrapper = mount(BaseAddress, {
+    propsData: { address: address, editing: false }
+  })
+
+  let inputElement = addressWrapper.find(streetInputSelector)
+  inputElement.element['value'] = basicAddress.streetAddress
+  inputElement.trigger('input')
+
+  await Vue.nextTick()
+
+  // The component should not be changing the property object.
+  expect(address['streetAddress']).not.toEqual(basicAddress.streetAddress)
+})
+
 test('Canadian address - display', async () => {
   const addressWrapper = mount(BaseAddress, {
     propsData: { address: basicAddress, editing: false }
