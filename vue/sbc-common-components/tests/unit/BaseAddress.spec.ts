@@ -168,7 +168,7 @@ test('Canadian address - edit', async () => {
     basicAddress.deliveryInstructions)
 })
 
-test('Missing streetAddress', async () => {
+test('Missing street', async () => {
   let modifiedAddress = { ...basicAddress }
   modifiedAddress.streetAddress = ''
 
@@ -183,7 +183,7 @@ test('Missing streetAddress', async () => {
   expect(getLastEvent(addressWrapper, 'valid')).not.toBeTruthy()
 })
 
-test('Missing additional streetAddress', async () => {
+test('Missing additional street', async () => {
   let modifiedAddress = { ...basicAddress }
   modifiedAddress.streetAddressAdditional = ''
 
@@ -213,7 +213,7 @@ test('Missing delivery instructions', async () => {
   expect(getLastEvent(addressWrapper, 'valid')).toBeTruthy()
 })
 
-test('Missing addressCity', async () => {
+test('Missing city', async () => {
   let modifiedAddress = { ...basicAddress }
   modifiedAddress.addressCity = ''
 
@@ -228,7 +228,7 @@ test('Missing addressCity', async () => {
   expect(getLastEvent(addressWrapper, 'valid')).not.toBeTruthy()
 })
 
-test('Missing addressRegion', async () => {
+test('Missing region', async () => {
   let modifiedAddress = { ...basicAddress }
   modifiedAddress.addressRegion = ''
 
@@ -258,7 +258,7 @@ test('Missing postal code', async () => {
   expect(getLastEvent(addressWrapper, 'valid')).not.toBeTruthy()
 })
 
-test('Missing addressCountry', async () => {
+test('Missing country', async () => {
   let modifiedAddress = { ...basicAddress }
   modifiedAddress.addressCountry = ''
 
