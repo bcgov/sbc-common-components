@@ -70,7 +70,7 @@ AddressComplete, the following setup will turn it on for all instances of the co
 
       <script type="text/javascript">
         // The key for your account.
-        window.addressCompleteKey = 'AB12-CD34-DE56-FG78'
+        window.addressCompleteKey = 'AB12-CD34-EF56-GH78'
       </script>
     [...]
 ```
