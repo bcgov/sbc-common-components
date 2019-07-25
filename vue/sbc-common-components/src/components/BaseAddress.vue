@@ -357,7 +357,7 @@ export default class BaseAddress extends Vue {
       this.addressLocal['addressRegion'] = address['ProvinceCode']
       this.addressLocal['postalCode'] = address['PostalCode']
     } else {
-      // Not proud of this, but it'll do until we get implement JSON Schema validation.
+      // Not proud of this, but it'll do until we implement JSON Schema validation.
       this.addressLocal['addressRegion'] = '--'
       this.addressLocal['postalCode'] = address['PostalCode'] ? address['PostalCode'] : 'N/A'
     }
