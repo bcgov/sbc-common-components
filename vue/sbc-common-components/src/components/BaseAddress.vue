@@ -27,8 +27,8 @@
           </div>
           <div class="address-block__info-row">
             <span>{{ addressLocal.addressCity }}</span>
-            <span v-if="addressLocal.addressRegion != '--'">&nbsp;{{ addressLocal.addressRegion }}</span>
-            <span v-if="addressLocal.postalCode != 'N/A'">&nbsp;&nbsp;{{ addressLocal.postalCode }}</span>
+            <span v-if="addressLocal.addressRegion !== '--'">&nbsp;{{ addressLocal.addressRegion }}</span>
+            <span v-if="addressLocal.postalCode !== 'N/A'">&nbsp;&nbsp;{{ addressLocal.postalCode }}</span>
           </div>
           <div class="address-block__info-row">
             {{ addressLocal.addressCountry }}
