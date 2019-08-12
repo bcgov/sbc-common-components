@@ -5,6 +5,6 @@ workflow "publish on release" {
 
 action "publish" {
   uses = "zackify/npm@354aa07"
-  args = "cd vue && cd sbc-common-components && publish"
+  args = "cd vue && cd sbc-common-components && npm publish"
   secrets = ["NPM_AUTH_TOKEN"]
 }
