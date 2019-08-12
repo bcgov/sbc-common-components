@@ -4,7 +4,7 @@ workflow "publish on release" {
 }
 
 action "publish" {
-  uses = "actions/npm@zackify"
+  uses = "zackify/npm@354aa07"
   args = "publish"
   secrets = ["NPM_AUTH_TOKEN"]
 }
