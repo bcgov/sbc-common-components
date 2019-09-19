@@ -3,13 +3,13 @@
     <div class="container">
       <a href="/" class="brand">
         <picture>
-          <source media="(min-width: 601px)" 
+          <source media="(min-width: 601px)"
             srcset="../assets/img/gov_bc_logo_horiz.png">
-          <source media="(max-width: 600px)" 
+          <source media="(max-width: 600px)"
             srcset="../assets/img/gov_bc_logo_vert.png">
-          <img class="brand__image" 
-            src="../assets/img/gov_bc_logo_vert.png" 
-            alt="Government of British Columbia Logo" 
+          <img class="brand__image"
+            src="../assets/img/gov_bc_logo_vert.png"
+            alt="Government of British Columbia Logo"
             title="Government of British Columbia">
         </picture>
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
@@ -68,11 +68,11 @@ export default Vue.extend({
       color #ffffff
       border-color #ffffff
 
-  .brand 
+  .brand
     display flex
     align-items center
     padding-right 1rem
-    text-decoration none 
+    text-decoration none
     color inherit
 
   .brand__image
@@ -94,6 +94,6 @@ export default Vue.extend({
       font-size 1rem
       line-height 1.25rem
 
-    .brand__title--wrap 
+    .brand__title--wrap
       display block
 </style>

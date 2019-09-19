@@ -50,15 +50,15 @@ export default Vue.extend({
 
     li:last-child
       margin-right 0
-      border-right none 
+      border-right none
 
   @media (min-width: 960px)
     nav
-      li 
+      li
         margin-right 0.5rem
         padding-right 0.5rem
         border-right 1px solid $BCgovBlue3
 
-        a 
+        a
           padding 0.25rem 0.5rem
 </style>

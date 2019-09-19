@@ -16,7 +16,7 @@
     <!-- Display fields -->
     <v-expand-transition>
       <div class="address-block"
-           v-show="!editing"
+          v-show="!editing"
       >
         <div class="address-block__info">
           <div class="address-block__info-row">
@@ -52,59 +52,56 @@
         <div class="form__row">
           <v-text-field autocomplete="address-complete"
                         box
-                        label="Street Address"
+                        :label="streetAddressLabel"
                         name="street-address"
                         v-model="addressLocal.streetAddress"
-                        :rules="streetRules"
+                        :rules="rules.streetAddress"
                         @click="enableAddressComplete"
-          ></v-text-field>
+          />
         </div>
         <div class="form__row">
           <v-text-field box
-                        label="Additional Street Address (Optional)"
+                        :label="streetAddressAdditionalLabel"
                         name="street-address-additional"
                         v-model="addressLocal.streetAddressAdditional"
-          ></v-text-field>
+          />
         </div>
         <div class="form__row three-column">
           <v-text-field box
                         class="item"
-                        label="City"
+                        :label="addressCityLabel"
                         name="address-city"
-                        required
                         v-model="addressLocal.addressCity"
-                        :rules="cityRules"
-          ></v-text-field>
+                        :rules="rules.addressCity"
+          />
           <v-select box
                     class="item"
-                    label="Province"
+                    :label="addressRegionLabel"
                     name="address-region"
                     v-model="addressLocal.addressRegion"
                     :items="regions"
-                    :rules="regionRules"
-          ></v-select>
+                    :rules="rules.addressRegion"
+          />
           <v-text-field box
                         class="item"
-                        label="Postal Code"
+                        :label="postalCodeLabel"
                         name="postal-code"
-                        required
                         v-model="addressLocal.postalCode"
-                        :rules="postalCodeRules"
-          ></v-text-field>
+                        :rules="rules.postalCode"
+          />
         </div>
         <div class="form__row">
           <v-text-field box
-                        label="Country"
+                        :label="addressCountryLabel"
                         name="address-country"
-                        required
                         v-model="addressLocal.addressCountry"
-                        :rules="countryRules"
-          ></v-text-field>
+                        :rules="rules.addressCountry"
+          />
         </div>
         <div class="form__row">
           <v-textarea auto-grow
                       box
-                      label="Delivery Instructions (Optional)"
+                      :label="deliveryInstructionsLabel"
                       name="delivery-instructions"
                       rows="2"
                       v-model="addressLocal.deliveryInstructions"
@@ -118,36 +115,28 @@
 <script lang="ts">
 
 import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { validationMixin } from 'vuelidate'
-import { required } from 'vuelidate/lib/validators'
+import { Component, Mixins, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Validation } from 'vue-plugin-helper-decorator'
+import ValidationMixin from '@/mixins/validation-mixin'
 
 /**
  * The component for displaying and editing an address.
  */
 @Component({
-  mixins: [validationMixin],
-  validations: {
-    address: {
-      streetAddress: {
-        required
-      },
-      addressCity: {
-        required
-      },
-      addressRegion: {
-        required
-      },
-      postalCode: {
-        required
-      },
-      addressCountry: {
-        required
-      }
+  mixins: [ValidationMixin]
+})
+export default class BaseAddress extends Mixins(ValidationMixin) {
+  /**
+   * The validation object used by Vuelidate to compute address validity.
+   * @returns The Vuelidate validation rules object.
+   */
+  @Validation()
+  public validations (): any {
+    return {
+      addressLocal: this.schema || {}
     }
   }
-})
-export default class BaseAddress extends Vue {
+
   /**
    * Contains the address (if any) to be edited.
    */
@@ -157,6 +146,11 @@ export default class BaseAddress extends Vue {
    * Indicates whether the address should be shown in editing mode (true) or display mode (false).
    */
   @Prop({ default: false }) readonly editing: boolean
+
+  /**
+   * The Address schema containing Vuelidate rules.
+   */
+  @Prop({ default: null }) readonly schema: any
 
   /**
    * A local copy of the address object, to contain the fields edited by the component.
@@ -172,7 +166,7 @@ export default class BaseAddress extends Vue {
   /**
    * Has this component been mounted yet? Initially unset, but will be set by the {@link mounted} lifecycle callback.
    */
-  private isMounted: boolean
+  private isMounted: boolean = false
 
   /**
    * The provinces for the address region drop-down list.
@@ -181,12 +175,50 @@ export default class BaseAddress extends Vue {
     'BC', 'AB', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', '--'
   ]
 
-  // TODO: Convert from Vuetify validation to Vuelidate using JSON Schema - temporarily using Vuetify for display.
-  private readonly streetRules = [ v => !!v || 'A street address is required' ]
-  private readonly cityRules = [ v => !!v || 'A city is required' ]
-  private readonly regionRules = [ v => !!v || 'A province is required' ]
-  private readonly postalCodeRules = [ v => !!v || 'A postal code is required' ]
-  private readonly countryRules = [ v => !!v || 'A country is required' ]
+  /**
+   * Getters for labels.
+   * @returns The labels with 'optional' as needed.
+   */
+  private get streetAddressAdditionalLabel (): string {
+    return 'Additional Street Address' + (this.isRequired('streetAddressAdditional') ? '' : ' (Optional)')
+  }
+
+  private get streetAddressLabel (): string {
+    return 'Street Address' + (this.isRequired('streetAddress') ? '' : ' (Optional)')
+  }
+
+  private get addressCityLabel (): string {
+    return 'City' + (this.isRequired('addressCity') ? '' : ' (Optional)')
+  }
+
+  private get addressRegionLabel (): string {
+    return 'Province' + (this.isRequired('addressRegion') ? '' : ' (Optional)')
+  }
+
+  private get postalCodeLabel (): string {
+    return 'Postal Code' + (this.isRequired('postalCode') ? '' : ' (Optional)')
+  }
+
+  private get addressCountryLabel (): string {
+    return 'Country' + (this.isRequired('addressCountry') ? '' : ' (Optional)')
+  }
+
+  private get deliveryInstructionsLabel (): string {
+    return 'Delivery Instructions' + (this.isRequired('deliveryInstructions') ? '' : ' (Optional)')
+  }
+
+  private isRequired (prop: string): boolean {
+    return Boolean(this.schema && this.schema[prop] && this.schema[prop].required)
+  }
+
+  /**
+   * Vuetify validation rules. Used for display purposes.
+   * @remark As a getter, this is initialized between created() and mounted().
+   * @returns The Vuetify validation rules object.
+   */
+  private get rules (): { [attr: string]: Array<Function> } {
+    return this.createVuetifyRulesObject('addressLocal')
+  }
 
   /**
    * Lifecycle callback to convert the address JSON into an object, so that it can be used by the template.
@@ -215,7 +247,7 @@ export default class BaseAddress extends Vue {
   }
 
   /**
-   * Emits the validity state of the address entered by the user.
+   * Emits the Vuelidate state of the address entered by the user.
    *
    * @returns a boolean that is true if the address if valid, false otherwise.
    */
@@ -358,7 +390,6 @@ export default class BaseAddress extends Vue {
       this.addressLocal['addressRegion'] = address['ProvinceCode']
       this.addressLocal['postalCode'] = address['PostalCode']
     } else {
-      // Not proud of this, but it'll do until we implement JSON Schema validation.
       this.addressLocal['addressRegion'] = '--'
       this.addressLocal['postalCode'] = address['PostalCode'] ? address['PostalCode'] : 'N/A'
     }
@@ -375,15 +406,6 @@ export default class BaseAddress extends Vue {
     display flex
     flex-flow column nowrap
     position relative
-
-  .validationError
-    border-color red
-    border-radius .3rem
-    border-style groove
-    border-width thin
-
-  .validationErrorInfo
-    color red
 
   @media (min-width 768px)
     .meta-container
