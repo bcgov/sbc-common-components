@@ -1,10 +1,13 @@
 import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+import Vue2Filters from 'vue2-filters'
 import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Axios from 'axios'
 
+Vue.use(Vuelidate)
+Vue.use(Vue2Filters)
 Vue.config.productionTip = false
 
 new Vue({
