@@ -117,7 +117,7 @@
 import Vue from 'vue'
 import { Component, Mixins, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Validation } from 'vue-plugin-helper-decorator'
-import ValidationMixin from '@/mixins/validation-mixin'
+import ValidationMixin from '@/mixins/validation-mixin.ts'
 
 /**
  * The component for displaying and editing an address.
