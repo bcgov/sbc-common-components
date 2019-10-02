@@ -1,6 +1,6 @@
 {
   "name": "sbc-common-components",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": false,
   "description": "Common Vue Components to be used across SBC projects",
   "license": "Apache-2.0",
@@ -22,8 +22,10 @@
     "@types/vuelidate": "^0.7.4",
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "country-list": "^2.2.0",
     "lodash": "^4.17.11",
     "material-icons": "^0.3.1",
+    "provinces": "^1.11.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-plugin-helper-decorator": "^0.0.11",
