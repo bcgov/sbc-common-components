@@ -16,14 +16,14 @@
     <!-- Display fields -->
     <v-expand-transition>
       <div class="address-block"
-          v-show="!editing"
+          v-if="!editing"
       >
         <div class="address-block__info">
           <div class="address-block__info-row">
             {{ addressLocal.streetAddress }}
           </div>
-          <div class="address-block__info-row">
-            {{ addressLocal.streetAddressAdditional }}
+          <div class="address-block__info-row pre-wrap"
+            v-html="addressLocal.streetAddressAdditional">
           </div>
           <div class="address-block__info-row">
             <span>{{ addressLocal.addressCity }}</span>
@@ -31,7 +31,7 @@
             <span v-if="addressLocal.postalCode !== 'N/A'">&nbsp;&nbsp;{{ addressLocal.postalCode }}</span>
           </div>
           <div class="address-block__info-row">
-            {{ addressLocal.addressCountry }}
+            {{ getCountryName(countryCode) }}
           </div>
           <div class="address-block__info-row"
                v-if="addressLocal.deliveryInstructions"
@@ -47,7 +47,7 @@
       <v-form lazy-validation
               name="address-form"
               ref="addressForm"
-              v-show="editing"
+              v-if="editing"
       >
         <div class="form__row">
           <v-text-field autocomplete="address-complete"
@@ -60,10 +60,13 @@
           />
         </div>
         <div class="form__row">
-          <v-text-field box
-                        :label="streetAddressAdditionalLabel"
-                        name="street-address-additional"
-                        v-model="addressLocal.streetAddressAdditional"
+          <v-textarea auto-grow
+                      box
+                      :label="streetAddressAdditionalLabel"
+                      name="street-address-additional"
+                      rows="1"
+                      v-model="addressLocal.streetAddressAdditional"
+                      :rules="rules.streetAddressAdditional"
           />
         </div>
         <div class="form__row three-column">
@@ -74,13 +77,25 @@
                         v-model="addressLocal.addressCity"
                         :rules="rules.addressCity"
           />
-          <v-select box
+          <v-select v-if="useCountryRegions(countryCode)"
+                    box
                     class="item"
+                    :menu-props="{maxHeight:'40rem'}"
                     :label="addressRegionLabel"
                     name="address-region"
+                    item-text="name"
+                    item-value="short"
                     v-model="addressLocal.addressRegion"
-                    :items="regions"
+                    :items="getCountryRegions(countryCode)"
                     :rules="rules.addressRegion"
+          />
+          <v-text-field v-else
+                        box
+                        class="item"
+                        :label="addressRegionLabel"
+                        name="address-region"
+                        v-model="addressLocal.addressRegion"
+                        :rules="rules.addressRegion"
           />
           <v-text-field box
                         class="item"
@@ -91,11 +106,15 @@
           />
         </div>
         <div class="form__row">
-          <v-text-field box
-                        :label="addressCountryLabel"
-                        name="address-country"
-                        v-model="addressLocal.addressCountry"
-                        :rules="rules.addressCountry"
+          <v-select box
+                    :label="addressCountryLabel"
+                    name="address-country"
+                    menu-props="auto"
+                    item-text="name"
+                    item-value="code"
+                    v-model="addressLocal.addressCountry"
+                    :items="getCountries()"
+                    :rules="rules.addressCountry"
           />
         </div>
         <div class="form__row">
@@ -105,6 +124,7 @@
                       name="delivery-instructions"
                       rows="2"
                       v-model="addressLocal.deliveryInstructions"
+                      :rules="rules.deliveryInstructions"
           />
         </div>
       </v-form>
@@ -117,15 +137,16 @@
 import Vue from 'vue'
 import { Component, Mixins, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Validation } from 'vue-plugin-helper-decorator'
-import ValidationMixin from '../mixins/validation-mixin'
+import ValidationMixin from '@/mixins/validation-mixin'
+import CountriesProvincesMixin from '@/mixins/countries-provinces-mixin'
 
 /**
  * The component for displaying and editing an address.
  */
 @Component({
-  mixins: [ValidationMixin]
+  mixins: [ValidationMixin, CountriesProvincesMixin]
 })
-export default class BaseAddress extends Mixins(ValidationMixin) {
+export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvincesMixin) {
   /**
    * The validation object used by Vuelidate to compute address validity.
    * @returns The Vuelidate validation rules object.
@@ -169,11 +190,12 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
   private isMounted: boolean = false
 
   /**
-   * The provinces for the address region drop-down list.
+   * Getter for country code of current address.
+   * @returns The current country code.
    */
-  private readonly regions: string[] = [
-    'BC', 'AB', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT', '--'
-  ]
+  private get countryCode (): string {
+    return this.addressLocal['addressCountry']
+  }
 
   /**
    * Getters for labels.
@@ -192,11 +214,25 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
   }
 
   private get addressRegionLabel (): string {
-    return 'Province' + (this.isRequired('addressRegion') ? '' : ' (Optional)')
+    let label: string
+    if (this.addressLocal['addressCountry'] === 'CA') {
+      label = 'Province'
+    } else if (this.addressLocal['addressCountry'] === 'US') {
+      label = 'State'
+    } else {
+      label = 'Province/State'
+    }
+    return label + (this.isRequired('addressRegion') ? '' : ' (Optional)')
   }
 
   private get postalCodeLabel (): string {
-    return 'Postal Code' + (this.isRequired('postalCode') ? '' : ' (Optional)')
+    let label: string
+    if (this.addressLocal['addressCountry'] === 'US') {
+      label = 'Zip Code'
+    } else {
+      label = 'Postal Code'
+    }
+    return label + (this.isRequired('postalCode') ? '' : ' (Optional)')
   }
 
   private get addressCountryLabel (): string {
@@ -289,6 +325,15 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
   }
 
   /**
+   * Function to determine whether to use a country's known regions (ie, provinces/states).
+   * @param code The short code of the country.
+   * @returns Whether to use v-select or v-text-field for input.
+   */
+  private useCountryRegions (code: string): boolean {
+    return (code === 'CA' || code === 'US')
+  }
+
+  /**
    * A convenience method for JSON.stringify that strips values that have empty strings.
    *
    * @param object the object to stringify.
@@ -317,12 +362,10 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
     this.moveElementId('street-address')
     this.moveElementId('address-country')
 
-    // Destroy the old one if it exists, and create the new.
-
+    // Destroy the old object if it exists, and create a new one.
     if (window['currentAddressComplete']) {
       window['currentAddressComplete'].destroy()
     }
-
     window['currentAddressComplete'] = this.createAddressComplete(pca, key)
   }
 
@@ -356,16 +399,12 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
    */
   private createAddressComplete (pca, key: string): object {
     // Set up the two fields that AddressComplete will use for input.
-    const addressFields = [
-      { element: 'street-address', mode: pca.fieldMode.SEARCH },
-      { element: 'address-country', mode: pca.fieldMode.COUNTRY }
+    const fields = [
+      { element: 'street-address', field: '', mode: pca.fieldMode.DEFAULT }
     ]
+    const options = { key }
 
-    const options = {
-      key: key
-    }
-
-    const addressComplete = new pca.Address(addressFields, options)
+    const addressComplete = new pca.Address(fields, options)
 
     // The documentation contains sample load/populate callback code that doesn't work, but this will. The side effect
     // is that it breaks the autofill functionality provided by the library, but we really don't want the library
@@ -376,23 +415,42 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
   }
 
   /**
-   * Updates the address data after the user chooses a suggested address.
+   * Callback to update the address data after the user chooses a suggested address.
    *
    * @param address the data object returned by the AddressComplete Retrieve API.
    */
   private addressCompletePopulate (address: object): void {
     this.addressLocal['streetAddress'] = address['Line1']
-    this.addressLocal['streetAddressAdditional'] = address['Line2']
+    // Combine extra address lines into Street Address Additional field.
+    this.addressLocal['streetAddressAdditional'] = this.combineLines(
+      this.combineLines(address['Line2'], address['Line3']),
+      this.combineLines(address['Line4'], address['Line5'])
+    )
     this.addressLocal['addressCity'] = address['City']
+    if (this.useCountryRegions(address['CountryIso2'])) {
+      // In this case, v-select will map known province code to province name
+      // or v-select will be blank and user will have to select a known item.
+      this.addressLocal['addressRegion'] = address['ProvinceCode']
+    } else {
+      // In this case, v-text-input will allow manual entry but province info is probably too long
+      // so set region to null and add province name to the Street Address Additional field.
+      // If length is excessive, user will have to fix it.
+      this.addressLocal['addressRegion'] = null
+      this.addressLocal['streetAddressAdditional'] = this.combineLines(
+        this.addressLocal['streetAddressAdditional'], address['ProvinceName']
+      )
+    }
+    this.addressLocal['postalCode'] = address['PostalCode']
     this.addressLocal['addressCountry'] = address['CountryIso2']
 
-    if (address['CountryIso2'] === 'CA') {
-      this.addressLocal['addressRegion'] = address['ProvinceCode']
-      this.addressLocal['postalCode'] = address['PostalCode']
-    } else {
-      this.addressLocal['addressRegion'] = '--'
-      this.addressLocal['postalCode'] = address['PostalCode'] ? address['PostalCode'] : 'N/A'
-    }
+    // Validate the form, in case any fields are missing or incorrect.
+    Vue.nextTick(() => { (this.$refs.addressForm as any).validate() })
+  }
+
+  private combineLines (line1: string, line2: string) {
+    if (!line1) return line2
+    if (!line2) return line1
+    return line1 + '\n' + line2
   }
 }
 
@@ -431,5 +489,8 @@ export default class BaseAddress extends Mixins(ValidationMixin) {
       flex-basis 0
       margin-left 0.5rem
       margin-right 0.5rem
+
+  .pre-wrap
+    white-space pre-wrap
 
 </style>

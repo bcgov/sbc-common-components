@@ -32,9 +32,9 @@ const basicAddress = {
   streetAddress: '1234 Main St',
   streetAddressAdditional: 'PO BOX STN PROV GOV',
   addressCity: 'Victoria',
-  addressRegion: 'BC',
+  addressRegion: 'BC', // NB: region code
   postalCode: 'V8W 3J3',
-  addressCountry: 'Canada',
+  addressCountry: 'CA', // NB: country code
   deliveryInstructions: 'c/o The Management'
 }
 
@@ -166,11 +166,11 @@ describe('BaseAddress - base tests', () => {
   })
 
   it('displays a Canadian address', () => {
-    const wrapper: Wrapper<BaseAddress> = createComponent(basicAddress, false)
+    const wrapper: Wrapper<BaseAddress> = createComponent(undefined, false)
 
     // We should be in display mode.
-    expect(wrapper.find('.address-block').isVisible()).toBe(true)
-    expect(wrapper.find('form[name="address-form"').isVisible()).toBe(false)
+    expect(wrapper.find('.address-block').exists()).toBe(true)
+    expect(wrapper.find('[name="address-form"]').exists()).toBe(false)
 
     // The last "valid" event should indicate that the address is valid.
     expect(wrapper.emitted().valid).toBeDefined()
@@ -180,18 +180,18 @@ describe('BaseAddress - base tests', () => {
     expect(wrapper.find('.address-block').text()).toContain(basicAddress.streetAddress)
     expect(wrapper.find('.address-block').text()).toContain(basicAddress.streetAddressAdditional)
     expect(wrapper.find('.address-block').text()).toContain(basicAddress.addressCity)
-    expect(wrapper.find('.address-block').text()).toContain(basicAddress.addressRegion)
+    expect(wrapper.find('.address-block').text()).toContain(basicAddress.addressRegion) // NB: region code
     expect(wrapper.find('.address-block').text()).toContain(basicAddress.postalCode)
-    expect(wrapper.find('.address-block').text()).toContain(basicAddress.addressCountry)
+    expect(wrapper.find('.address-block').text()).toContain('Canada') // NB: long name
     expect(wrapper.find('.address-block').text()).toContain(basicAddress.deliveryInstructions)
   })
 
   it('edits a Canadian address', () => {
-    const wrapper: Wrapper<BaseAddress> = createComponent()
+    const wrapper: Wrapper<BaseAddress> = createComponent(undefined, true)
 
     // We should be in edit mode.
-    expect(wrapper.find('.address-block').isVisible()).toBe(false)
-    expect(wrapper.find('[name="address-form"').isVisible()).toBe(true)
+    expect(wrapper.find('.address-block').exists()).toBe(false)
+    expect(wrapper.find('[name="address-form"]').exists()).toBe(true)
 
     // The last "valid" event should indicate that the address is valid.
     expect(wrapper.emitted().valid).toBeDefined()
@@ -204,9 +204,11 @@ describe('BaseAddress - base tests', () => {
     expect(wrapper.find('[name="address-city"]').element['value']).toEqual(basicAddress.addressCity)
     // NB: for v-select, look at the div before the input
     expect(wrapper.find('[name="address-region"]').element['previousElementSibling'].textContent)
-      .toEqual(basicAddress.addressRegion)
+      .toEqual('British Columbia') // NB: long name
     expect(wrapper.find('[name="postal-code"]').element['value']).toEqual(basicAddress.postalCode)
-    expect(wrapper.find('[name="address-country"]').element['value']).toEqual(basicAddress.addressCountry)
+    // NB: for v-select, look at the div before the input
+    expect(wrapper.find('[name="address-country"]').element['previousElementSibling'].textContent)
+      .toEqual('Canada') // NB: long name
     expect(wrapper.find('[name="delivery-instructions"]').element['value'])
       .toEqual(basicAddress.deliveryInstructions)
   })
@@ -442,6 +444,7 @@ describe('BaseAddress - validation rules', () => {
     const wrapper: Wrapper<BaseAddress> = mount(BaseAddress, {
       propsData: {
         address: { addressCountry: 'Canada' },
+        editing: true,
         schema: {
           addressCountry: { minLength: minLength(7) }
         }
@@ -464,6 +467,7 @@ describe('BaseAddress - validation rules', () => {
     const wrapper: Wrapper<BaseAddress> = mount(BaseAddress, {
       propsData: {
         address: { addressCountry: 'Canada' },
+        editing: true,
         schema: {
           addressCountry: { maxLength: maxLength(5) }
         }
@@ -486,6 +490,7 @@ describe('BaseAddress - validation rules', () => {
     const wrapper: Wrapper<BaseAddress> = mount(BaseAddress, {
       propsData: {
         address: { addressCountry: 'USA' },
+        editing: true,
         schema: {
           addressCountry: { isCanada: (val) => (val === 'Canada') }
         }
