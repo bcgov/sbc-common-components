@@ -21,6 +21,8 @@ jobs:
     - name: npm publisher script
       working-directory: ./vue/sbc-common-components/
       run: |
+        npm install
+        npm run build
         npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
