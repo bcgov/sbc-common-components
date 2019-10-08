@@ -20,6 +20,7 @@ jobs:
     - name: npm publish
       working-directory: ./vue/sbc-common-components/
       run: |
+        npm install
         npm run build
         npm publish
       env:
