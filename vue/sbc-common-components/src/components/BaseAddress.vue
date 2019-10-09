@@ -88,6 +88,7 @@
                     v-model="addressLocal.addressRegion"
                     :items="getCountryRegions(countryCode)"
                     :rules="rules.addressRegion"
+                    :disabled="isBC()"
           />
           <v-text-field v-else
                         box
@@ -115,6 +116,7 @@
                     v-model="addressLocal.addressCountry"
                     :items="getCountries()"
                     :rules="rules.addressCountry"
+                    :disabled="isCanada()"
           />
         </div>
         <div class="form__row">
@@ -215,14 +217,20 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
 
   private get addressRegionLabel (): string {
     let label: string
+    let required = this.isRequired('addressRegion')
+
+    // NB: make region required for Canada and USA
     if (this.addressLocal['addressCountry'] === 'CA') {
       label = 'Province'
+      required = true
     } else if (this.addressLocal['addressCountry'] === 'US') {
       label = 'State'
+      required = true
     } else {
       label = 'Province/State'
     }
-    return label + (this.isRequired('addressRegion') ? '' : ' (Optional)')
+
+    return label + (required ? '' : ' (Optional)')
   }
 
   private get postalCodeLabel (): string {
@@ -245,6 +253,14 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
 
   private isRequired (prop: string): boolean {
     return Boolean(this.schema && this.schema[prop] && this.schema[prop].required)
+  }
+
+  private isCanada (prop: string = 'addressCountry'): boolean {
+    return Boolean(this.schema && this.schema[prop] && this.schema[prop].isCanada)
+  }
+
+  private isBC (prop: string = 'addressRegion'): boolean {
+    return Boolean(this.schema && this.schema[prop] && this.schema[prop].isBC)
   }
 
   /**
@@ -400,7 +416,8 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   private createAddressComplete (pca, key: string): object {
     // Set up the two fields that AddressComplete will use for input.
     const fields = [
-      { element: 'street-address', field: '', mode: pca.fieldMode.DEFAULT }
+      { element: 'street-address', mode: pca.fieldMode.DEFAULT },
+      { element: 'address-country', mode: pca.fieldMode.COUNTRY }
     ]
     const options = { key }
 

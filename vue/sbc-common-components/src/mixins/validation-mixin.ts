@@ -32,6 +32,7 @@ export default class ValidationMixin extends Vue {
                 case 'minLength': obj[prop].push(() => this.minLengthRule(value, prop)); break
                 case 'maxLength': obj[prop].push(() => this.maxLengthRule(value, prop)); break
                 case 'isCanada': obj[prop].push(() => this.isCanadaRule(value, prop)); break
+                case 'isBC': obj[prop].push(() => this.isBCRule(value, prop)); break
                 // FUTURE: add extra validation functions here
                 default: break
               }
@@ -70,7 +71,13 @@ export default class ValidationMixin extends Vue {
     return Boolean(this.$v[prop] && this.$v[prop][key].maxLength) || `Maximum length is ${max}`
   }
 
+  // FUTURE: generalize this rule to take a validation parameter (ie, 'CA')
   protected isCanadaRule (prop: string, key: string): boolean | string {
     return Boolean(this.$v[prop] && this.$v[prop][key].isCanada) || `Address must be in Canada`
+  }
+
+  // FUTURE: generalize this rule to take a validation parameter (ie, 'BC')
+  protected isBCRule (prop: string, key: string): boolean | string {
+    return Boolean(this.$v[prop] && this.$v[prop][key].isBC) || `Address must be in BC`
   }
 }
