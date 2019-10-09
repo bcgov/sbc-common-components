@@ -66,7 +66,7 @@ export default {
   }),
 
   mounted () {
-    console.log('%c FeeMdoule-Data Recieved on Mount as %s %s', 'color: blue ;font-size : 12px', JSON.stringify(this.filingData), this.payURL)
+    console.log('%c FeeMdoule-Data Received on Mount as %s %s', 'color: blue; font-size: 12px', JSON.stringify(this.filingData), this.payURL)
     FeeServices.getFee(this.filingData, this.payURL).then(data => {
       this.fetchError = ''
       this.fees = data
@@ -77,7 +77,7 @@ export default {
   computed: {
     totalFilingFees () :number {
       if (!this.fees) {
-        console.log('%c FeeMdoule-Watch ZERO FEE %s', 'color: blue ;font-size : 12px', JSON.stringify(this.filingData))
+        console.log('%c FeeMdoule-Watch ZERO FEE %s', 'color: blue; font-size: 12px', JSON.stringify(this.filingData))
         return 0
       }
       return this.fees.reduce((acc: number, item: { fee: number; }) => acc + item.fee, 0)
@@ -85,7 +85,7 @@ export default {
   },
   watch: {
     filingData: function (newVal) {
-      console.log('%c FeeMdoule-Watch Activated as %s', 'color: blue ;font-size : 12px', JSON.stringify(this.filingData))
+      console.log('%c FeeMdoule-Watch Activated as %s', 'color: blue; font-size: 12px', JSON.stringify(this.filingData))
       FeeServices.getFee(this.filingData, this.payURL).then((data: any) => {
         this.fetchError = ''
         this.fees = data
@@ -99,63 +99,63 @@ export default {
 
 <style lang="scss" scoped>
     @import "../assets/scss/theme.scss";
-    header{
-        color: #fff;
-        background: $BCgovBlue5
+
+    header {
+      color: #fff;
+      background: $BCgovBlue5;
     }
 
-    .container{
-        display: flex;
-        flex-flow: row nowrap;
-        line-height: 1.2rem;
-        font-size: 0.875rem;
+    .container {
+      display: flex;
+      flex-flow: row nowrap;
+      line-height: 1.2rem;
+      font-size: 0.875rem;
     }
 
-    .fee-list{
-        border-bottom: 1px solid $gray3;
+    .fee-list {
+      border-bottom: 1px solid $gray3;
     }
 
-    .fee-list__item{
-        &-name, &-value{
-            font-weight: 700;
-        }
+    .fee-list__item {
+      &-name, &-value{
+        font-weight: 700;
+      }
 
-        &-name{
-            flex: 1 1 auto;
-            margin-right: 2rem
-        }
+      &-name {
+        flex: 1 1 auto;
+        margin-right: 2rem;
+      }
 
-        &-value{
-            flex: 0 0 auto;
-            text-align: right
-        }
+      &-value {
+        flex: 0 0 auto;
+        text-align: right;
+      }
     }
 
-    .fee-list__item + .fee-list__item{
-        border-top: 1px solid $gray3
+    .fee-list__item + .fee-list__item {
+      border-top: 1px solid $gray3;
     }
 
-    .fee-total{
-        align-items: center;
-        letter-spacing: -0.01rem;
-        line-height: auto;
+    .fee-total {
+      align-items: center;
+      letter-spacing: -0.01rem;
+      line-height: auto;
 
-        &__name{
-            flex: 1 1 auto;
-            margin-right: auto;
-            font-weight: 700;
-        }
+      &__name {
+        flex: 1 1 auto;
+        margin-right: auto;
+        font-weight: 700;
+      }
 
-        &__currency{
-            margin-right: 0.5rem;
-            color: $gray5;
-            font-weight: 500;
-        }
+      &__currency {
+        margin-right: 0.5rem;
+        color: $gray5;
+        font-weight: 500;
+      }
 
-        &__value{
-            font-size: 1.65rem;
-            font-weight: 700;
-        }
+      &__value {
+        font-size: 1.65rem;
+        font-weight: 700;
+      }
     }
-
 </style>
