@@ -360,12 +360,17 @@ describe('BaseAddress - validation tests', () => {
   })
 
   it('is invalid with missing region', async () => {
-    const wrapper: Wrapper<BaseAddress> = createComponent() // initially valid as above
-
-    // Set a blank address region value.
-    // NB: toggle addressRegion to resolve any conflict with other tests
-    await wrapper.setData({ addressLocal: { addressRegion: null } })
-    await wrapper.setData({ addressLocal: { addressRegion: '' } })
+    // you can't "unselect" a v-select, so just create component without region
+    const wrapper: Wrapper<BaseAddress> = mount(BaseAddress, {
+      propsData: {
+        address: { addressRegion: null },
+        editing: true,
+        schema: {
+          addressRegion: { required }
+        }
+      },
+      vuetify
+    })
 
     // Validate the form so any error messages are displayed.
     const form = wrapper.vm.$refs.addressForm as any
@@ -400,12 +405,17 @@ describe('BaseAddress - validation tests', () => {
   })
 
   it('is invalid with missing country', async () => {
-    const wrapper: Wrapper<BaseAddress> = createComponent() // initially valid as above
-
-    // Set a blank address country value.
-    // NB: toggle addressCountry to resolve any conflict with other tests
-    await wrapper.setData({ addressLocal: { addressCountry: null } })
-    await wrapper.setData({ addressLocal: { addressCountry: '' } })
+    // you can't "unselect" a v-select, so just create component without country
+    const wrapper: Wrapper<BaseAddress> = mount(BaseAddress, {
+      propsData: {
+        address: { addressCountry: null },
+        editing: true,
+        schema: {
+          addressCountry: { required }
+        }
+      },
+      vuetify
+    })
 
     // Validate the form so any error messages are displayed.
     const form = wrapper.vm.$refs.addressForm as any
@@ -515,8 +525,8 @@ describe('BaseAddress - validation rules', () => {
     // Check that 'must be Canada' message is displayed.
     expect(wrapper.find('[name="address-form"]').text()).toContain('Address must be in Canada')
 
-    // Check that country input control is disabled.
-    expect(wrapper.find('[name="address-country"]').attributes('disabled')).toBeTruthy()
+    // Check that country input control is readonly.
+    expect(wrapper.find('[name="address-country"]').attributes('readonly')).toBe('readonly')
   })
 
   it('handles "isBC" rule', async () => {
@@ -542,7 +552,7 @@ describe('BaseAddress - validation rules', () => {
     // Check that 'must be Canada' message is displayed.
     expect(wrapper.find('[name="address-form"]').text()).toContain('Address must be in BC')
 
-    // Check that region input control is disabled.
-    expect(wrapper.find('[name="address-region"]').attributes('disabled')).toBeTruthy()
+    // Check that region input control is readonly.
+    expect(wrapper.find('[name="address-region"]').attributes('readonly')).toBe('readonly')
   })
 })
