@@ -15,7 +15,8 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn outlined color="#ffffff" v-if="authorized" @click="logout">Sign Out</v-btn>
+        <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with my BC Services Card</v-btn>
+        <v-btn outlined color="#ffffff" class="log-out-btn" v-if="authorized" @click="logout">Log out</v-btn>
       </div>
     </div>
   </header>
@@ -39,6 +40,10 @@ export default Vue.extend({
   methods: {
     logout () {
       window.location.assign('/cooperatives/auth/signout')
+    },
+
+    login () {
+      window.location.assign('/cooperatives/auth/signin/bcsc')
     }
   }
 })
@@ -67,8 +72,7 @@ export default Vue.extend({
 
     .v-btn {
       margin-right: 0;
-      color: #ffffff;
-      border-color: #ffffff;
+      font-weight: 700;
     }
   }
 
@@ -93,7 +97,7 @@ export default Vue.extend({
   }
 
   @media (max-width: 600px) {
-    .brand__image {
+    .brand__image{
       margin-right: 0.75rem;
       margin-left: -0.15rem;
     }
@@ -104,7 +108,16 @@ export default Vue.extend({
     }
 
     .brand__title--wrap {
-      display: block;
+      display: block
     }
+  }
+
+  .log-in-btn {
+    color: $BCgovBlue5;
+    background-color: $BCgovGold4;
+  }
+
+  .log-out-btn {
+    border-color: #ffffff;
   }
 </style>
