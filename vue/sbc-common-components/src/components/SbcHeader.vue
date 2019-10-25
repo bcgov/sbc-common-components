@@ -16,6 +16,7 @@
       </a>
       <div class="app-header__actions">
         <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with my BC Services Card</v-btn>
+        <span class="body-2 mr-2" v-if="authorized">{{ username }}</span>
         <v-btn outlined color="#ffffff" class="log-out-btn" v-if="authorized" @click="logout">Log out</v-btn>
       </div>
     </div>
@@ -23,30 +24,28 @@
 </template>
 
 <script lang="ts">
+import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
-import AuthService from '../services/auth.services'
 
-export default Vue.extend({
-  name: 'sbc-header',
-  props: {
-    authURL: String
-  },
-  computed: {
-    authorized ():boolean {
-      let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
-      return !!auth
-    }
-  },
-  methods: {
-    logout () {
-      window.location.assign('/cooperatives/auth/signout')
-    },
-
-    login () {
-      window.location.assign('/cooperatives/auth/signin/bcsc')
-    }
+@Component({})
+export default class SbcHeader extends Vue {
+  get username () : string {
+    return sessionStorage.getItem('USER_FULL_NAME')
   }
-})
+
+  get authorized () : boolean {
+    let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
+    return !!auth
+  }
+
+  logout () {
+    window.location.assign('/cooperatives/auth/signout')
+  }
+
+  login () {
+    window.location.assign('/cooperatives/auth/signin/bcsc')
+  }
+}
 </script>
 
 <style lang="scss" scoped>
