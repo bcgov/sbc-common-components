@@ -16,8 +16,30 @@
       </a>
       <div class="app-header__actions">
         <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with my BC Services Card</v-btn>
-        <span class="body-2 mr-2" v-if="authorized">{{ username }}</span>
-        <v-btn outlined color="#ffffff" class="log-out-btn" v-if="authorized" @click="logout">Log out</v-btn>
+        <v-menu size="sm" v-if="authorized"
+          v-model="value"
+          :disabled="disabled"
+          :absolute="absolute"
+          :open-on-hover="openOnHover"
+          :close-on-click="closeOnClick"
+          :close-on-content-click="closeOnContentClick"
+          :offset-x="offsetX"
+          :offset-y="offsetY"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn text color="#fff" v-on="on"
+            >
+              {{ username }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item>
+              <v-list-item-title>Edit Contact Information</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-btn outlined color="#ffffff" class="log-out-btn ml-1" v-if="authorized" @click="logout">Log out</v-btn>
       </div>
     </div>
   </header>
