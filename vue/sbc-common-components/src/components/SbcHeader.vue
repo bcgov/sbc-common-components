@@ -15,7 +15,7 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with my BC Services Card</v-btn>
+        <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
         <v-menu size="sm" v-if="showLogin && authorized"
           v-model="value"
           :disabled="disabled"
