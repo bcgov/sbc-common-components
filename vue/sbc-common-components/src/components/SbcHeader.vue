@@ -15,45 +15,88 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn outlined color="#ffffff" v-if="authorized" @click="logout">Sign Out</v-btn>
+        <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with my BC Services Card</v-btn>
+        <v-menu size="sm" v-if="showLogin && authorized"
+          v-model="value"
+          :disabled="disabled"
+          :absolute="absolute"
+          :open-on-hover="openOnHover"
+          :close-on-click="closeOnClick"
+          :close-on-content-click="closeOnContentClick"
+          :offset-x="offsetX"
+          :offset-y="offsetY"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn text color="#fff" v-on="on"
+            >
+              {{ username }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="goToUserProfile">
+              <v-list-item-title>Edit Contact Information</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-btn outlined color="#ffffff" class="log-out-btn ml-1" v-if="authorized" @click="logout">Log out</v-btn>
       </div>
     </div>
   </header>
 </template>
 
 <script lang="ts">
+import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
-import AuthService from '../services/auth.services'
 
-export default Vue.extend({
-  name: 'sbc-header',
-  props: {
-    authURL: String
-  },
-  computed: {
-    authorized ():boolean {
-      let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
-      return !!auth
-    }
-  },
-  methods: {
-    logout () {
-      window.location.assign('/cooperatives/auth/signout')
-    }
+@Component({})
+export default class SbcHeader extends Vue {
+  get username () : string {
+    return sessionStorage.getItem('USER_FULL_NAME')
   }
-})
+
+  get authorized () : boolean {
+    let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
+    return !!auth
+  }
+
+  get showLogin () : boolean {
+    let featureHide: any
+    const authApiConfig = JSON.parse(sessionStorage.getItem('AUTH_API_CONFIG'))
+
+    if (authApiConfig) {
+      featureHide = authApiConfig['VUE_APP_FEATURE_HIDE']
+    }
+    if (featureHide && featureHide.BCSC) {
+      return false
+    }
+    return true
+  }
+
+  logout () {
+    window.location.assign('/cooperatives/auth/signout')
+  }
+
+  login () {
+    window.location.assign('/cooperatives/auth/signin/bcsc')
+  }
+
+  goToUserProfile () {
+    window.location.assign('/cooperatives/auth/userprofile')
+  }
+}
 </script>
 
 <style lang="scss" scoped>
   @import "../assets/scss/theme.scss";
 
-  .app-header{
+  .app-header {
     height: 70px;
     color: #fff;
     border-bottom: 3px solid $BCgovGold5;
     background-color: $BCgovBlue5;
 
-    .container{
+    .container {
       display: flex;
       align-items: center;
       height: 100%;
@@ -62,13 +105,12 @@ export default Vue.extend({
     }
   }
 
-  .app-header__actions{
+  .app-header__actions {
     margin-left: auto;
 
-    .v-btn{
+    .v-btn {
       margin-right: 0;
-      color: #ffffff;
-      border-color: #ffffff;
+      font-weight: 700;
     }
   }
 
@@ -76,35 +118,44 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     padding-right: 1rem;
-    text-decoration: none ;
+    text-decoration: none;
     color: inherit;
   }
 
-  .brand__image{
+  .brand__image {
     display: block;
     margin-right: 1.5rem;
     margin-left: -0.1rem;
     max-height: 70px;
   }
 
-  .brand__title{
+  .brand__title {
     font-size: 1.125rem;
     font-weight: 400;
   }
 
-  @media (max-width: 600px){
+  @media (max-width: 600px) {
     .brand__image{
       margin-right: 0.75rem;
       margin-left: -0.15rem;
     }
 
-    .brand__title{
+    .brand__title {
       font-size: 1rem;
       line-height: 1.25rem;
     }
 
-    .brand__title--wrap{
+    .brand__title--wrap {
       display: block
     }
+  }
+
+  .log-in-btn {
+    color: $BCgovBlue5;
+    background-color: $BCgovGold4;
+  }
+
+  .log-out-btn {
+    border-color: #ffffff;
   }
 </style>
