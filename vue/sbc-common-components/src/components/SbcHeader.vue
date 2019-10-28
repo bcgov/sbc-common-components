@@ -15,8 +15,8 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with my BC Services Card</v-btn>
-        <v-menu size="sm" v-if="authorized"
+        <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with my BC Services Card</v-btn>
+        <v-menu size="sm" v-if="showLogin && authorized"
           v-model="value"
           :disabled="disabled"
           :absolute="absolute"
@@ -33,7 +33,7 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item>
+            <v-list-item @click="goToUserProfile">
               <v-list-item-title>Edit Contact Information</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -60,12 +60,29 @@ export default class SbcHeader extends Vue {
     return !!auth
   }
 
+  get showLogin () : boolean {
+    let featureHide: any
+    const authApiConfig = JSON.parse(sessionStorage.getItem('AUTH_API_CONFIG'))
+
+    if (authApiConfig) {
+      featureHide = authApiConfig['VUE_APP_FEATURE_HIDE']
+    }
+    if (featureHide && featureHide.BCSC) {
+      return false
+    }
+    return true
+  }
+
   logout () {
     window.location.assign('/cooperatives/auth/signout')
   }
 
   login () {
     window.location.assign('/cooperatives/auth/signin/bcsc')
+  }
+
+  goToUserProfile () {
+    window.location.assign('/cooperatives/auth/userprofile')
   }
 }
 </script>
