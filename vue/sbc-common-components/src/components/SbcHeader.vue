@@ -40,6 +40,7 @@
         </v-menu>
 
         <v-btn outlined color="#ffffff" class="log-out-btn ml-1" v-if="authorized" @click="logout">Log out</v-btn>
+        <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with my BC Services Card</v-btn>
       </div>
     </div>
   </header>
