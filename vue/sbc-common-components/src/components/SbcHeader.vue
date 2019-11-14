@@ -19,9 +19,9 @@
         <v-menu offset-y v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
             <v-btn text v-on="on" class="user-account-btn">
-              <v-icon size="sm" class="user-account-btn__icon">account_circle</v-icon>
+              <v-icon size="sm" class="user-account-btn__icon">mdi-account-circle</v-icon>
               &nbsp;{{ username }}&nbsp;
-              <v-icon>arrow_drop_down</v-icon>
+              <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list class="pt-0 pb-0">
@@ -30,7 +30,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-
         <v-btn outlined color="#ffffff" class="log-out-btn ml-1" v-if="authorized" @click="logout">Log out</v-btn>
       </div>
     </div>
