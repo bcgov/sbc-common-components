@@ -30,12 +30,14 @@ class ExceptionHandler():
         """Handle AuthError."""
         response = jsonify(error.error)
         response.status_code = error.status_code
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
     def db_handler(self, error):  # pylint: disable=no-self-use
         """Handle Database error."""
         response = {'error': '{}'.format(error.__dict__['code']),
                     'message': '{}'.format(str(error.__dict__['orig']))}, 500
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
     def std_handler(self, error):  # pylint: disable=no-self-use
@@ -43,6 +45,7 @@ class ExceptionHandler():
         message = error.message if hasattr(error, 'message') else error.description
         response = jsonify(message=message)
         response.status_code = error.code if isinstance(error, HTTPException) else 500
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
     def init_app(self, app):
