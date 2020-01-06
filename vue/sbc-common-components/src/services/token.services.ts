@@ -83,8 +83,8 @@ class TokenServices {
       throw new Error('Refresh Token Expired..No more token refreshes')
     }
     let expiresIn = -1
-    if (self.kc !== undefined && self.kc.tokenParsed !== undefined && self.kc.tokenParsed['exp'] !== undefined) {
-      expiresIn = self.kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + self.kc!.timeSkew!
+    if (self.kc !== undefined && self.kc.tokenParsed !== undefined && self.kc.tokenParsed['exp'] !== undefined && self.kc.timeSkew !== undefined) {
+      expiresIn = self.kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + self.kc.timeSkew
     }
     if (expiresIn < 0) {
       throw new Error('Refresh Token Expired..No more token refreshes')
