@@ -17,27 +17,57 @@
       <div class="app-header__actions">
         <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
         <v-menu bottom left fixed transition="slide-y-transition" content-class="user-account-menu" v-if="showLogin && authorized">
-            <template v-slot:activator="{ on }">
-              <v-btn text large v-on="on" class="user-account-btn pl-2 pr-2">
-                <v-avatar tile size="27" class="user-account-btn__avatar">
-                  {{ username.slice(0,1)}}
-                </v-avatar>
-                <span class="user-account-btn__user-name ml-1 mr-1">{{ username }}</span>
-                <v-icon>mdi-chevron-down</v-icon>
-              </v-btn>
-            </template>
-          <v-list class="pt-0 pb-0">
-            <v-list-item class="user-detail">
-              <v-avatar tile size="36" class="user-detail__avatar">
-                {{ username.slice(0,1)}}
+          <template v-slot:activator="{ on }">
+            <v-btn text large v-on="on" class="user-account-btn pl-2 pr-2">
+              <v-avatar tile left size="36" color="#3f5c94" class="user-avatar mr-4">
+                <span class="white--text title">{{ username.slice(0,1) }}</span>
               </v-avatar>
-              <span class="user-detail__user-name">{{ username }}</span>
+              <div class="user-info">
+                <div class="user-name">{{ username }}</div>
+                <div class="account-name">Account Name</div>
+              </div>
+            </v-btn>
+          </template>
+          <v-list tile dense>
+            <v-list-item two-line>
+              <v-list-item-avatar tile left size="36" color="#3f5c94" class="user-avatar mr-4">
+                <span class="white--text title">{{ username.slice(0,1) }}</span>
+              </v-list-item-avatar>
+              <v-list-item-content class="user-info">
+                <v-list-item-title class="user-name">{{ username }}</v-list-item-title>
+                <v-list-item-subtitle class="account-name">Account Name</v-list-item-subtitle>
+              </v-list-item-content>
             </v-list-item>
-            <v-list-item small @click="goToUserProfile">
-              Edit Profile
+            <v-list-item @click="goToUserProfile">
+              <v-list-item-icon left>
+                <v-icon>mdi-account-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Edit Profile</v-list-item-title>
             </v-list-item>
-            <v-list-item small @click="logout">
-              Log out
+            <v-list-item @click="logout">
+              <v-list-item-icon left>
+                <v-icon>mdi-logout-variant</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Log out</v-list-item-title>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <!-- Separate Account Settings List - Possible Permissions on this group? -->
+          <v-list tile dense>
+            <v-subheader>ACCOUNT SETTINGS</v-subheader>
+            <v-list-item to="/account-settings" target="_blank">
+              <v-list-item-icon left>
+                <v-icon>mdi-information-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Account Info</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/accountsettings/manage-team" target="_blank">
+              <v-list-item-icon left>
+                <v-icon>mdi-account-group-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Team Members</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -86,6 +116,10 @@ export default class SbcHeader extends Vue {
   goToUserProfile () {
     window.location.assign('/cooperatives/auth/userprofile')
   }
+
+  goToAccountSettings () {
+    window.location.assign('/cooperatives/auth/accountsettings')
+  }
 }
 </script>
 
@@ -93,6 +127,7 @@ export default class SbcHeader extends Vue {
 @import "../assets/scss/theme.scss";
 
 $app-header-font-color: #ffffff;
+$account-name-font-size: 0.8rem;
 
 .app-header {
   height: 70px;
@@ -152,48 +187,67 @@ $app-header-font-color: #ffffff;
   }
 }
 
+.v-list {
+  border-radius: 0;
+
+  .v-list-item__title,
+  .v-list-item__subtitle {
+    color: $gray9 !important;
+    line-height: normal !important;
+  }
+}
+
+.v-list .v-list-item__title.user-name,
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.v-list .v-list-item__subtitle.account-name,
+.account-name {
+  font-size: $account-name-font-size;
+}
+
+@media (max-width: 960px) {
+  .user-name {
+    display: none;
+  }
+}
+
+.user-account-menu {
+  background: #ffffff;
+}
+
+.user-avatar {
+  border-radius: 0.15rem;
+  background-color: $BCgovBlue3;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
 .log-in-btn {
   color: $BCgovBlue5;
   background-color: $BCgovGold4;
   font-weight: 700;
 }
 
-  .user-account-btn__avatar {
-    border-radius: 0.2rem;
-    margin-right: 0.25rem;
-    font-size: 0.875rem;
-  }
-
 .v-btn.user-account-btn {
   color: $app-header-font-color;
+  text-align: left;
 }
 
-.v-avatar {
-  background-color: $BCgovBlue3;
-  color: #ffffff;
-}
-
-.v-list {
+.user-account-menu__info {
   font-size: 0.875rem;
 }
 
-.user-detail {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  background: $gray2;
+.v-list--dense .v-subheader {
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
-.user-detail__avatar {
-  margin-right: 0.75rem;
-  margin-left: -0.1rem;
-  border-radius: 0.2rem;
-  line-height: 1.5;
-  font-size: 1.35rem;
-}
-
-@media (max-width: 960px) {
-  .user-account-btn__user-name {
-    display: none;
-  }
+.v-subheader {
+  color: $gray9 !important;
+  font-size: 0.875rem;
+  font-weight: 700;
 }
 </style>
