@@ -18,8 +18,8 @@
         <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
         <v-menu bottom left fixed transition="slide-y-transition" content-class="user-account-menu" v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
-            <v-btn text large v-on="on" class="user-account-btn pl-2 pr-2">
-              <v-avatar tile left size="36" color="#3f5c94" class="user-avatar mr-4">
+            <v-btn text large v-on="on" class="user-account-btn pl-1 pr-1">
+              <v-avatar tile left size="36" color="#3f5c94" class="user-avatar">
                 <span class="white--text title">{{ username.slice(0,1) }}</span>
               </v-avatar>
               <div class="user-info">
@@ -30,7 +30,7 @@
           </template>
           <v-list tile dense>
             <v-list-item two-line>
-              <v-list-item-avatar tile left size="36" color="#3f5c94" class="user-avatar mr-4">
+              <v-list-item-avatar tile size="36" color="#3f5c94" class="user-avatar">
                 <span class="white--text title">{{ username.slice(0,1) }}</span>
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
@@ -38,12 +38,14 @@
                 <v-list-item-subtitle class="account-name">Account Name</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
+            <!-- BEGIN: Hide if authentication is IDIR -->
             <v-list-item @click="goToUserProfile">
               <v-list-item-icon left>
                 <v-icon>mdi-account-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Edit Profile</v-list-item-title>
             </v-list-item>
+            <!-- END -->
             <v-list-item @click="logout">
               <v-list-item-icon left>
                 <v-icon>mdi-logout-variant</v-icon>
@@ -57,13 +59,13 @@
           <!-- Separate Account Settings List - Possible Permissions on this group? -->
           <v-list tile dense>
             <v-subheader>ACCOUNT SETTINGS</v-subheader>
-            <v-list-item to="/account-settings" target="_blank">
+            <v-list-item to="/account-settings/account-info" target="_blank">
               <v-list-item-icon left>
                 <v-icon>mdi-information-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Account Info</v-list-item-title>
             </v-list-item>
-            <v-list-item to="/accountsettings/manage-team" target="_blank">
+            <v-list-item to="/account-settings/team-members" target="_blank">
               <v-list-item-icon left>
                 <v-icon>mdi-account-group-outline</v-icon>
               </v-list-item-icon>
@@ -215,10 +217,12 @@ $account-name-font-size: 0.8rem;
 }
 
 .user-account-menu {
+  padding: 0.25rem;
   background: #ffffff;
 }
 
 .user-avatar {
+  margin-right: 0.75rem !important;
   border-radius: 0.15rem;
   background-color: $BCgovBlue3;
   font-size: 1rem;
@@ -234,6 +238,20 @@ $account-name-font-size: 0.8rem;
 .v-btn.user-account-btn {
   color: $app-header-font-color;
   text-align: left;
+}
+
+@media (max-width: 960px) {
+  .v-btn.user-account-btn {
+    min-width: auto !important;
+
+    .user-avatar {
+      margin-right: 0;
+    }
+
+    .user-info {
+      display: none;
+    }
+  }
 }
 
 .user-account-menu__info {
