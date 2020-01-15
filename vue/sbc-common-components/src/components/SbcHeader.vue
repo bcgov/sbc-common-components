@@ -16,7 +16,7 @@
       </a>
       <div class="app-header__actions">
         <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
-        <v-menu bottom left fixed transition="slide-y-transition" content-class="user-account-menu" v-if="showLogin && authorized">
+        <v-menu bottom left fixed transition="slide-y-transition" content-class="account-menu" v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
             <v-btn text large v-on="on" class="user-account-btn pl-1 pr-1">
               <v-avatar tile left size="32" color="#3f5c94" class="user-avatar">
@@ -24,18 +24,19 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name">{{ username }}</div>
-                <div class="account-name">Account Name</div>
+                <div class="caption">Account Name</div>
               </div>
+              <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list tile dense>
             <v-list-item two-line>
-              <v-list-item-avatar tile size="36" color="#3f5c94" class="user-avatar">
+              <v-list-item-avatar tile size="36" color="#3f5c94" class="user-avatar mr-4">
                 <span class="white--text title">{{ username.slice(0,1) }}</span>
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="account-name">Account Name</v-list-item-subtitle>
+                <v-list-item-subtitle class="caption">Account Name</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
@@ -128,14 +129,14 @@ export default class SbcHeader extends Vue {
 <style lang="scss" scoped>
 @import "../assets/scss/theme.scss";
 
-$app-header-font-color: #003366;
+$app-header-font-color: #ffffff;
 $account-name-font-size: 0.8rem;
 
 .app-header {
   height: 70px;
   color: $app-header-font-color;
   border-bottom: 2px solid $BCgovGold5;
-  background-color: #ffffff;
+  background-color: #003366;
 
   .container {
     display: flex;
@@ -170,8 +171,9 @@ $account-name-font-size: 0.8rem;
 
 .brand__title {
   letter-spacing: -0.03rem;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
+  color: inherit;
 }
 
 @media (max-width: 600px) {
@@ -190,60 +192,20 @@ $account-name-font-size: 0.8rem;
   }
 }
 
-.v-list {
-  border-radius: 0;
-
-  .v-list-item__title,
-  .v-list-item__subtitle {
-    color: $gray9 !important;
-    line-height: normal !important;
-  }
-}
-
-.v-list .v-list-item__title.user-name,
-.user-name {
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
-.v-list .v-list-item__subtitle.account-name,
-.account-name {
-  font-size: $account-name-font-size;
-}
-
-@media (max-width: 960px) {
-  .user-name {
-    display: none;
-  }
-}
-
-.user-account-menu {
-  padding: 0.25rem;
-  background: #ffffff;
-}
-
-.user-avatar {
-  margin-right: 0.75rem !important;
-  border-radius: 0.15rem;
-  background-color: $BCgovBlue3;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.log-in-btn {
-  color: $BCgovBlue5;
-  background-color: $BCgovGold4;
-  font-weight: 700;
-}
-
 .v-btn.user-account-btn {
-  color: $app-header-font-color;
   text-align: left;
+  color: $app-header-font-color;
+  font-size: 0.8rem;
+
+  .user-avatar {
+    margin-right: 0.75rem;
+  }
 }
 
 @media (max-width: 960px) {
   .v-btn.user-account-btn {
     min-width: auto !important;
+    font-size: 0.8rem;
 
     .user-avatar {
       margin-right: 0;
@@ -255,8 +217,46 @@ $account-name-font-size: 0.8rem;
   }
 }
 
-.user-account-menu__info {
+// Account Menu
+.account-menu {
+  background: #ffffff;
+}
+
+.account-menu__info {
   font-size: 0.875rem;
+}
+
+.v-list {
+  border-radius: 0;
+
+  .v-list-item__title,
+  .v-list-item__subtitle {
+    line-height: normal !important;
+  }
+}
+
+.v-list .v-list-item__title.user-name,
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.v-list .v-list-item__subtitle.account-name,
+.account-name {
+  font-size: $account-name-font-size;
+}
+
+.user-avatar {
+  border-radius: 0.15rem;
+  background-color: $BCgovBlue3;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.log-in-btn {
+  color: $BCgovBlue5;
+  background-color: $BCgovGold4;
+  font-weight: 700;
 }
 
 .v-list--dense .v-subheader {
