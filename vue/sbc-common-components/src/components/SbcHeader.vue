@@ -19,7 +19,7 @@
         <v-menu bottom left fixed transition="slide-y-transition" content-class="user-account-menu" v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
             <v-btn text large v-on="on" class="user-account-btn pl-1 pr-1">
-              <v-avatar tile left size="36" color="#3f5c94" class="user-avatar">
+              <v-avatar tile left size="32" color="#3f5c94" class="user-avatar">
                 <span class="white--text title">{{ username.slice(0,1) }}</span>
               </v-avatar>
               <div class="user-info">
@@ -128,14 +128,14 @@ export default class SbcHeader extends Vue {
 <style lang="scss" scoped>
 @import "../assets/scss/theme.scss";
 
-$app-header-font-color: #ffffff;
+$app-header-font-color: #003366;
 $account-name-font-size: 0.8rem;
 
 .app-header {
   height: 70px;
   color: $app-header-font-color;
   border-bottom: 2px solid $BCgovGold5;
-  background-color: $BCgovBlue5;
+  background-color: #ffffff;
 
   .container {
     display: flex;
@@ -169,7 +169,8 @@ $account-name-font-size: 0.8rem;
 }
 
 .brand__title {
-  font-size: 1rem;
+  letter-spacing: -0.03rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
