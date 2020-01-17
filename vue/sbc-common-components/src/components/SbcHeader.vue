@@ -20,7 +20,7 @@
           <template v-slot:activator="{ on }">
             <v-btn text large v-on="on" class="user-account-btn pl-1 pr-1">
               <v-avatar tile left size="32" color="#3f5c94" class="user-avatar">
-                <span class="white--text title">{{ username.slice(0,1) }}</span>
+                <span class="white--text">{{ username.slice(0,1) }}</span>
               </v-avatar>
               <div class="user-info">
                 <div class="user-name">{{ username }}</div>
@@ -60,13 +60,13 @@
           <!-- Separate Account Settings List - Possible Permissions on this group? -->
           <v-list tile dense>
             <v-subheader>ACCOUNT SETTINGS</v-subheader>
-            <v-list-item to="/account-settings/account-info" target="_blank">
+            <v-list-item to="/account-settings/account-info">
               <v-list-item-icon left>
                 <v-icon>mdi-information-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Account Info</v-list-item-title>
             </v-list-item>
-            <v-list-item to="/account-settings/team-members" target="_blank">
+            <v-list-item to="/account-settings/team-members">
               <v-list-item-icon left>
                 <v-icon>mdi-account-group-outline</v-icon>
               </v-list-item-icon>
@@ -253,7 +253,7 @@ $account-name-font-size: 0.8rem;
 .user-avatar {
   border-radius: 0.15rem;
   background-color: $BCgovBlue3;
-  font-size: 1rem;
+  font-size: 1.1875rem;
   font-weight: 400;
 }
 
