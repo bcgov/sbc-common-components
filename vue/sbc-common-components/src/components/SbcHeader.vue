@@ -24,7 +24,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name">{{ username }}</div>
-                <div class="caption">Account Name</div>
+                <div class="caption">{{ accountName }}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -36,7 +36,7 @@
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="caption">Account Name</v-list-item-subtitle>
+                <v-list-item-subtitle class="caption">{{ accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
@@ -89,12 +89,16 @@ export default class SbcHeader extends Vue {
     return sessionStorage.getItem('USER_FULL_NAME') || '-'
   }
 
-  get authorized () : boolean {
+  get accountName (): string {
+    return sessionStorage.getItem('ACCOUNT_NAME') || '-'
+  }
+
+  get authorized (): boolean {
     let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
     return !!auth
   }
 
-  get showLogin () : boolean {
+  get showLogin (): boolean {
     let featureHide: any
     let config = sessionStorage.getItem('AUTH_API_CONFIG') || '{}'
     const authApiConfig = JSON.parse(config)
