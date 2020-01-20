@@ -16,11 +16,40 @@
       </a>
       <div class="app-header__actions">
         <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
+
+        <!-- Messages -->
+        <v-menu bottom left fixed transition="slide-y-transition" v-if="showLogin && authorized">
+          <template v-slot:activator="{ on }">
+            <v-btn text large class="messages-btn mr-2" v-on="on">
+              <v-badge dot overlap offset-x="8" value="1" color="error">
+                <v-icon class="white--text">mdi-bell-outline</v-icon>
+              </v-badge>
+              <v-icon small>mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list tile dense>
+            <!-- No Items -->
+            <!--
+            <v-list-item>
+              <v-list-item-title>No Messages</v-list-item-title>
+            </v-list-item>
+            -->
+
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title>5 Team Members?</v-list-item-title>
+                <v-list-item-subtitle>5 team members require approval</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <!-- Account -->
         <v-menu bottom left fixed transition="slide-y-transition" content-class="account-menu" v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
-            <v-btn text large v-on="on" class="user-account-btn pl-1 pr-1">
-              <v-avatar tile left size="32" color="#3f5c94" class="user-avatar">
-                <span class="white--text">{{ username.slice(0,1) }}</span>
+            <v-btn text large v-on="on" class="user-account-btn">
+              <v-avatar tile left size="32" class="user-avatar">
+                {{ username.slice(0,1) }}
               </v-avatar>
               <div class="user-info">
                 <div class="user-name">{{ username }}</div>
@@ -32,7 +61,7 @@
           <v-list tile dense>
             <v-list-item two-line>
               <v-list-item-avatar tile size="36" color="#3f5c94" class="user-avatar mr-4">
-                <span class="white--text title">{{ username.slice(0,1) }}</span>
+                {{ username.slice(0,1) }}
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name">{{ username }}</v-list-item-title>
@@ -152,6 +181,8 @@ $account-name-font-size: 0.8rem;
 }
 
 .app-header__actions {
+  display: flex;
+  align-items: center;
   margin-left: auto;
 
   .v-btn {
@@ -197,12 +228,25 @@ $account-name-font-size: 0.8rem;
 }
 
 .v-btn.user-account-btn {
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
   text-align: left;
   color: $app-header-font-color;
   font-size: 0.8rem;
 
   .user-avatar {
     margin-right: 0.75rem;
+  }
+}
+
+.v-btn.messages-btn {
+  min-width: auto !important;
+  padding-right: 0.5rem !important;
+  padding-left: 0.85rem !important;
+  color: $app-header-font-color;
+
+  .v-icon {
+    font-size: 1.75rem;
   }
 }
 
@@ -251,6 +295,7 @@ $account-name-font-size: 0.8rem;
 }
 
 .user-avatar {
+  color: $app-header-font-color;
   border-radius: 0.15rem;
   background-color: $BCgovBlue3;
   font-size: 1.1875rem;
