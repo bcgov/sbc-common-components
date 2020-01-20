@@ -24,20 +24,20 @@
               <v-icon class="white--text">
                 mdi-bell-outline
               </v-icon>
-              <v-badge dot overlap offset-x="10" offset-y="-1" color="error" v-if="pendingApprovalCount > 0"/>
+              <v-badge dot overlap offset-y="-6" color="error" v-if="!pendingApprovalCount > 0"/>
               <v-icon small>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list tile dense>
             <!-- No Items -->
             <v-list-item v-if="pendingApprovalCount === 0">
-              <v-list-item-title>No Actions Required</v-list-item-title>
+              <v-list-item-title>No actions required</v-list-item-title>
             </v-list-item>
 
             <v-list-item two-line v-if="pendingApprovalCount > 0" @click="goToTeamManagement()">
               <v-list-item-content>
-                <v-list-item-title>Pending Approvals</v-list-item-title>
-                <v-list-item-subtitle>{{ pendingApprovalCount }} team members require approval</v-list-item-subtitle>
+                <v-list-item-title>You have {{ pendingApprovalCount }} pending approvals</v-list-item-title>
+                <v-list-item-subtitle>{{ pendingApprovalCount }} <span>{{pendingApprovalCount == '1' ? 'team member' : 'team members'}}</span> require approval to access this account</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -271,7 +271,11 @@ $account-name-font-size: 0.8rem;
   color: $app-header-font-color;
 
   .v-icon {
-    font-size: 1.75rem;
+    font-size: 1.8rem;
+  }
+
+  .v-badge {
+    margin-right: 0.25rem;
   }
 }
 
