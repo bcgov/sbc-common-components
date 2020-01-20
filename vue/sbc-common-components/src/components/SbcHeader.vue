@@ -21,24 +21,23 @@
         <v-menu bottom left fixed transition="slide-y-transition" v-if="showLogin && authorized">
           <template v-slot:activator="{ on }">
             <v-btn text large class="messages-btn mr-2" v-on="on">
-              <v-badge dot overlap offset-x="8" value="1" color="error">
-                <v-icon class="white--text">mdi-bell-outline</v-icon>
-              </v-badge>
+              <v-icon class="white--text">
+                mdi-bell-outline
+              </v-icon>
+              <v-badge dot overlap offset-x="10" offset-y="-1" color="error" v-if="pendingApprovalCount > 0"/>
               <v-icon small>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list tile dense>
             <!-- No Items -->
-            <!--
-            <v-list-item>
-              <v-list-item-title>No Messages</v-list-item-title>
+            <v-list-item v-if="pendingApprovalCount === 0">
+              <v-list-item-title>No Actions Required</v-list-item-title>
             </v-list-item>
-            -->
 
-            <v-list-item two-line>
+            <v-list-item two-line v-if="pendingApprovalCount > 0" @click="goToTeamManagement()">
               <v-list-item-content>
-                <v-list-item-title>5 Team Members?</v-list-item-title>
-                <v-list-item-subtitle>5 team members require approval</v-list-item-subtitle>
+                <v-list-item-title>Pending Approvals</v-list-item-title>
+                <v-list-item-subtitle>{{ pendingApprovalCount }} team members require approval</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -52,8 +51,8 @@
                 {{ username.slice(0,1) }}
               </v-avatar>
               <div class="user-info">
-                <div class="user-name">{{ username }}</div>
-                <div class="caption">{{ accountName }}</div>
+                <div class="user-name" data-test="user-name">{{ username }}</div>
+                <div v-if="accountType !== 'IDIR'" class="caption" data-test="account-name">{{ accountName }}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -64,12 +63,12 @@
                 {{ username.slice(0,1) }}
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
-                <v-list-item-title class="user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="caption">{{ accountName }}</v-list-item-subtitle>
+                <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
+                <v-list-item-subtitle v-if="accountType !== 'IDIR'" class="caption" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
-            <v-list-item @click="goToUserProfile">
+            <v-list-item @click="goToUserProfile" v-if="accountType !== 'IDIR'">
               <v-list-item-icon left>
                 <v-icon>mdi-account-outline</v-icon>
               </v-list-item-icon>
@@ -86,8 +85,7 @@
 
           <v-divider></v-divider>
 
-          <!-- Separate Account Settings List - Possible Permissions on this group? -->
-          <v-list tile dense>
+          <v-list tile dense v-if="accountType !== 'IDIR'">
             <v-subheader>ACCOUNT SETTINGS</v-subheader>
             <v-list-item to="/account-settings/account-info">
               <v-list-item-icon left>
@@ -111,9 +109,11 @@
 <script lang="ts">
 import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
+import { integer } from 'vuelidate/lib/validators'
 
 @Component({})
 export default class SbcHeader extends Vue {
+  private pendingApprovalCount = 0;
   get username () : string {
     return sessionStorage.getItem('USER_FULL_NAME') || '-'
   }
@@ -125,6 +125,10 @@ export default class SbcHeader extends Vue {
   get authorized (): boolean {
     let auth = sessionStorage.getItem('KEYCLOAK_TOKEN')
     return !!auth
+  }
+
+  get accountType (): string {
+    return sessionStorage.getItem('USER_ACCOUNT_TYPE') || 'BCSC'
   }
 
   get showLogin (): boolean {
@@ -141,6 +145,23 @@ export default class SbcHeader extends Vue {
     return true
   }
 
+  private mounted () {
+    this.retrieveCountFromStorage()
+    window.addEventListener('storage', e => {
+      if (e.storageArea === sessionStorage && e.key === 'PENDING_APPROVAL_COUNT') {
+        this.retrieveCountFromStorage()
+      }
+    })
+  }
+
+  private retrieveCountFromStorage () {
+    try {
+      this.pendingApprovalCount = parseInt(sessionStorage.getItem('PENDING_APPROVAL_COUNT') || '0')
+    } catch (exception) {
+      this.pendingApprovalCount = 0
+    }
+  }
+
   logout () {
     window.location.assign('/cooperatives/auth/signout')
   }
@@ -155,6 +176,10 @@ export default class SbcHeader extends Vue {
 
   goToAccountSettings () {
     window.location.assign('/cooperatives/auth/accountsettings')
+  }
+
+  goToTeamManagement () {
+    window.location.assign('/cooperatives/auth/account-settings/team-members')
   }
 }
 </script>
