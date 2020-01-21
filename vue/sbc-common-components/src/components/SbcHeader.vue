@@ -259,11 +259,11 @@ $app-header-font-color: #ffffff;
 .v-btn.messages-btn {
   min-width: auto !important;
   padding-right: 0.5rem !important;
-  padding-left: 0.85rem !important;
+  padding-left: 0.4rem !important;
   color: $app-header-font-color;
 
   .v-icon {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
 
   .v-badge {
