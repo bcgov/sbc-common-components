@@ -113,13 +113,11 @@ import { integer } from 'vuelidate/lib/validators'
 
 @Component({})
 export default class SbcHeader extends Vue {
-  private pendingApprovalCount = 0;
+  @Prop({ default: '-' }) private accountName: string;
+  @Prop({ default: 0 }) private pendingApprovalCount: number;
+  // private pendingApprovalCount = 0;
   get username () : string {
     return sessionStorage.getItem('USER_FULL_NAME') || '-'
-  }
-
-  get accountName (): string {
-    return sessionStorage.getItem('ACCOUNT_NAME') || '-'
   }
 
   get authorized (): boolean {
@@ -143,21 +141,6 @@ export default class SbcHeader extends Vue {
       return false
     }
     return true
-  }
-
-  private mounted () {
-    this.retrieveCountFromStorage()
-    window.addEventListener('updateApprovalCount', e => {
-      this.retrieveCountFromStorage()
-    })
-  }
-
-  private retrieveCountFromStorage () {
-    try {
-      this.pendingApprovalCount = parseInt(sessionStorage.getItem('PENDING_APPROVAL_COUNT') || '0')
-    } catch (exception) {
-      this.pendingApprovalCount = 0
-    }
   }
 
   logout () {
