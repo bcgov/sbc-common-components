@@ -24,7 +24,7 @@
               <v-icon class="white--text">
                 mdi-bell-outline
               </v-icon>
-              <v-badge dot overlap offset-y="-6" color="error" v-if="!pendingApprovalCount > 0"/>
+              <v-badge dot overlap offset-y="-6" color="error" v-if="pendingApprovalCount > 0"/>
               <v-icon small>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
@@ -147,10 +147,8 @@ export default class SbcHeader extends Vue {
 
   private mounted () {
     this.retrieveCountFromStorage()
-    window.addEventListener('storage', e => {
-      if (e.storageArea === sessionStorage && e.key === 'PENDING_APPROVAL_COUNT') {
-        this.retrieveCountFromStorage()
-      }
+    window.addEventListener('updateApprovalCount', e => {
+      this.retrieveCountFromStorage()
     })
   }
 
