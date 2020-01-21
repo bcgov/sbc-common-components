@@ -52,7 +52,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div v-if="accountType !== 'IDIR'" class="caption" data-test="account-name">{{ accountName }}</div>
+                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -64,7 +64,7 @@
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle v-if="accountType !== 'IDIR'" class="caption" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
@@ -186,7 +186,6 @@ export default class SbcHeader extends Vue {
 @import "../assets/scss/theme.scss";
 
 $app-header-font-color: #ffffff;
-$account-name-font-size: 0.8rem;
 
 .app-header {
   height: 70px;
@@ -255,10 +254,22 @@ $account-name-font-size: 0.8rem;
   padding-left: 0.5rem !important;
   text-align: left;
   color: $app-header-font-color;
+  letter-spacing: 0.02rem;
   font-size: 0.8rem;
 
   .user-avatar {
     margin-right: 0.75rem;
+  }
+
+  .user-name {
+    line-height: 1.125rem;
+    font-size: 0.75rem;
+  }
+
+  .account-name {
+    margin-bottom: 0.01rem;
+    font-size: 0.7rem;
+    opacity: 0.75;
   }
 }
 
@@ -318,7 +329,7 @@ $account-name-font-size: 0.8rem;
 
 .v-list .v-list-item__subtitle.account-name,
 .account-name {
-  font-size: $account-name-font-size;
+  font-size: 0.75rem;
 }
 
 .user-avatar {
