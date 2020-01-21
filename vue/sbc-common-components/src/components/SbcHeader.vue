@@ -15,10 +15,10 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn color="#fcba19" class="log-in-btn" v-if="showLogin && !authorized" @click="login">Log in with BC Services Card</v-btn>
+        <v-btn color="#fcba19" class="log-in-btn" v-if="!authorized" @click="login">Log in with BC Services Card</v-btn>
 
         <!-- Messages -->
-        <v-menu bottom left fixed transition="slide-y-transition" v-if="showLogin && authorized">
+        <v-menu bottom left fixed transition="slide-y-transition" v-if="authorized">
           <template v-slot:activator="{ on }">
             <v-btn text large class="messages-btn mr-2" v-on="on">
               <v-icon class="white--text">
@@ -44,7 +44,7 @@
         </v-menu>
 
         <!-- Account -->
-        <v-menu bottom left fixed transition="slide-y-transition" content-class="account-menu" v-if="showLogin && authorized">
+        <v-menu bottom left fixed transition="slide-y-transition" content-class="account-menu" v-if="authorized">
           <template v-slot:activator="{ on }">
             <v-btn text large v-on="on" class="user-account-btn">
               <v-avatar tile left size="32" class="user-avatar">
@@ -126,20 +126,6 @@ export default class SbcHeader extends Vue {
 
   get accountType (): string {
     return sessionStorage.getItem('USER_ACCOUNT_TYPE') || 'BCSC'
-  }
-
-  get showLogin (): boolean {
-    let featureHide: any
-    let config = sessionStorage.getItem('AUTH_API_CONFIG') || '{}'
-    const authApiConfig = JSON.parse(config)
-
-    if (authApiConfig) {
-      featureHide = authApiConfig['VUE_APP_FEATURE_HIDE']
-    }
-    if (featureHide && featureHide.BCSC) {
-      return false
-    }
-    return true
   }
 
   logout () {
