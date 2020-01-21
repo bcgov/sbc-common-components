@@ -115,7 +115,6 @@ import { integer } from 'vuelidate/lib/validators'
 export default class SbcHeader extends Vue {
   @Prop({ default: '-' }) private accountName: string;
   @Prop({ default: 0 }) private pendingApprovalCount: number;
-  // private pendingApprovalCount = 0;
   get username () : string {
     return sessionStorage.getItem('USER_FULL_NAME') || '-'
   }
