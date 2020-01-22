@@ -11,7 +11,7 @@ class TokenServices {
     this.kc = kcInstance
   }
 
-  initUsingUrl (keyCloakConfigurl: string) {
+  async initUsingUrl (keyCloakConfigurl: string) {
     var self = this
 
     const kcOptions: KeycloakInitOptions = {
@@ -25,18 +25,18 @@ class TokenServices {
 
     return new Promise((resolve, reject) => {
       this.kc = Keycloak(keyCloakConfigurl)
-      this.kc.init(kcOptions
-      ).success(function (authenticated) {
-        console.info('[TokenServices] is User Authenticated:Syncing' + authenticated)
-        self.syncSessionStorage()
-        if (self.kc) {
-          resolve(self.kc.token)
-        } else {
-          reject(new Error('Could not Initialise KC'))
-        }
-      }).error(function (err) {
-        reject(new Error('Could not Initialise KC' + err))
-      })
+      this.kc.init(kcOptions)
+        .success(authenticated => {
+          console.info('[TokenServices] is User Authenticated?: Syncing ' + authenticated)
+          if (self.kc) {
+            resolve(self.kc.token)
+          } else {
+            reject(new Error('Could not Initialize KC'))
+          }
+        })
+        .error(error => {
+          reject(new Error('Could not Initialize KC' + error))
+        })
     })
   }
 
