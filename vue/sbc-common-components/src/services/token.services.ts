@@ -84,7 +84,7 @@ class TokenServices {
       throw new Error('Refresh Token Expired. No more token refreshes')
     }
     let expiresIn = -1
-    if (this.kc.tokenParsed && this.kc.tokenParsed['exp']) {
+    if (this.kc && this.kc.tokenParsed && this.kc.tokenParsed['exp'] && this.kc.timeSkew) {
       expiresIn = this.kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew
     }
     if (expiresIn < 0) {
@@ -94,7 +94,7 @@ class TokenServices {
     console.info('[TokenServices] Token Refresh Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
     this.timerId = setTimeout(() => {
       console.log('[TokenServices] Refreshing Token Attempt: %s ', ++this.counter)
-      this.kc.updateToken(-1)
+      this.kc!.updateToken(-1)
         .success(refreshed => {
           if (refreshed) {
             console.log('Token successfully refreshed')
