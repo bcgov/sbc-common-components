@@ -12,8 +12,6 @@ class TokenServices {
   }
 
   async initUsingUrl (keyCloakConfigurl: string) {
-    var self = this
-
     const kcOptions: KeycloakInitOptions = {
       onLoad: 'login-required',
       checkLoginIframe: false,
@@ -28,8 +26,13 @@ class TokenServices {
       this.kc.init(kcOptions)
         .success(authenticated => {
           console.info('[TokenServices] is User Authenticated?: Syncing ' + authenticated)
-          if (self.kc) {
-            resolve(self.kc.token)
+          const preventStorageSync = sessionStorage.getItem('PREVENT_STORAGE_SYNC') || false
+          if (this.kc) {
+            if (!preventStorageSync) {
+              this.syncSessionStorage()
+            }
+            sessionStorage.removeItem('PREVENT_STORAGE_SYNC')
+            resolve(this.kc.token)
           } else {
             reject(new Error('Could not Initialize KC'))
           }
@@ -40,7 +43,7 @@ class TokenServices {
     })
   }
 
-  scheduleRefreshTimer (refreshEarlyTime :number = 0) {
+  scheduleRefreshTimer (refreshEarlyTime = 0) {
     let refreshEarlyTimeinMilliseconds = Math.max(this.REFRESH_ATTEMPT_INTERVAL, refreshEarlyTime) * 1000
     this.scheduleRefreshToken(refreshEarlyTimeinMilliseconds)
   }
@@ -58,7 +61,6 @@ class TokenServices {
             }
           })
           .error(() => {
-            // this.cleanupSession()
             reject(new Error('Could not refresh Token'))
           })
       } else {
@@ -72,31 +74,30 @@ class TokenServices {
     clearTimeout(this.timerId)
   }
 
-  private scheduleRefreshToken (refreshEarlyTimeinMilliseconds:number) {
-    let self = this
+  private scheduleRefreshToken (refreshEarlyTimeinMilliseconds: number) {
     let refreshTokenExpiresIn = -1
     // check if refresh token is still valid . Or else clear all timers and throw errors
-    if (self.kc !== undefined && self.kc.timeSkew !== undefined && self.kc.refreshTokenParsed !== undefined) {
-      refreshTokenExpiresIn = self.kc.refreshTokenParsed['exp']! - Math.ceil(new Date().getTime() / 1000) + self.kc.timeSkew
+    if (this.kc && this.kc.timeSkew && this.kc.refreshTokenParsed) {
+      refreshTokenExpiresIn = this.kc.refreshTokenParsed['exp']! - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew
     }
     if (refreshTokenExpiresIn < 0) {
-      throw new Error('Refresh Token Expired..No more token refreshes')
+      throw new Error('Refresh Token Expired. No more token refreshes')
     }
     let expiresIn = -1
-    if (self.kc !== undefined && self.kc.tokenParsed !== undefined && self.kc.tokenParsed['exp'] !== undefined && self.kc.timeSkew !== undefined) {
-      expiresIn = self.kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + self.kc.timeSkew
+    if (this.kc.tokenParsed && this.kc.tokenParsed['exp']) {
+      expiresIn = this.kc.tokenParsed['exp'] - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew
     }
     if (expiresIn < 0) {
-      throw new Error('Refresh Token Expired..No more token refreshes')
+      throw new Error('Refresh Token Expired. No more token refreshes')
     }
     let refreshInMilliSeconds = (expiresIn * 1000) - refreshEarlyTimeinMilliseconds // in milliseconds
-    console.info('[TokenServices] Token Refreshal Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
+    console.info('[TokenServices] Token Refresh Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
     this.timerId = setTimeout(() => {
       console.log('[TokenServices] Refreshing Token Attempt: %s ', ++this.counter)
-      this.kc!.updateToken(-1)
+      this.kc.updateToken(-1)
         .success(refreshed => {
           if (refreshed) {
-            console.log('successfully refreshed')
+            console.log('Token successfully refreshed')
             this.syncSessionStorage()
             this.scheduleRefreshToken(refreshEarlyTimeinMilliseconds)
           }
@@ -109,13 +110,13 @@ class TokenServices {
 
   private syncSessionStorage () {
     if (this.kc) {
-      if (this.kc.token != null) {
+      if (this.kc.token) {
         sessionStorage.setItem('KEYCLOAK_TOKEN', this.kc.token)
       }
-      if (this.kc.refreshToken != null) {
+      if (this.kc.refreshToken) {
         sessionStorage.setItem('KEYCLOAK_REFRESH_TOKEN', this.kc.refreshToken)
       }
-      if (this.kc.idToken != null) {
+      if (this.kc.idToken) {
         sessionStorage.setItem('KEYCLOAK_ID_TOKEN', this.kc.idToken)
       }
     }
