@@ -64,7 +64,7 @@
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ account }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ _accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
@@ -131,12 +131,12 @@ export default class SbcHeader extends Vue {
   }
 
   private get _accountName (): string {
-    return ConfigHelper.getFromSession(SessionStorageKeys.AccountName) || '-'
+    return this.accountName || ConfigHelper.getFromSession(SessionStorageKeys.AccountName) || '-'
   }
 
   private get _pendingApprovalCount (): number {
     try {
-      return parseInt(ConfigHelper.getFromSession(SessionStorageKeys.PendingApprovalCount) || '0')
+      return this.pendingApprovalCount ? this.pendingApprovalCount : parseInt(ConfigHelper.getFromSession(SessionStorageKeys.PendingApprovalCount) || '0')
     } catch (exception) {
       return 0
     }
