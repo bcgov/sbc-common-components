@@ -134,7 +134,7 @@ export default class SbcHeader extends Vue {
     return ConfigHelper.getFromSession(SessionStorageKeys.AccountName) || '-'
   }
 
-  private get _pendingApprovalAccount (): number {
+  private get _pendingApprovalCount (): number {
     try {
       return parseInt(ConfigHelper.getFromSession(SessionStorageKeys.PendingApprovalCount) || '0')
     } catch (exception) {
