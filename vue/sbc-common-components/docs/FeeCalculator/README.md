@@ -25,7 +25,8 @@ The component accepts a list of Objects which includes filingTypeCode , entityTy
        {
         filingTypeCode: '', //mandatory
         entityType: '', //mandatory
-        filingDescription :''
+        filingDescription :'',
+        waiveFees: false
       }
     }
 
