@@ -117,13 +117,13 @@ import { SessionStorageKeys } from '../util/constants'
 
 @Component({})
 export default class SbcHeader extends Vue {
-  @Prop({ default: '-' }) private accountName: string;
-  @Prop({ default: 0 }) private pendingApprovalCount: number;
-  private ldClient: LDClient;
+  @Prop({ default: '-' }) private accountName!: string;
+  @Prop({ default: 0 }) private pendingApprovalCount!: number;
+  private ldClient!: LDClient;
 
   get showAccountSwitching (): boolean {
     try {
-      const flags = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags))
+      const flags = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags) || '{}')
       return flags && flags['account-switching']
     } catch (exception) {
       return false
