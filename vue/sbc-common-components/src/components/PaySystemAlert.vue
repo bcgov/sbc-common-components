@@ -51,6 +51,7 @@ export default class PaySystemAlert extends Vue {
   }
 
   private created () {
+    // Dynamically load the status module into the client application's store
     this.$store.registerModule('status', StatusModule)
     getModule(StatusModule, this.$store)
   }
