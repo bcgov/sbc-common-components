@@ -31,9 +31,9 @@ export default {
         return args
           .map(response => response.data as PayData)
           .map(data => {
-            const thisItem = filingData.find(fd => fd.filingTypeCode === data.filingTypeCode)
             // default the title if client hasn't passed this on
-            const filingType = (thisItem && thisItem.filingDescription) ? thisItem.filingDescription : data.filingType
+            const filingDescription = filingData.find(fd => fd.filingTypeCode === data.filingTypeCode)?.filingDescription
+            const filingType = filingDescription || data.filingType
             // total fees is a sum of filingFees,serviceFees,processingFees , gst , pst
             const fee = data.filingFees + data.serviceFees + data.processingFees + data.tax.gst + data.tax.pst
             return { fee, filingType } as Fee
@@ -42,14 +42,17 @@ export default {
       .catch(error => {
         switch (error.response.status) {
           case 400:
+            // eslint-disable-next-line no-console
             console.log('%c FeeModule-ERROR: Probably fee code mismatch %s', 'color: red; font-size: 13px',
               JSON.stringify(filingData))
             break
           case 500:
+            // eslint-disable-next-line no-console
             console.log('%c FeeModule-ERROR: Probably invalid Token %s', 'color: red; font-size: 13px',
               JSON.stringify(filingData))
             break
           default:
+            // eslint-disable-next-line no-console
             console.log('%c FeeModule-ERROR: Probably unknown Error %s', 'color: red; font-size: 13px',
               JSON.stringify(filingData))
         }
