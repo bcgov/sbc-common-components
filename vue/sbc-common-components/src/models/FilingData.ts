@@ -1,13 +1,13 @@
 export interface FilingData {
   // The filing description to display. If undefined, whatever comes from service call will be shown.
-  filingDescription?: string;
+  filingDescription?: string
 
   // The filing type code, eg, OTADD, OTANN, etc
-  filingTypeCode: string;
+  filingTypeCode: string
 
   // The entity type, eg, BC, CP.
-  entityType: string;
+  entityType: string
 
   // A flag to specify whether to waive the fees.
-  waiveFees: boolean;
+  waiveFees: boolean
 }
