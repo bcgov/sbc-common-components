@@ -125,7 +125,7 @@ class TokenServices {
 
   decodeToken () {
     try {
-      let token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)
+      const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)
       if (token) {
         const base64Url = token.split('.')[1]
         const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {

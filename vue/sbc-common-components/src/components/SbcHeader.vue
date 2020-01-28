@@ -175,11 +175,11 @@ export default class SbcHeader extends Vue {
     })
   }
 
-  private logout () {
+  logout () {
     window.location.assign('/cooperatives/auth/signout')
   }
 
-  private login () {
+  login () {
     window.location.assign('/cooperatives/auth/signin/bcsc')
   }
 
