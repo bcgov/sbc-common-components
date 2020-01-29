@@ -1,5 +1,5 @@
 import Axios, { AxiosResponse } from 'axios'
-import { ServiceStatus } from '../models/ServiceStatus'
+import { ServiceStatus } from '../models'
 import ConfigHelper from '../util/config-helper'
 
 const statusUrl = ConfigHelper.getStatusAPIUrl()
