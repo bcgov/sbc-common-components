@@ -60,7 +60,7 @@ export default class PaySystemAlert extends Vue {
   }
 
   private get isPaySystemDown () {
-    return !this.getBoolean(this.paySystemStatus?.currentStatus)
+    return !this.getBoolean(this.paySystemStatus && this.paySystemStatus.currentStatus)
   }
 
   private get alertMessage () {

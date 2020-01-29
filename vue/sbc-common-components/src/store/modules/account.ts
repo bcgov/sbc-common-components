@@ -14,7 +14,7 @@ export default class AccountModule extends VuexModule {
   pendingApprovalCount = 0
 
   get accountName () {
-    return this.currentAccount?.name
+    return this.currentAccount && this.currentAccount.name
   }
 
   @Mutation
@@ -40,25 +40,27 @@ export default class AccountModule extends VuexModule {
   @Action({ rawError: true, commit: 'setAccounts' })
   public async syncAccounts (): Promise<Account[]> {
     const response = await AccountService.getAccounts()
-    if (response?.data?.orgs?.length > 0) {
+    if (response && response.data && response.data.orgs && response.data.orgs.length > 0) {
       this.context.commit('setCurrentAccount', response.data.orgs[0])
       const membership: Member = await this.context.dispatch('fetchCurrentAccountMembership')
-      if (membership?.membershipStatus === 'ACTIVE' && membership?.membershipType !== 'MEMBER') {
+      if (membership && membership.membershipStatus === 'ACTIVE' && membership.membershipType !== 'MEMBER') {
         await this.context.dispatch('fetchPendingApprovalCount')
       }
     }
-    return response?.data?.orgs || []
+    return (response && response.data && response.data.orgs) || []
   }
 
   @Action({ rawError: true, commit: 'setPendingApprovalCount' })
   public async fetchPendingApprovalCount (): Promise<number> {
-    const response = await AccountService.getPendingMembers(this.context.rootState.account.currentAccount?.id)
-    return response?.data?.members?.length || 0
+    const response = await AccountService.getPendingMembers(this.context.rootState.account &&
+      this.context.rootState.account.currentAccount.id)
+    return (response && response.data && response.data.members && response.data.members.length) || 0
   }
 
   @Action({ rawError: true, commit: 'setCurrentAccountMembership' })
   public async fetchCurrentAccountMembership (): Promise<Member> {
-    const response = await AccountService.getMembership(this.context.rootState.account.currentAccount?.id)
-    return response?.data
+    const response = await AccountService.getMembership(this.context.rootState.account.currentAccount &&
+      this.context.rootState.account.currentAccount.id)
+    return response && response.data
   }
 }

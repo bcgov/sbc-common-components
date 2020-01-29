@@ -20,6 +20,6 @@ export default class StatusModule extends VuexModule {
   @Action({ rawError: true, commit: 'setPaySystemStatus' })
   public async fetchPaySystemStatus (): Promise<ServiceStatus | null> {
     const response = await StatusService.getServiceStatus('PAYBC')
-    return response?.data || null
+    return (response && response.data) || null
   }
 }

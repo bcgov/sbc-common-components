@@ -150,7 +150,7 @@ export default class SbcHeader extends Vue {
   }
 
   private get accountName (): string {
-    return this.currentAccount?.name
+    return this.currentAccount && this.currentAccount.name
   }
 
   private async mounted () {
