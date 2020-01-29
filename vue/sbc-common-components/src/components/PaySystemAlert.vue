@@ -14,10 +14,14 @@ import StatusModule from '../store/modules/status'
 import { getModule } from 'vuex-module-decorators'
 import { ServiceStatus } from '../models/ServiceStatus'
 import { mapState, mapActions } from 'vuex'
+import store from '../store'
 
 @Component({
   components: {
     SbcSystemBanner
+  },
+  beforeCreate () {
+    this.$store = store
   },
   computed: {
     ...mapState('status', ['paySystemStatus'])
@@ -28,9 +32,9 @@ import { mapState, mapActions } from 'vuex'
 })
 
 export default class PaySystemAlert extends Vue {
+  private statusStoreModule = getModule<StatusModule>(StatusModule, store)
   private readonly paySystemStatus!: ServiceStatus
   private readonly fetchPaySystemStatus!: () => Promise<ServiceStatus>
-
   private getBoolean (value: boolean | string | number): boolean {
     var resultVal = value
     if (typeof value === 'string') {
@@ -50,18 +54,13 @@ export default class PaySystemAlert extends Vue {
     }
   }
 
-  private created () {
-    // Dynamically load the status module into the client application's store
-    this.$store.registerModule('status', StatusModule)
-    getModule(StatusModule, this.$store)
-  }
-
   private async mounted () {
+    this.statusStoreModule = getModule(StatusModule, this.$store)
     await this.fetchPaySystemStatus()
   }
 
   private get isPaySystemDown () {
-    return !this.getBoolean(this.paySystemStatus.currentStatus)
+    return !this.getBoolean(this.paySystemStatus?.currentStatus)
   }
 
   private get alertMessage () {

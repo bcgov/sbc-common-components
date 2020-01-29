@@ -1,5 +1,4 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { AxiosResponse } from 'axios'
 import { ServiceStatus } from '../../models/ServiceStatus'
 import StatusService from '../../services/status.services'
 
@@ -18,9 +17,9 @@ export default class StatusModule extends VuexModule {
     this.paySystemStatus = serviceStatus
   }
 
-  @Action({ commit: 'setPaySystemStatus' })
-  public async fetchPaySystemStatus (): Promise<ServiceStatus> {
-    const response: AxiosResponse<ServiceStatus> = await StatusService.getServiceStatus('PAYBC')
-    return response ? response.data : this.paySystemStatus
+  @Action({ rawError: true, commit: 'setPaySystemStatus' })
+  public async fetchPaySystemStatus (): Promise<ServiceStatus | null> {
+    const response = await StatusService.getServiceStatus('PAYBC')
+    return response?.data || null
   }
 }
