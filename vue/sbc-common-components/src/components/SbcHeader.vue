@@ -24,20 +24,20 @@
               <v-icon class="white--text">
                 mdi-bell-outline
               </v-icon>
-              <v-badge dot overlap offset-y="-6" color="error" v-if="_pendingApprovalCount > 0"/>
+              <v-badge dot overlap offset-y="-6" color="error" v-if="pendingApprovalCount > 0"/>
               <v-icon small>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-list tile dense>
             <!-- No Items -->
-            <v-list-item v-if="_pendingApprovalCount === 0">
+            <v-list-item v-if="pendingApprovalCount === 0">
               <v-list-item-title>No actions required</v-list-item-title>
             </v-list-item>
 
             <v-list-item two-line v-if="pendingApprovalCount > 0" @click="goToTeamMembers()">
               <v-list-item-content>
-                <v-list-item-title>You have {{ _pendingApprovalCount }} pending approvals</v-list-item-title>
-                <v-list-item-subtitle>{{ _pendingApprovalCount }} <span>{{_pendingApprovalCount == '1' ? 'team member' : 'team members'}}</span> require approval to access this account</v-list-item-subtitle>
+                <v-list-item-title>You have {{ pendingApprovalCount }} pending approvals</v-list-item-title>
+                <v-list-item-subtitle>{{ pendingApprovalCount }} <span>{{pendingApprovalCount == '1' ? 'team member' : 'team members'}}</span> require approval to access this account</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -52,7 +52,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ _accountName }}</div>
+                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -64,7 +64,7 @@
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ _accountName }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
