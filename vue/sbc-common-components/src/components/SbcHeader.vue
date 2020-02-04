@@ -52,7 +52,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
+                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }} -- {{accountId}}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -101,6 +101,19 @@
             </v-list-item>
             <v-list-item v-if="showAccountSwitching">HIDE ME</v-list-item>
           </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length >0 " >
+            <v-subheader>SWITCH ACCOUNT</v-subheader>
+            <v-list-item @click="goToAccountInfo(settings)" v-for="(settings,id) in switchableAccounts"  :key="id">
+              <v-list-item-icon left>
+                <v-icon>mdi-account-switch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{settings.label}}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+
         </v-menu>
       </div>
     </div>
@@ -108,37 +121,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import Vue from 'vue'
-import { integer } from 'vuelidate/lib/validators'
+import { Component, Mixins } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
-import { mapState, mapActions } from 'vuex'
-import { Account } from '../models/account'
+import { mapActions, mapState } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
 import AccountModule from '../store/modules/account'
 import store from '../store'
-import { Member } from '../models/member'
+import { UserSettings } from '@/models/userSettings'
+import NavigationMixin from '../mixins/navigation-mixin'
 
 @Component({
   beforeCreate () {
     this.$store = store
   },
   computed: {
-    ...mapState('account', ['accounts', 'currentAccount', 'pendingApprovalCount'])
+    ...mapState('account', ['userSettings', 'currentAccount', 'pendingApprovalCount'])
   },
   methods: {
-    ...mapActions('account', ['syncAccounts'])
+    ...mapActions('account', ['syncUserSettings', 'syncCurrentAccount'])
   }
 })
-export default class SbcHeader extends Vue {
+export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
   private accountStoreModule = getModule<AccountModule>(AccountModule, store)
-  private readonly accounts!: Account[]
-  private readonly currentAccount!: Account
+  private readonly userSettings!: UserSettings[]
+  private readonly currentAccount!: UserSettings
   private readonly pendingApprovalCount!: number;
-  private readonly syncAccounts!: () => Promise<Account[]>
+  private readonly syncUserSettings!: (currentAccountId:string) => Promise<UserSettings[]>
+  private readonly syncCurrentAccount!: (settings:UserSettings) => Promise<UserSettings>
 
   get showAccountSwitching (): boolean {
     try {
@@ -149,8 +161,16 @@ export default class SbcHeader extends Vue {
     }
   }
 
+  get switchableAccounts () {
+    return this.userSettings && this.userSettings.filter(userSettings => (userSettings.type === 'ACCOUNT' && userSettings.label !== this.currentAccount.label))
+  }
+
   private get accountName (): string {
-    return this.currentAccount && this.currentAccount.name
+    return this.currentAccount && this.currentAccount.label
+  }
+
+  private get accountId (): string {
+    return this.currentAccount && this.currentAccount.id
   }
 
   private async mounted () {
@@ -161,12 +181,32 @@ export default class SbcHeader extends Vue {
       ConfigHelper.addToSession(SessionStorageKeys.LaunchDarklyFlags, JSON.stringify(this.ldClient.allFlags()))
     })
     if (ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)) {
-      await this.syncAccounts()
+      const lastUsedAccount = this.getLastAccountId()
+      await this.syncUserSettings(lastUsedAccount)
+      this.persistAndEmitAccountId(this.currentAccount.id)
     }
+  }
+  persistAndEmitAccountId (accountId : String) {
+    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, accountId)
+    this.$root.$emit('accountSyncReady', accountId)
   }
 
   private get username () : string {
     return ConfigHelper.getFromSession(SessionStorageKeys.UserFullName) || '-'
+  }
+
+  /**
+   * check if the url has a account Id -> if so ,thats the CurrentAccountId
+   * else check if there is a session storage value -> if so , thats CurrentAccountId
+   * else no current account
+   */
+  private getLastAccountId () : string {
+    // TODO make this better.
+    let pathList = window.location.pathname.split('/')
+    let indexOfAccount = pathList.indexOf('account')
+    let nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
+    let orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
+    return orgIdFromUrl || ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccountId) || ''
   }
 
   private get authorized (): boolean {
@@ -190,12 +230,15 @@ export default class SbcHeader extends Vue {
     window.location.assign('/cooperatives/auth/userprofile')
   }
 
-  private goToAccountInfo () {
-    window.location.assign('/cooperatives/auth/account-settings/account-info')
+  private goToAccountInfo (settings:UserSettings) {
+    this.syncCurrentAccount(settings)
+    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, settings.id)
+    this.navigate(settings.urlorigin, settings.urlpath)
   }
 
   private goToTeamMembers () {
-    window.location.assign('/cooperatives/auth/account-settings/team-members')
+    // TODO may be get this url from account settings.Add account id here
+    window.location.assign(`/cooperatives/auth/account/${this.currentAccount.id}/settings/team-members`)
   }
 }
 </script>
