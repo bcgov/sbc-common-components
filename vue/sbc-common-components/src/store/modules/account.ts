@@ -59,11 +59,14 @@ export default class AccountModule extends VuexModule {
     return (response && response.data && response.data.members && response.data.members.length) || 0
   }
 
-  @Action({ rawError: true, commit: 'set' })
+  @Action({ rawError: true, commit: 'setCurrentAccountMembership' })
   public async fetchCurrentAccountMembership (): Promise<Member> {
-    const response = await AccountService.getMembership(this.context.rootState.account.currentAccount &&
-      this.context.rootState.account.currentAccount.id)
-    return response && response.data
+    if (this.context.rootState.account.currentAccount) {
+      const response = await AccountService.getMembership(this.context.rootState.account.currentAccount &&
+        this.context.rootState.account.currentAccount.id)
+      return response && response.data
+    }
+    return null
   }
 
   @Action({ rawError: true, commit: 'setCurrentAccount' })

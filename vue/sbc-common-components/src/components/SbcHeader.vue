@@ -87,7 +87,7 @@
 
           <v-list tile dense v-if="accountType !== 'IDIR'">
             <v-subheader>ACCOUNT SETTINGS</v-subheader>
-            <v-list-item @click="goToAccountInfo()">
+            <v-list-item @click="goToAccountInfo(currentAccount)">
               <v-list-item-icon left>
                 <v-icon>mdi-information-outline</v-icon>
               </v-list-item-icon>
@@ -104,13 +104,13 @@
 
           <v-divider></v-divider>
 
-          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length >0 " >
+          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length > 0">
             <v-subheader>SWITCH ACCOUNT</v-subheader>
-            <v-list-item @click="goToAccountInfo(settings)" v-for="(settings,id) in switchableAccounts"  :key="id">
+            <v-list-item @click="goToAccountInfo(settings)" v-for="(settings, id) in switchableAccounts" :key="id">
               <v-list-item-icon left>
                 <v-icon>mdi-account-switch</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{settings.label}}</v-list-item-title>
+              <v-list-item-title>{{ settings.label }}</v-list-item-title>
             </v-list-item>
           </v-list>
 
@@ -129,7 +129,7 @@ import { mapActions, mapState } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
 import AccountModule from '../store/modules/account'
 import store from '../store'
-import { UserSettings } from '@/models/userSettings'
+import { UserSettings } from '../models/userSettings'
 import NavigationMixin from '../mixins/navigation-mixin'
 
 @Component({
@@ -183,15 +183,18 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     if (ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)) {
       const lastUsedAccount = this.getLastAccountId()
       await this.syncUserSettings(lastUsedAccount)
-      this.persistAndEmitAccountId(this.currentAccount.id)
+      this.persistAndEmitAccountId()
     }
   }
-  persistAndEmitAccountId (accountId : String) {
-    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, accountId)
-    this.$root.$emit('accountSyncReady', accountId)
+
+  private persistAndEmitAccountId () {
+    if (this.currentAccount) {
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, this.currentAccount.id)
+    }
+    this.$root.$emit('accountSyncReady')
   }
 
-  private get username () : string {
+  private get username (): string {
     return ConfigHelper.getFromSession(SessionStorageKeys.UserFullName) || '-'
   }
 
@@ -230,7 +233,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     window.location.assign('/cooperatives/auth/userprofile')
   }
 
-  private goToAccountInfo (settings:UserSettings) {
+  private goToAccountInfo (settings: UserSettings) {
     this.syncCurrentAccount(settings)
     ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, settings.id)
     this.navigate(settings.urlorigin, settings.urlpath)
