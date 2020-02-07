@@ -162,7 +162,10 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   get switchableAccounts () {
-    return this.userSettings && this.userSettings.filter(userSettings => (userSettings.type === 'ACCOUNT' && userSettings.label !== this.currentAccount.label))
+    return this.userSettings &&
+            this.userSettings
+              .filter(userSettings => (userSettings.type === 'ACCOUNT' &&
+                                       userSettings.label !== (this.currentAccount && this.currentAccount.label)))
   }
 
   private get accountName (): string {
@@ -180,6 +183,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     this.ldClient.on('ready', () => {
       ConfigHelper.addToSession(SessionStorageKeys.LaunchDarklyFlags, JSON.stringify(this.ldClient.allFlags()))
     })
+
     if (ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)) {
       const lastUsedAccount = this.getLastAccountId()
       await this.syncUserSettings(lastUsedAccount)
@@ -189,7 +193,8 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   private persistAndEmitAccountId () {
     if (this.currentAccount) {
-      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, this.currentAccount.id)
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount))
+      this.$root.$emit('accountSyncReady', this.currentAccount)
     }
     this.$root.$emit('accountSyncReady')
   }
@@ -199,17 +204,17 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   /**
-   * check if the url has a account Id -> if so ,thats the CurrentAccountId
-   * else check if there is a session storage value -> if so , thats CurrentAccountId
-   * else no current account
+   * Check if the url has an account Id as a URL param -> if so ,that's the CurrentAccount.id
+   * else check if there is a session storage value -> if so , thats CurrentAccount.id
+   * else no current account is present
    */
   private getLastAccountId () : string {
-    // TODO make this better.
     let pathList = window.location.pathname.split('/')
     let indexOfAccount = pathList.indexOf('account')
     let nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
     let orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
-    return orgIdFromUrl || ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccountId) || ''
+    const storageAccountId = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
+    return orgIdFromUrl || String(storageAccountId || '') || ''
   }
 
   private get authorized (): boolean {
@@ -233,14 +238,13 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     window.location.assign('/cooperatives/auth/userprofile')
   }
 
-  private goToAccountInfo (settings: UserSettings) {
-    this.syncCurrentAccount(settings)
-    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccountId, settings.id)
-    this.navigate(settings.urlorigin, settings.urlpath)
+  private async goToAccountInfo (settings: UserSettings) {
+    await this.syncCurrentAccount(settings)
+    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
+    window.location.assign(`/cooperatives/auth/account/${this.currentAccount.id}/settings/account-info`)
   }
 
   private goToTeamMembers () {
-    // TODO may be get this url from account settings.Add account id here
     window.location.assign(`/cooperatives/auth/account/${this.currentAccount.id}/settings/team-members`)
   }
 }

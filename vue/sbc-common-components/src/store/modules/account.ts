@@ -38,7 +38,7 @@ export default class AccountModule extends VuexModule {
   }
 
   @Action({ rawError: true, commit: 'setUserSettings' })
-  public async syncUserSettings (currentAccountId:string): Promise<UserSettings[]> {
+  public async syncUserSettings (currentAccountId: string): Promise<UserSettings[]> {
     const response = await AccountService.getUserSettings()
     if (response && response.data) {
       const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
