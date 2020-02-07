@@ -131,6 +131,7 @@ import AccountModule from '../store/modules/account'
 import store from '../store'
 import { UserSettings } from '../models/userSettings'
 import NavigationMixin from '../mixins/navigation-mixin'
+import Vue from 'vue'
 
 @Component({
   beforeCreate () {
@@ -143,14 +144,14 @@ import NavigationMixin from '../mixins/navigation-mixin'
     ...mapActions('account', ['syncUserSettings', 'syncCurrentAccount'])
   }
 })
-export default class SbcHeader extends Mixins(NavigationMixin) {
+export default class SbcHeader extends Vue {
   private ldClient!: LDClient
   private accountStoreModule = getModule<AccountModule>(AccountModule, store)
   private readonly userSettings!: UserSettings[]
   private readonly currentAccount!: UserSettings
   private readonly pendingApprovalCount!: number;
-  private readonly syncUserSettings!: (currentAccountId:string) => Promise<UserSettings[]>
-  private readonly syncCurrentAccount!: (settings:UserSettings) => Promise<UserSettings>
+  private readonly syncUserSettings!: (currentAccountId: string) => Promise<UserSettings[]>
+  private readonly syncCurrentAccount!: (settings: UserSettings) => Promise<UserSettings>
 
   get showAccountSwitching (): boolean {
     try {
