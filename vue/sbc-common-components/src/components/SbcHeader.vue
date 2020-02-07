@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <div class="container">
-      <a href="/cooperatives/" class="brand">
+      <a href="/cooperatives/auth" class="brand">
         <picture>
           <source media="(min-width: 601px)"
             srcset="../assets/img/gov_bc_logo_horiz.png">
@@ -52,7 +52,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }} -- {{accountId}}</div>
+                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
               </div>
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
             </v-btn>
@@ -170,7 +170,7 @@ export default class SbcHeader extends Vue {
   }
 
   private get accountName (): string {
-    return this.currentAccount && this.currentAccount.label
+    return (this.currentAccount && this.currentAccount.label) || ' '
   }
 
   private get accountId (): string {
