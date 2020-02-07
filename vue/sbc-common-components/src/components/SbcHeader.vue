@@ -130,7 +130,6 @@ import { getModule } from 'vuex-module-decorators'
 import AccountModule from '../store/modules/account'
 import store from '../store'
 import { UserSettings } from '../models/userSettings'
-import NavigationMixin from '../mixins/navigation-mixin'
 import Vue from 'vue'
 
 @Component({
