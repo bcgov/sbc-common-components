@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <div class="container">
-      <a href="/cooperatives/auth" class="brand">
+      <a @click="goToHome()" class="brand">
         <picture>
           <source media="(min-width: 601px)"
             srcset="../assets/img/gov_bc_logo_horiz.png">
@@ -131,6 +131,7 @@ import AccountModule from '../store/modules/account'
 import store from '../store'
 import { UserSettings } from '../models/userSettings'
 import Vue from 'vue'
+import NavigationMixin from '../mixins/navigation-mixin'
 
 @Component({
   beforeCreate () {
@@ -143,7 +144,7 @@ import Vue from 'vue'
     ...mapActions('account', ['syncUserSettings', 'syncCurrentAccount'])
   }
 })
-export default class SbcHeader extends Vue {
+export default class SbcHeader extends NavigationMixin {
   private ldClient!: LDClient
   private accountStoreModule = getModule<AccountModule>(AccountModule, store)
   private readonly userSettings!: UserSettings[]
@@ -227,25 +228,29 @@ export default class SbcHeader extends Vue {
   }
 
   logout () {
-    window.location.assign('/cooperatives/auth/signout')
+    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signout')
   }
 
   login () {
-    window.location.assign('/cooperatives/auth/signin/bcsc')
+    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signin/bcsc')
+  }
+
+  private goToHome () {
+    this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
   }
 
   private goToUserProfile () {
-    window.location.assign('/cooperatives/auth/userprofile')
+    this.navigateTo(ConfigHelper.getAuthContextPath(), '/userprofile')
   }
 
   private async goToAccountInfo (settings: UserSettings) {
     await this.syncCurrentAccount(settings)
     ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
-    window.location.assign(`/cooperatives/auth/account/${this.currentAccount.id}/settings/account-info`)
+    this.navigateTo(ConfigHelper.getAuthContextPath(), settings.urlpath)
   }
 
   private goToTeamMembers () {
-    window.location.assign(`/cooperatives/auth/account/${this.currentAccount.id}/settings/team-members`)
+    this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/team-members`)
   }
 }
 </script>
