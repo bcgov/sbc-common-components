@@ -99,14 +99,13 @@
               </v-list-item-icon>
               <v-list-item-title>Team Members</v-list-item-title>
             </v-list-item>
-            <v-list-item v-if="showAccountSwitching">HIDE ME</v-list-item>
           </v-list>
 
           <v-divider></v-divider>
 
           <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length > 0">
             <v-subheader>SWITCH ACCOUNT</v-subheader>
-            <v-list-item @click="goToAccountInfo(settings)" v-for="(settings, id) in switchableAccounts" :key="id">
+            <v-list-item @click="switchAccount(settings)" v-for="(settings, id) in switchableAccounts" :key="id">
               <v-list-item-icon left>
                 <v-icon>mdi-account-switch</v-icon>
               </v-list-item-icon>
@@ -251,6 +250,13 @@ export default class SbcHeader extends NavigationMixin {
 
   private goToTeamMembers () {
     this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/team-members`)
+  }
+
+  private async switchAccount (settings: UserSettings) {
+    await this.syncCurrentAccount(settings)
+    // ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
+    this.persistAndEmitAccountId()
+    this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
   }
 }
 </script>
