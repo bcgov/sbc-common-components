@@ -195,8 +195,9 @@ export default class SbcHeader extends NavigationMixin {
     if (this.currentAccount) {
       ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount))
       this.$root.$emit('accountSyncReady', this.currentAccount)
+    } else {
+      this.$root.$emit('accountSyncReady')
     }
-    this.$root.$emit('accountSyncReady')
   }
 
   private get username (): string {
@@ -254,9 +255,15 @@ export default class SbcHeader extends NavigationMixin {
 
   private async switchAccount (settings: UserSettings) {
     await this.syncCurrentAccount(settings)
-    // ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
     this.persistAndEmitAccountId()
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
+
+    // Navigate to the same current route if in auth-web
+    if (!window.location.pathname.startsWith(ConfigHelper.getAuthContextPath())) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
+    } else if (this.$route.params['orgId']) {
+      // If route includes a URL param for account, we need to refresh
+      this.$router.push({ name: this.$route.name, params: { orgId: this.currentAccount.id } })
+    }
   }
 }
 </script>
