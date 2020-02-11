@@ -10,7 +10,8 @@
               :width="width"
               :color="color"
               :z-index="zIndex"
-      >{{message}}</v-progress-circular>
+      ></v-progress-circular>
+      <span class="ml-3">{{message}}</span>
     </v-btn>
   </v-overlay>
 </template>
