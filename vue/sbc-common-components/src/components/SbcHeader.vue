@@ -254,6 +254,7 @@ export default class SbcHeader extends NavigationMixin {
   }
 
   private async switchAccount (settings: UserSettings) {
+    this.$root.$emit('accountSyncStarted')
     await this.syncCurrentAccount(settings)
     this.persistAndEmitAccountId()
 
