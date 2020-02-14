@@ -230,9 +230,10 @@ export default class SbcHeader extends NavigationMixin {
 
   logout () {
     if (this.redirectOnLogout) {
+      const url = encodeURIComponent(this.redirectOnLogout)
       this.navigateTo(
         ConfigHelper.getAuthContextPath(),
-        `/signout/${CommonUtils.isUrl(this.redirectOnLogout) ? encodeURIComponent(this.redirectOnLogout) : this.redirectOnLogout}`
+        `/signout/${url}`
       )
     } else {
       this.navigateTo(ConfigHelper.getAuthContextPath(), '/signout')
@@ -241,9 +242,11 @@ export default class SbcHeader extends NavigationMixin {
 
   login () {
     if (this.redirectOnLoginSuccess) {
+      let url = encodeURIComponent(this.redirectOnLoginSuccess)
+      url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
       this.navigateTo(
         ConfigHelper.getAuthContextPath(),
-        `/signin/bcsc/${CommonUtils.isUrl(this.redirectOnLoginSuccess) ? encodeURIComponent(this.redirectOnLoginSuccess) : this.redirectOnLoginSuccess}`
+        `/signin/bcsc/${url}`
       )
     } else {
       this.navigateTo(ConfigHelper.getAuthContextPath(), '/signin/bcsc')
