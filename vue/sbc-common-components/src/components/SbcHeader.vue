@@ -123,7 +123,6 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
 import ConfigHelper from '../util/config-helper'
-import CommonUtils from '../util/common-util'
 import { SessionStorageKeys } from '../util/constants'
 import { mapActions, mapState } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
