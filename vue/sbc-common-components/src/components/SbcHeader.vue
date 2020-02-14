@@ -120,9 +120,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
 import ConfigHelper from '../util/config-helper'
+import CommonUtils from '../util/common-util'
 import { SessionStorageKeys } from '../util/constants'
 import { mapActions, mapState } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
@@ -151,6 +152,9 @@ export default class SbcHeader extends NavigationMixin {
   private readonly pendingApprovalCount!: number;
   private readonly syncUserSettings!: (currentAccountId: string) => Promise<UserSettings[]>
   private readonly syncCurrentAccount!: (settings: UserSettings) => Promise<UserSettings>
+  @Prop({ default: '' }) redirectOnLoginSuccess!: string;
+  @Prop({ default: '' }) redirectOnLoginFail!: string;
+  @Prop({ default: '' }) redirectOnLogout!: string;
 
   get showAccountSwitching (): boolean {
     try {
@@ -225,11 +229,25 @@ export default class SbcHeader extends NavigationMixin {
   }
 
   logout () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signout')
+    if (this.redirectOnLogout) {
+      this.navigateTo(
+        ConfigHelper.getAuthContextPath(),
+        `/signout/${CommonUtils.isUrl(this.redirectOnLogout) ? encodeURIComponent(this.redirectOnLogout) : this.redirectOnLogout}`
+      )
+    } else {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), '/signout')
+    }
   }
 
   login () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signin/bcsc')
+    if (this.redirectOnLoginSuccess) {
+      this.navigateTo(
+        ConfigHelper.getAuthContextPath(),
+        `/signin/bcsc/${CommonUtils.isUrl(this.redirectOnLoginSuccess) ? encodeURIComponent(this.redirectOnLoginSuccess) : this.redirectOnLoginSuccess}`
+      )
+    } else {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), '/signin/bcsc')
+    }
   }
 
   private goToHome () {
