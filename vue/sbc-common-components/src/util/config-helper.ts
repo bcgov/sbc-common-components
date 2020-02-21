@@ -1,6 +1,7 @@
 import { SessionStorageKeys } from './constants'
 
 export default class ConfigHelper {
+  static keycloakConfigUrl: string = ''
   static addToSession (key: string, value: any): void {
     sessionStorage.setItem(key, value)
   }
@@ -29,5 +30,13 @@ export default class ConfigHelper {
 
   static getAuthContextPath (): string {
     return process.env.VUE_APP_PATH
+  }
+
+  static setKeycloakConfigUrl (keycloakConfigUrl: string) {
+    this.keycloakConfigUrl = keycloakConfigUrl
+  }
+
+  static getKeycloakConfigUrl (): string {
+    return this.keycloakConfigUrl
   }
 }
