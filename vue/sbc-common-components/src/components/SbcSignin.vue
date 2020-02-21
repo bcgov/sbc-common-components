@@ -9,12 +9,8 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Mixins, Prop } from 'vue-property-decorator'
-import { KeycloakError, KeycloakPromise } from 'keycloak-js'
-import { mapActions, mapMutations, mapState } from 'vuex'
 import TokenService from '../services/token.services'
 import KeyCloakService from '../services/keycloak.services'
-import { UserInfo } from '../models/userInfo'
-import { getModule } from 'vuex-module-decorators'
 
 Vue.extend({
   name: 'sbc-signin'
@@ -22,7 +18,6 @@ Vue.extend({
 
 @Component({
   methods: {
-
   }
 })
 
