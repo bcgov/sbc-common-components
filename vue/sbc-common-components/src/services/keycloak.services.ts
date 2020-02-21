@@ -19,17 +19,12 @@ class KeyCloakService {
   private static instance: KeyCloakService
 
   public static getInstance (): KeyCloakService {
-    if (this.instance) {
-      return this.instance
-    }
-    this.instance = new KeyCloakService()
-    return this.instance
+    return (this.instance) ? this.instance : new KeyCloakService()
   }
 
   init (idpHint: string) {
     this.cleanupSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)
-    console.log(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags))
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
     this.kc = Keycloak(keycloakConfig)
     const kcLogin = this.kc.login
