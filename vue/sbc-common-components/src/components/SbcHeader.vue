@@ -103,7 +103,7 @@
 
           <v-divider></v-divider>
 
-          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length > 0">
+          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length > 1">
             <v-subheader>SWITCH ACCOUNT</v-subheader>
             <v-list-item @click="switchAccount(settings)" v-for="(settings, id) in switchableAccounts" :key="id">
               <v-list-item-icon left>
@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
@@ -151,6 +151,10 @@ export default class SbcHeader extends NavigationMixin {
   private readonly pendingApprovalCount!: number;
   private readonly syncUserSettings!: (currentAccountId: string) => Promise<UserSettings[]>
   private readonly syncCurrentAccount!: (settings: UserSettings) => Promise<UserSettings>
+  @Prop({ default: '' }) redirectOnLoginSuccess!: string;
+  @Prop({ default: '' }) redirectOnLoginFail!: string;
+  @Prop({ default: '' }) redirectOnLogout!: string;
+  @Prop({ default: false }) inAuth!: boolean;
 
   get showAccountSwitching (): boolean {
     try {
@@ -225,29 +229,56 @@ export default class SbcHeader extends NavigationMixin {
   }
 
   logout () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signout')
+    if (this.redirectOnLogout) {
+      const url = encodeURIComponent(this.redirectOnLogout)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}signout/${url}`)
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}signout`)
+    }
   }
 
   login () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/signin/bcsc')
+    if (this.redirectOnLoginSuccess) {
+      let url = encodeURIComponent(this.redirectOnLoginSuccess)
+      url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}signin/bcsc/${url}`)
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}signin/bcsc`)
+    }
   }
 
   private goToHome () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
+    if (this.inAuth) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
+    }
   }
 
   private goToUserProfile () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), '/userprofile')
+    if (this.inAuth) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), '/userprofile')
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}userprofile`)
+    }
   }
 
   private async goToAccountInfo (settings: UserSettings) {
     await this.syncCurrentAccount(settings)
     ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
-    this.navigateTo(ConfigHelper.getAuthContextPath(), settings.urlpath)
+    if (this.inAuth) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/account-info`)
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/account-info`)
+    }
   }
 
   private goToTeamMembers () {
-    this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/team-members`)
+    if (this.inAuth) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/team-members`)
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/team-members`)
+    }
   }
 
   private async switchAccount (settings: UserSettings) {
@@ -256,11 +287,13 @@ export default class SbcHeader extends NavigationMixin {
     this.persistAndEmitAccountId()
 
     // Navigate to the same current route if in auth-web
-    if (!window.location.pathname.startsWith(ConfigHelper.getAuthContextPath())) {
-      this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
-    } else if (this.$route.params['orgId']) {
+    if (this.$route.params['orgId']) {
       // If route includes a URL param for account, we need to refresh
       this.$router.push({ name: this.$route.name, params: { orgId: this.currentAccount.id } })
+    }
+
+    if (!this.inAuth) {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
     }
   }
 }

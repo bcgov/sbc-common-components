@@ -29,7 +29,8 @@ export default class ConfigHelper {
   }
 
   static getAuthContextPath (): string {
-    return process.env.VUE_APP_PATH
+    const apiConfig = JSON.parse(sessionStorage.getItem(SessionStorageKeys.ApiConfigKey) || '{}')
+    return apiConfig ? apiConfig['AUTH_URL'] : ''
   }
 
   static setKeycloakConfigUrl (keycloakConfigUrl: string) {
