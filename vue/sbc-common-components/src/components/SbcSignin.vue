@@ -7,10 +7,6 @@ import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
 import TokenService from '../services/token.services'
 
-Vue.extend({
-  name: 'sbc-signin'
-})
-
 @Component({
   methods: {
   },
@@ -23,7 +19,6 @@ export default class SbcSignin extends Vue {
   private isLoading = true
 
   @Prop({ default: 'bcsc' }) idpHint: string
-  @Prop() redirectUrl: string
 
   private async mounted () {
     // Initialize keycloak session
@@ -34,11 +29,11 @@ export default class SbcSignin extends Vue {
           // Set values to session storage
           KeyCloakService.initSession()
           // emitting event for the header to get updated with :key increment from the parent component
-          this.$root.$emit('keycloakSessionReady')
+          this.$emit('keycloak-session-ready')
           // Make a POST to the users endpoint if it's bcsc (only need for BCSC)
           if (this.idpHint === 'bcsc') {
             // emitting the event so that the user profile can be updated from the parent component
-            this.$root.$emit('syncUserProfileReady')
+            this.$emit('sync-user-profile-ready')
             // eslint-disable-next-line no-console
             console.info('[SignIn.vue]Logged in User.Starting refreshTimer')
             var self = this

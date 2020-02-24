@@ -6,10 +6,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
 
-Vue.extend({
-  name: 'sbc-signout'
-})
-
 @Component({
   methods: {
   },
