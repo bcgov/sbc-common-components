@@ -19,6 +19,7 @@ export default class SbcSignin extends Vue {
   private isLoading = true
 
   @Prop({ default: 'bcsc' }) idpHint: string
+  @Prop({ default: '' }) redirectUrlLoginFail: string
 
   private async mounted () {
     // Initialize keycloak session
@@ -44,6 +45,11 @@ export default class SbcSignin extends Vue {
           resolve()
         }
       })
+        .error(() => {
+          if (this.redirectUrlLoginFail) {
+            window.location.assign(decodeURIComponent(this.redirectUrlLoginFail))
+          }
+        })
     })
   }
   async initKeycloak (idpHint:string) {

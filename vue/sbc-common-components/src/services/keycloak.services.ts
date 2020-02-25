@@ -46,11 +46,7 @@ class KeyCloakService {
     this.parsedToken = this.kc.tokenParsed as UserToken
 
     // Set flag in session storage so that common components will know account type
-    if (this.getUserInfo().userName.endsWith('@idir')) {
-      ConfigHelper.addToSession(SessionStorageKeys.UserAccountType, 'IDIR')
-    } else {
-      ConfigHelper.addToSession(SessionStorageKeys.UserAccountType, 'BCSC')
-    }
+    ConfigHelper.addToSession(SessionStorageKeys.UserAccountType, this.getUserInfo().loginSource)
   }
 
   getUserInfo () : UserInfo {
@@ -64,7 +60,8 @@ class KeyCloakService {
       roles: this.parsedToken.realm_access.roles,
       keycloakGuid: this.parsedToken.sub,
       userName: this.parsedToken.username,
-      fullName: `${this.parsedToken.firstname} ${this.parsedToken.lastname}`
+      fullName: `${this.parsedToken.firstname} ${this.parsedToken.lastname}`,
+      loginSource: this.parsedToken.loginSource
     }
   }
 

@@ -60,7 +60,6 @@ describe('SbcHeader.vue', () => {
     cmp.find('.user-account-btn').trigger('click')
     expect(cmp.find('.v-list-item__title')).toBeTruthy()
     const logoutBtn = cmp.findAll('.v-list-item__title').at(2)
-    console.log(logoutBtn)
     expect(logoutBtn.text().startsWith('Log')).toBeTruthy()
     logoutBtn.trigger('click')
     expect(cmp.vm.logout).toBeCalled()
