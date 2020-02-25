@@ -1,6 +1,6 @@
 import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions, KeycloakTokenParsed } from 'keycloak-js'
 import { SessionStorageKeys } from '../util/constants'
-import { UserInfo } from '../models/userInfo'
+import { KCUserProfile } from '../models/KCUserProfile'
 import ConfigHelper from '../util/config-helper'
 
 interface UserToken extends KeycloakTokenParsed {
@@ -49,7 +49,7 @@ class KeyCloakService {
     ConfigHelper.addToSession(SessionStorageKeys.UserAccountType, this.getUserInfo().loginSource)
   }
 
-  getUserInfo () : UserInfo {
+  getUserInfo () : KCUserProfile {
     if (!this.parsedToken) {
       this.parsedToken = this.decodeToken()
     }
@@ -73,9 +73,9 @@ class KeyCloakService {
         onLoad: 'login-required',
         checkLoginIframe: false,
         timeSkew: 0,
-        token: sessionStorage.getItem('KEYCLOAK_TOKEN'),
-        refreshToken: sessionStorage.getItem('KEYCLOAK_REFRESH_TOKEN'),
-        idToken: sessionStorage.getItem('KEYCLOAK_ID_TOKEN')
+        token: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken),
+        refreshToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken),
+        idToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken)
       }
       // Here we clear session storage, and add a flag in to prevent the app from
       // putting tokens back in from returning async calls  (see #2341)

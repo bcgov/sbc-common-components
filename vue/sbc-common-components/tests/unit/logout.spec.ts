@@ -13,17 +13,11 @@ let mock = new MockAdapter(axios)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 
-// jest.mock('axios', () => ({
-//   post: jest.fn(() =>
-//     Promise.resolve({ data: { access_token: 'abcd', refresh_token: 'efgh', registries_trace_id: '12345abcde' } })
-//   )
-// }))
-
 describe('SbcHeader.vue', () => {
   let cmp
 
   beforeEach(() => {
-    sessionStorage.setItem('KEYCLOAK_TOKEN', 'abcd')
+    sessionStorage.__STORE__[SessionStorageKeys.KeyCloakToken] = 'abcd'
     sessionStorage.__STORE__[SessionStorageKeys.UserFullName] = 'Jon Snow'
 
     const localVue = createLocalVue()

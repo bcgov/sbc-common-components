@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import KeycloakService from '../../src/services/keycloak.services'
 import ConfigHelper from '../../src/util/config-helper'
+import { SessionStorageKeys } from '@/util/constants'
 
 jest.mock('axios', () => ({
   get: jest.fn(),
@@ -36,8 +37,8 @@ describe('initialize keycloak', () => {
   })
 
   it('should clear session storage ', () => {
-    expect(sessionStorage.getItem('KEYCLOAK_TOKEN')).toEqual(null)
-    expect(sessionStorage.getItem('KEYCLOAK_REFRESH_TOKEN')).toEqual(null)
+    expect(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken)).toEqual(null)
+    expect(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken)).toEqual(null)
   })
 })
 

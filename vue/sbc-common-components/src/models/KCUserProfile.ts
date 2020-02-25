@@ -1,4 +1,4 @@
-export interface UserInfo {
+export interface KCUserProfile {
     lastName: string;
     firstName: string;
     keycloakGuid: string;
