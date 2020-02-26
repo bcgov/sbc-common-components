@@ -231,9 +231,9 @@ export default class SbcHeader extends NavigationMixin {
   logout () {
     if (this.redirectOnLogout) {
       const url = encodeURIComponent(this.redirectOnLogout)
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}signout/${url}`)
+      window.location.assign(`${this.getContextPath()}signout/${url}`)
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}signout`)
+      window.location.assign(`${this.getContextPath()}signout`)
     }
   }
 
@@ -241,25 +241,25 @@ export default class SbcHeader extends NavigationMixin {
     if (this.redirectOnLoginSuccess) {
       let url = encodeURIComponent(this.redirectOnLoginSuccess)
       url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}signin/bcsc/${url}`)
+      window.location.assign(`${this.getContextPath()}signin/bcsc/${url}`)
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}signin/bcsc`)
+      window.location.assign(`${this.getContextPath()}signin/bcsc`)
     }
   }
 
   private goToHome () {
     if (this.inAuth) {
-      this.navigateTo(ConfigHelper.getAuthContextPath(), '/home')
+      this.navigateTo(this.getContextPath(), 'home')
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
+      window.location.assign(`${this.getContextPath()}home`)
     }
   }
 
   private goToUserProfile () {
     if (this.inAuth) {
-      this.navigateTo(ConfigHelper.getAuthContextPath(), '/userprofile')
+      this.navigateTo(this.getContextPath(), 'userprofile')
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}userprofile`)
+      window.location.assign(`${this.getContextPath()}userprofile`)
     }
   }
 
@@ -267,17 +267,17 @@ export default class SbcHeader extends NavigationMixin {
     await this.syncCurrentAccount(settings)
     ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
     if (this.inAuth) {
-      this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/account-info`)
+      this.navigateTo(this.getContextPath(), `account/${this.currentAccount.id}/settings/account-info`)
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/account-info`)
+      window.location.assign(`${this.getContextPath()}account/${this.currentAccount.id}/settings/account-info`)
     }
   }
 
   private goToTeamMembers () {
     if (this.inAuth) {
-      this.navigateTo(ConfigHelper.getAuthContextPath(), `/account/${this.currentAccount.id}/settings/team-members`)
+      this.navigateTo(this.getContextPath(), `account/${this.currentAccount.id}/settings/team-members`)
     } else {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/team-members`)
+      window.location.assign(`${this.getContextPath()}account/${this.currentAccount.id}/settings/team-members`)
     }
   }
 
@@ -293,8 +293,14 @@ export default class SbcHeader extends NavigationMixin {
     }
 
     if (!this.inAuth) {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
+      window.location.assign(`${this.getContextPath()}home`)
     }
+  }
+
+  getContextPath (): string {
+    let baseUrl = (this.$router && this.$router['history'] && this.$router['history'].base) || ''
+    baseUrl += (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/') ? '/' : ''
+    return baseUrl
   }
 }
 </script>
