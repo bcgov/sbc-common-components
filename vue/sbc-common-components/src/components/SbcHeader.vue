@@ -249,17 +249,17 @@ export default class SbcHeader extends NavigationMixin {
 
   private goToHome () {
     if (this.inAuth) {
-      this.navigateTo(this.getContextPath(), 'home')
+      this.navigateTo(ConfigHelper.getAuthContextPath(), 'home')
     } else {
-      window.location.assign(`${this.getContextPath()}home`)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
     }
   }
 
   private goToUserProfile () {
     if (this.inAuth) {
-      this.navigateTo(this.getContextPath(), 'userprofile')
+      this.navigateTo(ConfigHelper.getAuthContextPath(), 'userprofile')
     } else {
-      window.location.assign(`${this.getContextPath()}userprofile`)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}userprofile`)
     }
   }
 
@@ -267,17 +267,17 @@ export default class SbcHeader extends NavigationMixin {
     await this.syncCurrentAccount(settings)
     ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(settings))
     if (this.inAuth) {
-      this.navigateTo(this.getContextPath(), `account/${this.currentAccount.id}/settings/account-info`)
+      this.navigateTo(ConfigHelper.getAuthContextPath(), `account/${this.currentAccount.id}/settings/account-info`)
     } else {
-      window.location.assign(`${this.getContextPath()}account/${this.currentAccount.id}/settings/account-info`)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/account-info`)
     }
   }
 
   private goToTeamMembers () {
     if (this.inAuth) {
-      this.navigateTo(this.getContextPath(), `account/${this.currentAccount.id}/settings/team-members`)
+      this.navigateTo(ConfigHelper.getAuthContextPath(), `account/${this.currentAccount.id}/settings/team-members`)
     } else {
-      window.location.assign(`${this.getContextPath()}account/${this.currentAccount.id}/settings/team-members`)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/team-members`)
     }
   }
 
@@ -293,7 +293,7 @@ export default class SbcHeader extends NavigationMixin {
     }
 
     if (!this.inAuth) {
-      window.location.assign(`${this.getContextPath()}home`)
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}home`)
     }
   }
 
