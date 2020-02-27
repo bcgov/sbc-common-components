@@ -3,9 +3,9 @@
     <div class="nav-small" v-if="$vuetify.breakpoint.smAndDown">
       <v-toolbar dark flat height="70" color="navMenuBg">
         <v-toolbar-title>
-          <router-link :to="configuration.titleItem.url">{{configuration.titleItem.name}}</router-link>
+          <router-link data-test="title-link" :to="configuration.titleItem.url">{{configuration.titleItem.name}}</router-link>
         </v-toolbar-title>
-        <v-btn large outlined dark text class="menu-btn pr-3" @click.stop="mobileNavDrawer = !mobileNavDrawer">
+        <v-btn data-test="menu-btn" large outlined dark text class="menu-btn pr-3" @click.stop="mobileNavDrawer = !mobileNavDrawer">
           <v-icon class="ml-n2 mr-2">mdi-menu</v-icon>
           <span>MENU</span>
         </v-btn>
@@ -17,7 +17,7 @@
           <v-divider color="#26527d"></v-divider>
           <v-list dark color="navMenuBg" class="pt-0 pb-0">
             <v-list-item-group>
-              <v-list-item v-for="menuItem in configuration.menuItems" :key="menuItem.name" :to="menuItem.url">
+              <v-list-item :data-test="menuItem.name" v-for="menuItem in configuration.menuItems" :key="menuItem.name" :to="menuItem.url">
                 <v-list-item-icon v-if="menuItem.icon">
                   <v-icon color="#003366">{{ menuItem.icon }}</v-icon>
                 </v-list-item-icon>
@@ -32,11 +32,12 @@
     <div class="nav-large" v-if="$vuetify.breakpoint.mdAndUp">
       <v-toolbar flat height="70" color="navMenuBg">
         <v-toolbar-title>
-          <router-link :to="configuration.titleItem.url">{{configuration.titleItem.name}}</router-link>
+          <router-link data-test="title-link" :to="configuration.titleItem.url">{{configuration.titleItem.name}}</router-link>
         </v-toolbar-title>
         <v-toolbar-items>
           <v-btn dark text
             v-for="menuItem in configuration.menuItems"
+            :data-test="menuItem.name"
             :key="menuItem.name"
             :to="menuItem.url">
             <v-icon small v-if="menuItem.icon">{{ menuItem.icon }}</v-icon>
