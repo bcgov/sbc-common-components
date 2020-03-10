@@ -85,10 +85,7 @@ export default class NavigationBar extends Vue {
   }
 
   private isMenuItemEnabled (menuItem: NavigationMenuItem): boolean {
-    if ((menuItem.meta.requiresAuth && !this.currentUser) || (menuItem.meta.requiresAccount && !this.currentAccount)) {
-      return false
-    }
-    return true
+    return !((menuItem.meta.requiresAuth && !this.currentUser) || (menuItem.meta.requiresAccount && !this.currentAccount))
   }
 }
 </script>
