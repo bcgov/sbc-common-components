@@ -15,7 +15,11 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-        <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login(redirectOnLoginSuccess, redirectOnLoginFail)">Log in with BC Services Card</v-btn>
+          <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login()">
+            <slot name="login-button-text">
+              Log in with BC Services Card
+            </slot>
+          </v-btn>
 
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
@@ -75,7 +79,7 @@
               <v-list-item-title>Edit Profile</v-list-item-title>
             </v-list-item>
             <!-- END -->
-            <v-list-item @click="logout(redirectOnLogout)">
+            <v-list-item @click="logout()">
               <v-list-item-icon left>
                 <v-icon>mdi-logout-variant</v-icon>
               </v-list-item-icon>
@@ -186,6 +190,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLoginFail!: string;
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
+  @Prop({ default: '' }) idpHint!: string;
 
   get showAccountSwitching (): boolean {
     try {
@@ -265,22 +270,22 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   }
 
-  logout (redirectOnLogout?: string) {
-    if (redirectOnLogout) {
-      const url = encodeURIComponent(redirectOnLogout)
+  logout () {
+    if (this.redirectOnLogout) {
+      const url = encodeURIComponent(this.redirectOnLogout)
       window.location.assign(`${this.getContextPath()}signout/${url}`)
     } else {
       window.location.assign(`${this.getContextPath()}signout`)
     }
   }
 
-  login (redirectOnLoginSuccess?: string, redirectOnLoginFail?: string) {
-    if (redirectOnLoginSuccess) {
-      let url = encodeURIComponent(redirectOnLoginSuccess)
-      url += redirectOnLoginFail ? `/${encodeURIComponent(redirectOnLoginFail)}` : ''
-      window.location.assign(`${this.getContextPath()}signin/bcsc/${url}`)
+  login () {
+    if (this.redirectOnLoginSuccess) {
+      let url = encodeURIComponent(this.redirectOnLoginSuccess)
+      url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
+      window.location.assign(`${this.getContextPath()}signin/${this.idpHint}/${url}`)
     } else {
-      window.location.assign(`${this.getContextPath()}signin/bcsc`)
+      window.location.assign(`${this.getContextPath()}signin/${this.idpHint}`)
     }
   }
 
