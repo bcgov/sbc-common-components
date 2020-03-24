@@ -25,7 +25,10 @@ export default class ConfigHelper {
 
   static getAuthAPIUrl (): string {
     const apiConfig = JSON.parse(sessionStorage.getItem(SessionStorageKeys.ApiConfigKey) || '{}')
-    return apiConfig ? apiConfig['VUE_APP_AUTH_ROOT_API'] : ''
+    if (apiConfig) {
+      return apiConfig['VUE_APP_AUTH_ROOT_API'] || apiConfig['AUTH_API_URL'] || ''
+    }
+    return ''
   }
 
   static getAuthContextPath (): string {
