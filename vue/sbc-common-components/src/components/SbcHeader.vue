@@ -21,6 +21,9 @@
             </slot>
           </v-btn>
 
+        <!-- Product Selector -->
+        <sbc-product-selector v-if="isAuthenticated && showProductSelector" />
+
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
           <template v-slot:activator="{ on }">
@@ -137,6 +140,7 @@ import AccountModule from '../store/modules/account'
 import AuthModule from '../store/modules/auth'
 import { KCUserProfile } from '../models/KCUserProfile'
 import keycloakService from '../services/keycloak.services'
+import SbcProductSelector from './SbcProductSelector.vue'
 
 declare module 'vuex' {
   interface Store<S> {
@@ -170,6 +174,9 @@ declare module 'vuex' {
       ...mapActions('account', ['loadUserInfo', 'syncAccount', 'syncCurrentAccount']),
       ...mapActions('auth', ['syncWithSessionStorage'])
     }
+  },
+  components: {
+    SbcProductSelector
   }
 })
 export default class SbcHeader extends Mixins(NavigationMixin) {
@@ -191,6 +198,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: '' }) idpHint!: string;
+  @Prop({ default: false }) showProductSelector!: boolean;
 
   get showAccountSwitching (): boolean {
     try {
