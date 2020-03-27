@@ -15,11 +15,12 @@
         <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
       </a>
       <div class="app-header__actions">
-          <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login()">
-            <slot name="login-button-text">
-              Log in with BC Services Card
-            </slot>
-          </v-btn>
+
+        <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login()">
+          <slot name="login-button-text">
+            Log in with BC Services Card
+          </slot>
+        </v-btn>
 
         <!-- Product Selector -->
         <sbc-product-selector v-if="isAuthenticated && showProductSelector" />
@@ -27,12 +28,12 @@
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
           <template v-slot:activator="{ on }">
-            <v-btn text large class="messages-btn mr-2" v-on="on">
+            <v-btn text large class="notifications-btn mr-2 ml-2 pl-1 pr-1" v-on="on">
               <v-icon class="white--text">
                 mdi-bell-outline
               </v-icon>
               <v-badge dot overlap offset-y="-6" color="error" v-if="pendingApprovalCount > 0"/>
-              <v-icon small>mdi-chevron-down</v-icon>
+              <!-- <v-icon small>mdi-chevron-down</v-icon> -->
             </v-btn>
           </template>
           <v-list tile dense>
@@ -61,7 +62,9 @@
                 <div class="user-name" data-test="user-name">{{ username }}</div>
                 <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
               </div>
+              <!--
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
+              -->
             </v-btn>
           </template>
           <v-list tile dense>
@@ -198,7 +201,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: '' }) idpHint!: string;
-  @Prop({ default: false }) showProductSelector!: boolean;
+  @Prop({ default: true }) showProductSelector!: boolean;
 
   get showAccountSwitching (): boolean {
     try {
@@ -356,7 +359,7 @@ $app-header-font-color: #ffffff;
   color: inherit;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .brand__image {
     margin-right: 0.75rem;
     margin-left: -0.15rem;
@@ -396,10 +399,8 @@ $app-header-font-color: #ffffff;
   }
 }
 
-.v-btn.messages-btn {
-  min-width: auto !important;
-  padding-right: 0.5rem !important;
-  padding-left: 0.4rem !important;
+.v-btn.notifications-btn {
+  min-width: 3rem !important;
   color: $app-header-font-color;
 
   .v-icon {

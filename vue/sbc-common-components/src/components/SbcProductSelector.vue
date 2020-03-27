@@ -1,13 +1,12 @@
 <template>
-  <v-row justify="center">
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="scale-transition">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="scroll-y-transition">
       <template v-slot:activator="{ on }">
-        <v-btn text large v-on="on" class="product-selector-btn" data-test="product-selector-btn">
+        <v-btn text dark large class="product-selector-btn pr-4 pl-3" v-on="on" data-test="product-selector-btn">
           <span>Products & Services</span>
-          <v-icon small class="ml-2">mdi-chevron-down</v-icon>
+          <v-icon small class="mr-n1 ml-2">mdi-chevron-down</v-icon>
         </v-btn>
       </template>
-      <v-card>
+      <v-card tile flat dark color="#003366">
         <header class="app-header">
           <div class="container">
             <a class="brand">
@@ -24,65 +23,62 @@
               <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
             </a>
             <div class="app-header__actions">
-              <v-btn text large @click="dialog = false" class="close-btn" data-test="close-btn">
+              <v-btn text large class="close-btn pr-4 pl-3" @click="dialog = false" data-test="close-btn">
                 <span>Close</span>
               </v-btn>
             </div>
           </div>
         </header>
-        <div>
-          <article>
-            <div class="light-bg">
-              <v-container class="section-container">
-                <section class="text-left">
-                  <div class="view-header">
-                    <v-btn large icon color="secondary" class="back-btn mr-3" @click="dialog = false">
-                      <v-icon>mdi-arrow-left</v-icon>
-                    </v-btn>
-                    <div>
-                      <h2>BC Registry Products and Services</h2>
-                      <p>Easy access to a wide range of information products and services, including access <br>to British Columbia Provincial and Municipal Government information.</p>
-                    </div>
-                  </div>
-                  <v-row class="product-blocks" align="center" justify="center">
-                    <v-col cols="12" md="4" v-for="(product, index) in products" :key="index">
-                      <v-hover v-slot:default="{ hover }">
-                        <v-card :elevation="hover ? 6 : 2" :class="{ 'on-hover': hover }" class="product-block text-center" @click="goToProductPage(product)">
-                          <v-icon x-large color="BCgovBlue" class="product-block__icon--large mb-4">mdi-image-outline</v-icon>
-                          <h3>{{product.name}}</h3>
-                          <p class="mb-0">{{product.description}}</p>
-                        </v-card>
-                      </v-hover>
-                    </v-col>
-                  </v-row>
-                </section>
-              </v-container>
+        <v-container class="view-container">
+          <div class="view-header">
+            <v-btn large icon class="back-btn mr-3" @click="dialog = false">
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
+            <div>
+              <h1>BC Registries Products <span class="lb">and Services</span></h1>
+              <p class="view-header__desc">Easy access to a wide range of information products and services, including access <span class="ls">to British Columbia Provincial and Municipal Government information.</span></p>
             </div>
-            <div class="grey lighten-4">
-              <v-container class="section-container">
-                <section class="text-center">
-                  <h2>Our Partners</h2>
-                  <p>Leverage the security and functionality of your BC Registries account <br>when accessing any of our trusted partner applications.</p>
-                  <v-row class="partner-blocks" align="center" justify="center">
-                    <v-col cols="12" sm="4" md="2" v-for="(partner, index) in partners" :key="index">
-                      <v-hover v-slot:default="{ hover }">
-                        <v-card :elevation="hover ? 6 : 2" :class="{ 'on-hover': hover }" class="partner-block text-center" @click="goToPartnerPage(partner)">
-                          <v-icon large color="grey lighten4" class="product-block__icon mb-4">mdi-image-outline</v-icon>
-                          <div>
-                            <strong>{{partner.name}}</strong>
-                          </div>
-                        </v-card>
-                      </v-hover>
-                    </v-col>
-                  </v-row>
-                </section>
-              </v-container>
-            </div>
-          </article>
-        </div>
+          </div>
+
+          <!-- Products -->
+          <section class="section-container">
+            <v-row class="product-blocks justify-center">
+              <v-col cols="12" sm="6" md="4" v-for="(product, index) in products" :key="index">
+                <v-hover v-slot:default="{ hover }">
+                  <v-card dark outlined color="#26527d" class="product-block text-center" :class="{ 'on-hover': hover }" @click="goToProductPage(product)">
+                    <v-card-title class="flex-column justify-center">
+                      <v-icon class="product-block__icon mt-n2 mb-4">mdi-image-outline</v-icon>
+                      <h2>{{product.name}}</h2>
+                    </v-card-title>
+                    <v-card-text class="mb-0">
+                      {{product.description}}
+                    </v-card-text>
+                  </v-card>
+                </v-hover>
+              </v-col>
+            </v-row>
+          </section>
+
+          <!-- Partners -->
+          <section class="text-center partner-section">
+            <h2 class="section-title">Our Partners</h2>
+            <p class="section-desc mb-8">Leverage the security and functionality of your BC Registries account <span class="ls">when accessing any of our trusted partner applications.</span></p>
+            <v-row class="product-blocks" justify="center">
+              <v-col cols="12" sm="3" lg="2" v-for="(partner, index) in partners" :key="index">
+                <v-hover v-slot:default="{ hover }">
+                  <v-card dark outlined color="#26527d" class="product-block text-center" :class="{ 'on-hover': hover }" @click="goToPartnerPage(partner)">
+                    <v-card-title class="flex-column justify-center">
+                      <v-icon class="product-block__icon mt-n2 mb-2">mdi-image-outline</v-icon>
+                      <h3 class="mb-0">{{partner.name}}</h3>
+                    </v-card-title>
+                  </v-card>
+                </v-hover>
+              </v-col>
+            </v-row>
+          </section>
+        </v-container>
       </v-card>
     </v-dialog>
-  </v-row>
 </template>
 
 <script lang="ts">
@@ -111,7 +107,7 @@ export default class SbcProductSelector extends Vue {
   products: ProductItem[] = [
     {
       name: 'Business Registry',
-      description: 'Easy access to a wide range of information products and services, including access to British Columbia Provincial and Municipal Government information.',
+      description: 'Information for companies, firms & societies. Most filings for BC & Extraprovincial companies can be done in the Business Registry',
       url: ConfigHelper.getAuthContextPath()
     },
     {
@@ -151,12 +147,42 @@ export default class SbcProductSelector extends Vue {
 @import "../assets/scss/theme.scss";
 
 $app-header-font-color: #ffffff;
+$dialog-font-color: #ffffff;
 
+.view-container {
+  padding: 3rem 2rem;
+}
+
+@media (min-width: 1360px) {
+  .view-container {
+    padding: 3rem 1rem;
+  }
+}
+
+h1, h2, h3 {
+  color: $dialog-font-color !important;
+}
+
+section + section {
+  margin-top: 3rem;
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+// Dialog Header
 .app-header {
+  z-index: 2;
+  position: sticky;
+  position: -webkit-sticky; //Safari
+  top: 0;
+  width: 100%;
   height: 70px;
   color: $app-header-font-color;
   border-bottom: 2px solid $BCgovGold5;
-  background-color: #003366;
+  background-color: $BCgovBlue5;
 
   .container {
     display: flex;
@@ -214,38 +240,129 @@ $app-header-font-color: #ffffff;
   }
 }
 
-.v-btn.product-selector-btn {
-  padding-right: 0.5rem !important;
-  padding-left: 0.5rem !important;
-  text-align: left;
-  color: $app-header-font-color;
-  letter-spacing: 0.02rem;
-  font-size: 0.8rem;
-  margin-right: 1em;
+// Product Selector Button
+.product-selector-btn,
+.close-btn {
+  font-weight: 700;
+}
 
-  span {
-    line-height: 1.125rem;
-    font-size: 0.75rem;
+// Page Title & Description
+.view-header {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1.5rem;
+
+  h1 + p {
+    margin-top: 1.5rem;
+  }
+
+  .back-btn {
+    margin-top: -0.25rem;
+  }
+
+  &.align-center {
+    align-items: center;
+  }
+
+  &.block {
+    display: block;
   }
 }
 
-.v-btn.close-btn {
-  padding-right: 0.5rem !important;
-  padding-left: 0.5rem !important;
-  text-align: left;
-  color: $app-header-font-color;
-  letter-spacing: 0.02rem;
-  font-size: 0.8rem;
-  margin-right: 1em;
+.view-header__title {
+  margin-bottom: 0;
+}
 
-  span {
-    line-height: 1.125rem;
-    font-size: 0.75rem;
+@media (max-width: 599px) {
+  .view-header .back-btn {
+    display: none;
   }
 }
 
-.v-card.product-block:not(.on-hover), .v-card.partner-block:not(.on-hover) {
-  opacity: 0.9;
- }
+@media (min-width: 600px) {
+  .view-header__desc .ls {
+    display: block;
+  }
+}
 
+@media (min-width: 1200px) and (min-height: 900px) {
+  .view-header {
+    .back-btn {
+      margin-top: 0;
+    }
+  }
+}
+
+// Product Blocks
+.product-blocks {
+  [class^="col-"] {
+    padding: 1rem;
+  }
+
+  h2, h3 {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  h2 {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+  }
+
+  .v-icon {
+    opacity: 0.2;
+  }
+}
+
+.v-card.product-block {
+  transition: all ease-out 0.2s;
+  padding: 1.25rem 0.5rem;
+  background-color: rgba($BCgovBlue4, 0.5) !important;
+}
+
+.v-card.product-block.on-hover,
+.v-card.product-block:focus {
+  transition: all ease-out 0.2s;
+  transform: scale(1.02);
+  border-color: #ffffff !important;
+  background-color: $BCgovBlue4 !important;
+
+  .v-icon {
+    opacity: 1;
+  }
+
+  .v-card__text {
+    color: #ffffff;
+  }
+}
+
+.v-icon.product-block__icon {
+  font-size: 4rem;
+}
+
+@media (max-width: 1263px) {
+  .product-blocks {
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Line Breaks
+@media (min-width: 960px) {
+  .partner-section .section-desc .ls {
+    display: block;
+  }
+}
 </style>
