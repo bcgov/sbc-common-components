@@ -400,12 +400,8 @@ $app-header-font-color: #ffffff;
 }
 
 .v-btn.notifications-btn {
-  min-width: 3rem !important;
+  min-width: 3.142rem !important;
   color: $app-header-font-color;
-
-  .v-icon {
-    font-size: 1.75rem;
-  }
 
   .v-badge {
     margin-right: 0.25rem;

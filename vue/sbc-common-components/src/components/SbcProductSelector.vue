@@ -1,9 +1,9 @@
 <template>
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="scroll-y-transition">
       <template v-slot:activator="{ on }">
-        <v-btn text dark large class="product-selector-btn pr-4 pl-3" v-on="on" data-test="product-selector-btn">
+        <v-btn text dark large class="product-select-btn mobile-icon-only pr-2 pl-2" v-on="on" data-test="product-selector-btn">
+          <v-icon class="ml-n1">mdi-apps</v-icon>
           <span>Products & Services</span>
-          <v-icon small class="mr-n1 ml-2">mdi-chevron-down</v-icon>
         </v-btn>
       </template>
       <v-card tile flat dark color="#003366">
@@ -35,7 +35,7 @@
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <div>
-              <h1>BC Registries Products <span class="lb">and Services</span></h1>
+              <h1>BC Registries Products <span class="lb">&amp; Services</span></h1>
               <p class="view-header__desc">Easy access to a wide range of information products and services, including access <span class="ls">to British Columbia Provincial and Municipal Government information.</span></p>
             </div>
           </div>
@@ -366,4 +366,24 @@ section + section {
     display: block;
   }
 }
+
+.product-select-btn {
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .v-btn.mobile-icon-only {
+    min-width: 3rem !important;
+    width: 3rem;
+
+    .v-icon +  span {
+      display: none;
+    }
+
+    .v-icon {
+      margin-right: 0;
+    }
+  }
+}
+
 </style>
