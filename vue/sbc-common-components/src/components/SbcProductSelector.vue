@@ -58,24 +58,6 @@
               </v-col>
             </v-row>
           </section>
-
-          <!-- Partners -->
-          <section class="text-center partner-section">
-            <h2 class="section-title">Our Partners</h2>
-            <p class="section-desc mb-8">Leverage the security and functionality of your BC Registries account <span class="ls">when accessing any of our trusted partner applications.</span></p>
-            <v-row class="product-blocks" justify="center">
-              <v-col cols="12" sm="3" lg="2" v-for="(partner, index) in partners" :key="index">
-                <v-hover v-slot:default="{ hover }">
-                  <v-card dark outlined color="#26527d" class="partner-block text-center" :class="{ 'on-hover': hover }" @click="goToPartnerPage(partner)">
-                    <v-card-title class="flex-column justify-center">
-                      <v-icon class="product-block__icon mt-n2 mb-2">mdi-image-outline</v-icon>
-                      <h3 class="mb-0">{{partner.name}}</h3>
-                    </v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-col>
-            </v-row>
-          </section>
         </v-container>
       </v-card>
     </v-dialog>
@@ -116,7 +98,6 @@ import { getModule } from 'vuex-module-decorators'
 export default class SbcProductSelector extends Vue {
   private dialog = false
   private readonly products!: Products
-  private readonly partners!: Products
   private readonly syncProducts!: () => Promise<void>
 
   private async mounted () {
@@ -125,11 +106,7 @@ export default class SbcProductSelector extends Vue {
   }
 
   private goToProductPage (product: Product): void {
-    window.location.href = product.url
-  }
-
-  private goToPartnerPage (partner: Product): void {
-    window.open(partner.url, '_blank')
+    window.open(product.url, '_blank')
   }
 }
 </script>

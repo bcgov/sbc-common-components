@@ -15,17 +15,11 @@ export default class ProductModule extends VuexModule {
     this.products = products
   }
 
-  @Mutation
-  public setPartners (partners: Products) {
-    this.partners = partners
-  }
-
-  @Action({ rawError: true })
+  @Action({ rawError: true, commit: 'setProducts' })
   public async syncProducts () {
     const response = await ProductService.getAllProducts()
     if (response && response.data) {
-      this.context.commit('setProducts', response.data.filter(p => p.type === ProductType.Internal))
-      this.context.commit('setPartners', response.data.filter(p => p.type === ProductType.Partner))
+      return response.data?.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
 }
