@@ -85,59 +85,50 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import ConfigHelper from '../util/config-helper'
-
-interface ProductItem {
-  name: string;
-  description: string;
-  url: string;
-  mdiName?: string;
-}
-
-interface PartnerItem {
-  name: string;
-  url: string;
-  mdiName?: string;
-}
+import { Product, Products } from '../models/product'
+import { mapState, mapActions } from 'vuex'
+import ProductModule from '../store/modules/product'
+import { getModule } from 'vuex-module-decorators'
 
 @Component({
-  name: 'SbcProductSelector'
+  name: 'SbcProductSelector',
+  beforeCreate () {
+    this.$store.hasModule = function (aPath: string[]) {
+      let m = (this as any)._modules.root
+      return aPath.every((p) => {
+        m = m._children[p]
+        return m
+      })
+    }
+    if (!this.$store.hasModule(['product'])) {
+      this.$store.registerModule('product', ProductModule)
+    }
+    this.$options.computed = {
+      ...(this.$options.computed || {}),
+      ...mapState('product', ['products', 'partners'])
+    }
+    this.$options.methods = {
+      ...(this.$options.methods || {}),
+      ...mapActions('product', ['syncProducts'])
+    }
+  }
 })
 export default class SbcProductSelector extends Vue {
   private dialog = false
-  products: ProductItem[] = [
-    {
-      name: 'Business Registry',
-      description: 'Information for companies, firms & societies. Most filings for BC & Extraprovincial companies can be done in the Business Registry',
-      url: ConfigHelper.getAuthContextPath()
-    },
-    {
-      name: 'Personal Property Registry',
-      description: 'View and maintain records of charges such as liens, security interests, and encumberances filed against personal property.',
-      url: 'https://www.google.com'
-    },
-    {
-      name: 'Manufactured Homes Registry',
-      description: 'Access for qualified suppliers to view and maintain information and records on manufactured homes in British Columbia.',
-      url: 'https://www.bing.com'
-    }
-  ]
+  private readonly products!: Products
+  private readonly partners!: Products
+  private readonly syncProducts!: () => Promise<void>
 
-  partners: PartnerItem[] = [
-    {
-      name: 'BC Assessment',
-      url: 'https://www.bcassessment.ca'
-    },
-    {
-      name: 'Vital Statistics',
-      url: 'https://www2.gov.bc.ca/gov/content/family-social-supports/seniors/health-safety/health-care-programs-and-services/vital-statistics'
-    }
-  ]
+  private async mounted () {
+    getModule(ProductModule, this.$store)
+    await this.syncProducts()
+  }
 
-  private goToProductPage (product: ProductItem): void {
+  private goToProductPage (product: Product): void {
     window.location.href = product.url
   }
 
-  private goToPartnerPage (partner: PartnerItem): void {
+  private goToPartnerPage (partner: Product): void {
     window.open(partner.url, '_blank')
   }
 }

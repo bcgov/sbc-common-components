@@ -16,14 +16,14 @@
       </a>
       <div class="app-header__actions">
 
+        <!-- Product Selector -->
+        <sbc-product-selector v-if="showProductSelector" />
+
         <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login()">
           <slot name="login-button-text">
             Log in with BC Services Card
           </slot>
         </v-btn>
-
-        <!-- Product Selector -->
-        <sbc-product-selector v-if="isAuthenticated && showProductSelector" />
 
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
