@@ -31,7 +31,7 @@ export default class AccountModule extends VuexModule {
   }
 
   get username (): string {
-    return this.currentUser?.fullName || '-'
+    return `${this.currentUser?.firstName || '-'} ${this.currentUser?.lastName || ''}`
   }
 
   @Mutation
@@ -72,7 +72,9 @@ export default class AccountModule extends VuexModule {
     if (response && response.data) {
       const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
       this.context.commit('setCurrentAccount', currentAccountId ? orgs.find(org => String(org.id) === currentAccountId) : orgs[0])
-      await this.context.dispatch('fetchPendingApprovalCount')
+      if (this.currentUser?.loginSource === 'BCSC') {
+        await this.context.dispatch('fetchPendingApprovalCount')
+      }
       return orgs
     }
     return []
