@@ -201,7 +201,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: '' }) idpHint!: string;
-  @Prop({ default: true }) showProductSelector!: boolean;
+  @Prop({ default: false }) showProductSelector!: boolean;
 
   get showAccountSwitching (): boolean {
     try {
