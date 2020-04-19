@@ -2,7 +2,6 @@ name: NPM_PUBLISH
 
 on:
   push:
-    branches: master
     paths:
     - '**package.json'
 
