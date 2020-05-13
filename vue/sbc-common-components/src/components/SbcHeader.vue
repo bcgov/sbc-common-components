@@ -109,6 +109,14 @@
               </v-list-item-icon>
               <v-list-item-title>Team Members</v-list-item-title>
             </v-list-item>
+            <v-list-item
+              v-if="showTransactions"
+              @click="goToTransactions()">
+              <v-list-item-icon left>
+                <v-icon>mdi-file-document-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Transactions</v-list-item-title>
+            </v-list-item>
           </v-list>
 
           <v-divider></v-divider>
@@ -212,6 +220,10 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   }
 
+  get showTransactions (): boolean {
+    return LaunchDarklyService.getFlag('transaction-history') || false
+  }
+
   private async mounted () {
     getModule(AccountModule, this.$store)
     getModule(AuthModule, this.$store)
@@ -258,6 +270,17 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       this.navigateTo(ConfigHelper.getAuthContextPath(), `account/${this.currentAccount.id}/settings/team-members`)
     } else {
       window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/team-members`)
+    }
+  }
+
+  private goToTransactions () {
+    if (!this.currentAccount) {
+      return
+    }
+    if (this.inAuth) {
+      this.navigateTo(ConfigHelper.getAuthContextPath(), `account/${this.currentAccount.id}/settings/transactions`)
+    } else {
+      window.location.assign(`${ConfigHelper.getAuthContextPath()}account/${this.currentAccount.id}/settings/transactions`)
     }
   }
 
