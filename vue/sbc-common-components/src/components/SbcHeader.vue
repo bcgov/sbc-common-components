@@ -143,6 +143,7 @@ import AccountModule from '../store/modules/account'
 import AuthModule from '../store/modules/auth'
 import { KCUserProfile } from '../models/KCUserProfile'
 import keycloakService from '../services/keycloak.services'
+import LaunchDarklyService from '../services/launchdarkly.services'
 import SbcProductSelector from './SbcProductSelector.vue'
 
 declare module 'vuex' {
@@ -205,20 +206,13 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   get showAccountSwitching (): boolean {
     try {
-      const flags = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags) || '{}')
-      return flags && flags['account-switching']
+      return LaunchDarklyService.getFlag('account-switching')
     } catch (exception) {
       return false
     }
   }
 
   private async mounted () {
-    // Initialize LaunchDarkly flags and sync to session storage
-    // const user = { 'key': 'sbc-common-components' }
-    // this.ldClient = initialize('5db9da115f58e008123cd783', user)
-    // this.ldClient.on('ready', () => {
-    //   ConfigHelper.addToSession(SessionStorageKeys.LaunchDarklyFlags, JSON.stringify(this.ldClient.allFlags()))
-    // })
     getModule(AccountModule, this.$store)
     getModule(AuthModule, this.$store)
     this.syncWithSessionStorage()
