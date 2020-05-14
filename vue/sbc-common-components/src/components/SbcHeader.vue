@@ -213,11 +213,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: false }) showProductSelector!: boolean;
 
   get showAccountSwitching (): boolean {
-    try {
-      return LaunchDarklyService.getFlag('account-switching')
-    } catch (exception) {
-      return false
-    }
+    return LaunchDarklyService.getFlag('account-switching') || false
   }
 
   get showTransactions (): boolean {
