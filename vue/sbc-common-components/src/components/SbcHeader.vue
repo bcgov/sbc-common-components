@@ -19,11 +19,46 @@
         <!-- Product Selector -->
         <sbc-product-selector v-if="showProductSelector" />
 
-        <v-btn color="#fcba19" class="log-in-btn" v-if="!isAuthenticated" @click="login()">
-          <slot name="login-button-text">
-            Log in with BC Services Card
-          </slot>
-        </v-btn>
+        <v-menu bottom left fixed transition="slide-y-transition" width="330" v-if="!isAuthenticated">
+          <template v-slot:activator="{ on }">
+            <v-btn large text dark class="font-weight-bold" v-if="!isAuthenticated" v-on="on">
+              <slot name="login-button-text">
+                Log in
+              </slot>
+              <v-icon class="ml-1 mr-n2">mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list tile dense>
+            <v-subheader>SELECT LOGIN METHOD</v-subheader>
+            <v-list-item two-line @click="login()">
+              <v-list-item-icon left>
+                <v-icon>mdi-smart-card-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>BC Services Card</v-list-item-title>
+                <v-list-item-subtitle>I am a resident of British Columbia</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item two-line>
+              <v-list-item-icon left>
+                <v-icon>mdi-two-factor-authentication</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>BCeID</v-list-item-title>
+                <v-list-item-subtitle>I am not a resident of British Columbia</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item two-line>
+              <v-list-item-icon left>
+                <v-icon>mdi-account-group-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>IDIR</v-list-item-title>
+                <v-list-item-subtitle>I am a BC government employee</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
@@ -52,7 +87,7 @@
         </v-menu>
 
         <!-- Account -->
-        <v-menu bottom left fixed transition="slide-y-transition" content-class="account-menu" v-if="isAuthenticated">
+        <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
           <template v-slot:activator="{ on }">
             <v-btn text large v-on="on" class="user-account-btn">
               <v-avatar tile left size="32" class="user-avatar">
@@ -436,13 +471,8 @@ $app-header-font-color: #ffffff;
   }
 }
 
-// Account Menu
-.account-menu {
-  background: #ffffff;
-}
-
-.account-menu__info {
-  font-size: 0.875rem;
+.v-menu {
+  background-color: #ffffff;
 }
 
 .v-list {
@@ -474,19 +504,23 @@ $app-header-font-color: #ffffff;
 }
 
 .log-in-btn {
-  color: $BCgovBlue5;
-  background-color: $BCgovGold4;
   font-weight: 700;
 }
 
-.v-list--dense .v-subheader {
-  padding-right: 1rem;
-  padding-left: 1rem;
+.v-list--dense .v-subheader,
+.v-list-item {
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.v-list--dense .v-subheader,
+.v-list--dense .v-list-item__title,
+.v-list--dense .v-list-item__subtitle {
+  font-size: 0.875rem !important;
 }
 
 .v-subheader {
   color: $gray9 !important;
-  font-size: 0.875rem;
   font-weight: 700;
 }
 </style>
