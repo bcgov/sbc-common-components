@@ -19,46 +19,44 @@
         <!-- Product Selector -->
         <sbc-product-selector v-if="showProductSelector" />
 
-        <v-menu bottom left fixed transition="slide-y-transition" width="330" v-if="!isAuthenticated">
-          <template v-slot:activator="{ on }">
-            <v-btn large text dark class="font-weight-bold" v-if="!isAuthenticated" v-on="on">
-              <slot name="login-button-text">
+        <div  v-if="!isAuthenticated">
+          <v-menu bottom left fixed transition="slide-y-transition" width="330">
+            <template v-slot:activator="{ on }">
+              <v-btn large text dark class="font-weight-bold px-4" v-on="on">
                 Log in
-              </slot>
-              <v-icon class="ml-1 mr-n2">mdi-menu-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list tile dense>
-            <v-subheader>SELECT LOGIN METHOD</v-subheader>
-            <v-list-item two-line @click="login()">
-              <v-list-item-icon left>
-                <v-icon>mdi-smart-card-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
+                <v-icon class="ml-1 mr-n2">mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
+            <v-list tile dense>
+              <v-subheader>Select login method</v-subheader>
+              <v-list-item @click="login()">
+                <v-list-item-icon left>
+                  <v-icon>mdi-smart-card-outline</v-icon>
+                </v-list-item-icon>
                 <v-list-item-title>BC Services Card</v-list-item-title>
-                <v-list-item-subtitle>I am a resident of British Columbia</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item two-line>
-              <v-list-item-icon left>
-                <v-icon>mdi-two-factor-authentication</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>BCeID</v-list-item-title>
-                <v-list-item-subtitle>I am not a resident of British Columbia</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item two-line>
-              <v-list-item-icon left>
-                <v-icon>mdi-account-group-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>IDIR</v-list-item-title>
-                <v-list-item-subtitle>I am a BC government employee</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+              </v-list-item>
+              <v-list-item @click="login()">
+                <v-list-item-icon left>
+                  <v-icon>mdi-two-factor-authentication</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>BCeID</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item @click="login()">
+                <v-list-item-icon left>
+                  <v-icon>mdi-account-group-outline</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>IDIR</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <!--
+          <v-btn large text dark class="font-weight-bold px-4">Create Account</v-btn>
+          -->
+        </div>
 
         <!-- Messages -->
         <v-menu bottom left fixed transition="slide-y-transition" v-if="isAuthenticated">
