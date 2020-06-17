@@ -27,28 +27,33 @@
                 <v-icon class="ml-1 mr-n2">mdi-menu-down</v-icon>
               </v-btn>
             </template>
-            <v-list tile dense>
+            <v-list tile dense class="login-options">
               <v-subheader>Select login method</v-subheader>
-              <v-list-item @click="login()">
+              <v-list-item @click="login(IdpHint.BCSC)">
                 <v-list-item-icon left>
                   <v-icon>mdi-smart-card-outline</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>BC Services Card</v-list-item-title>
+                <v-list-item-content>
+                  <v-list-item-title>BC Services Card</v-list-item-title>
+                  <v-list-item-subtitle>I am a resident of British Columbia</v-list-item-subtitle>
+                </v-list-item-content>
               </v-list-item>
-              <v-list-item @click="login()">
+              <v-list-item @click="login(IdpHint.BCEID)">
                 <v-list-item-icon left>
                   <v-icon>mdi-two-factor-authentication</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>BCeID</v-list-item-title>
+                  <v-list-item-subtitle>I am not a resident of British Columbia</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-              <v-list-item @click="login()">
+              <v-list-item @click="login(IdpHint.IDIR)">
                 <v-list-item-icon left>
                   <v-icon>mdi-account-group-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>IDIR</v-list-item-title>
+                  <v-list-item-subtitle>I am a BC government employee</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -173,7 +178,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
-import { SessionStorageKeys, Account } from '../util/constants'
+import { SessionStorageKeys, Account, IdpHint } from '../util/constants'
 import ConfigHelper from '../util/config-helper'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { UserSettings } from '../models/userSettings'
@@ -226,6 +231,7 @@ declare module 'vuex' {
 })
 export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
+  private readonly IdpHint = IdpHint
   private readonly currentAccount!: UserSettings | null
   private readonly pendingApprovalCount!: number
   private readonly username!: string
@@ -242,7 +248,6 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLoginFail!: string;
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
-  @Prop({ default: '' }) idpHint!: string;
   @Prop({ default: false }) showProductSelector!: boolean;
 
   get showAccountSwitching (): boolean {
@@ -337,13 +342,13 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   }
 
-  login () {
+  login (idpHint) {
     if (this.redirectOnLoginSuccess) {
       let url = encodeURIComponent(this.redirectOnLoginSuccess)
       url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
-      window.location.assign(`${this.getContextPath()}signin/${this.idpHint}/${url}`)
+      window.location.assign(`${this.getContextPath()}signin/${idpHint}/${url}`)
     } else {
-      window.location.assign(`${this.getContextPath()}signin/${this.idpHint}`)
+      window.location.assign(`${this.getContextPath()}signin/${idpHint}`)
     }
   }
 
@@ -521,5 +526,16 @@ $app-header-font-color: #ffffff;
 .v-subheader {
   color: $gray9 !important;
   font-weight: 700;
+}
+
+.login-options {
+  .v-list-item__title {
+    font-weight: 600 !important;
+  }
+  .v-list-item__icon {
+    .v-icon {
+      color: #000;
+    }
+  }
 }
 </style>
