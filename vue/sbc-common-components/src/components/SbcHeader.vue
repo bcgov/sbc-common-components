@@ -84,7 +84,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div class="account-name" v-if="accountType !== 'IDIR'" data-test="account-name">{{ accountName }}</div>
+                <div class="account-name" v-if="!isIDIR" data-test="account-name">{{ accountName }}</div>
               </div>
               <!--
               <v-icon small class="ml-2">mdi-chevron-down</v-icon>
@@ -98,11 +98,11 @@
               </v-list-item-avatar>
               <v-list-item-content class="user-info">
                 <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                <v-list-item-subtitle class="account-name" v-if="accountType !== 'IDIR'" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="account-name" v-if="!isIDIR" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- BEGIN: Hide if authentication is IDIR -->
-            <v-list-item @click="goToUserProfile()" v-if="accountType === 'BCSC'">
+            <v-list-item @click="goToUserProfile()" v-if="isBCSC">
               <v-list-item-icon left>
                 <v-icon>mdi-account-outline</v-icon>
               </v-list-item-icon>
@@ -119,7 +119,7 @@
 
           <v-divider></v-divider>
 
-          <v-list tile dense v-if="currentAccount && accountType !== 'IDIR'">
+          <v-list tile dense v-if="currentAccount && !isIDIR">
             <v-subheader>ACCOUNT SETTINGS</v-subheader>
             <v-list-item @click="goToAccountInfo(currentAccount)">
               <v-list-item-icon left>
@@ -145,7 +145,7 @@
 
           <v-divider></v-divider>
 
-          <v-list tile dense v-if="accountType !== 'IDIR' && switchableAccounts.length > 1">
+          <v-list tile dense v-if="!isIDIR && switchableAccounts.length > 1">
             <v-subheader>SWITCH ACCOUNT</v-subheader>
             <v-list-item @click="switchAccount(settings, inAuth)" v-for="(settings, id) in switchableAccounts" :key="id">
               <v-list-item-icon left>
@@ -164,7 +164,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
-import { SessionStorageKeys, Account, IdpHint } from '../util/constants'
+import { SessionStorageKeys, Account, IdpHint, LoginSource } from '../util/constants'
 import ConfigHelper from '../util/config-helper'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { UserSettings } from '../models/userSettings'
@@ -202,7 +202,7 @@ declare module 'vuex' {
     this.$options.computed = {
       ...(this.$options.computed || {}),
       ...mapState('account', ['currentAccount', 'pendingApprovalCount']),
-      ...mapGetters('account', ['accountName', 'accountType', 'switchableAccounts', 'username']),
+      ...mapGetters('account', ['accountName', 'loginSource', 'switchableAccounts', 'username']),
       ...mapGetters('auth', ['isAuthenticated'])
     }
     this.$options.methods = {
@@ -221,7 +221,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   private readonly pendingApprovalCount!: number
   private readonly username!: string
   private readonly accountName!: string
-  private readonly accountType!: string
+  private readonly loginSource!: string
   private readonly isAuthenticated!: boolean
   private readonly switchableAccounts!: UserSettings[]
   private readonly loadUserInfo!: () => KCUserProfile
@@ -263,6 +263,14 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   get showTransactions (): boolean {
     return (LaunchDarklyService.getFlag('transaction-history') || false) &&
       (this.currentAccount?.accountType === Account.PREMIUM)
+  }
+
+  get isIDIR (): boolean {
+    return this.loginSource === LoginSource.IDIR
+  }
+
+  get isBCSC (): boolean {
+    return this.loginSource === LoginSource.BCSC
   }
 
   private async mounted () {
