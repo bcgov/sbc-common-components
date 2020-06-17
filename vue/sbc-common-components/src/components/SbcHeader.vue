@@ -29,31 +29,17 @@
             </template>
             <v-list tile dense class="login-options">
               <v-subheader>Select login method</v-subheader>
-              <v-list-item @click="login(IdpHint.BCSC)">
+              <v-list-item
+                v-for="loginOption in loginOptions"
+                :key="loginOption.idpHint"
+                @click="login(loginOption.idpHint)"
+              >
                 <v-list-item-icon left>
-                  <v-icon>mdi-smart-card-outline</v-icon>
+                  <v-icon>{{loginOption.icon}}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>BC Services Card</v-list-item-title>
-                  <v-list-item-subtitle>I am a resident of British Columbia</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item @click="login(IdpHint.BCEID)">
-                <v-list-item-icon left>
-                  <v-icon>mdi-two-factor-authentication</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>BCeID</v-list-item-title>
-                  <v-list-item-subtitle>I am not a resident of British Columbia</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item @click="login(IdpHint.IDIR)">
-                <v-list-item-icon left>
-                  <v-icon>mdi-account-group-outline</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>IDIR</v-list-item-title>
-                  <v-list-item-subtitle>I am a BC government employee</v-list-item-subtitle>
+                  <v-list-item-title>{{loginOption.option}}</v-list-item-title>
+                  <v-list-item-subtitle>{{loginOption.description}}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -231,7 +217,6 @@ declare module 'vuex' {
 })
 export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
-  private readonly IdpHint = IdpHint
   private readonly currentAccount!: UserSettings | null
   private readonly pendingApprovalCount!: number
   private readonly username!: string
@@ -249,6 +234,27 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: '' }) redirectOnLogout!: string;
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: false }) showProductSelector!: boolean;
+
+  private readonly loginOptions = [
+    {
+      idpHint: IdpHint.BCSC,
+      option: 'BC Services Card',
+      description: 'I am a resident of British Columbia',
+      icon: 'mdi-smart-card-outline'
+    },
+    {
+      idpHint: IdpHint.BCEID,
+      option: 'BCeID',
+      description: 'I am not a resident of British Columbia',
+      icon: 'mdi-two-factor-authentication'
+    },
+    {
+      idpHint: IdpHint.IDIR,
+      option: 'IDIR',
+      description: 'I am a BC government employee',
+      icon: 'mdi-account-group-outline'
+    }
+  ]
 
   get showAccountSwitching (): boolean {
     return LaunchDarklyService.getFlag('account-switching') || false
