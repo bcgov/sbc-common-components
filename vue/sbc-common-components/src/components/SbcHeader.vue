@@ -27,20 +27,18 @@
                 <v-icon class="ml-1 mr-n2">mdi-menu-down</v-icon>
               </v-btn>
             </template>
-            <v-list tile dense class="login-options">
+            <v-list tile dense>
               <v-subheader>Select login method</v-subheader>
               <v-list-item
                 v-for="loginOption in loginOptions"
                 :key="loginOption.idpHint"
                 @click="login(loginOption.idpHint)"
+                class="pr-6"
               >
                 <v-list-item-icon left>
                   <v-icon>{{loginOption.icon}}</v-icon>
                 </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{loginOption.option}}</v-list-item-title>
-                  <v-list-item-subtitle>{{loginOption.description}}</v-list-item-subtitle>
-                </v-list-item-content>
+                <v-list-item-title>{{loginOption.option}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -239,19 +237,16 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     {
       idpHint: IdpHint.BCSC,
       option: 'BC Services Card',
-      description: 'I am a resident of British Columbia',
       icon: 'mdi-smart-card-outline'
     },
     {
       idpHint: IdpHint.BCEID,
       option: 'BCeID',
-      description: 'I am not a resident of British Columbia',
       icon: 'mdi-two-factor-authentication'
     },
     {
       idpHint: IdpHint.IDIR,
       option: 'IDIR',
-      description: 'I am a BC government employee',
       icon: 'mdi-account-group-outline'
     }
   ]
@@ -540,16 +535,5 @@ $app-header-font-color: #ffffff;
 .v-subheader {
   color: $gray9 !important;
   font-weight: 700;
-}
-
-.login-options {
-  .v-list-item__title {
-    font-weight: 600 !important;
-  }
-  .v-list-item__icon {
-    .v-icon {
-      color: #000;
-    }
-  }
 }
 </style>
