@@ -57,7 +57,6 @@ class KeyCloakService {
     authModule.setRefreshToken(this.kc?.refreshToken || '')
 
     const userInfo = this.getUserInfo()
-    authModule.setUserFullName(userInfo?.fullName || '')
     authModule.setKCGuid(userInfo?.keycloakGuid || '')
     authModule.setLoginSource(userInfo?.loginSource || '')
   }
@@ -73,7 +72,7 @@ class KeyCloakService {
       roles: this.parsedToken.realm_access.roles,
       keycloakGuid: this.parsedToken.sub,
       userName: this.parsedToken.username,
-      fullName: `${this.parsedToken.firstname} ${this.parsedToken.lastname}`,
+      fullName: this.parsedToken.name,
       loginSource: this.parsedToken.loginSource
     }
   }
@@ -128,7 +127,7 @@ class KeyCloakService {
 
   async refreshToken () {
     // Set the token expiry time as the minValidity to force refresh token
-    if (!this.kc || !this.kc.tokenParsed || !this.kc.tokenParsed.exp || !this.kc.timeSkew) {
+    if (!this.kc?.tokenParsed?.exp || !this.kc.timeSkew) {
       return
     }
     let tokenExpiresIn = this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100

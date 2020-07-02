@@ -107,7 +107,6 @@ export default class AccountModule extends VuexModule {
         ...this.currentUser,
         lastName: response.data.lastname,
         firstName: userProfile.firstname
-
       }
       return updateProfile
     }

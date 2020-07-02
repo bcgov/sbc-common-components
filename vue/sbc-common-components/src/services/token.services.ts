@@ -12,17 +12,7 @@ class TokenServices {
   private timerId = 0
   private store: Store<any> | null = null
 
-  initUsingKc (kcInstance: KeycloakInstance) {
-    this.kc = kcInstance
-  }
-
-  // TODO: Fallback function just to not break the legacy versions, should be removed once the coops consumes the service using the init() function
-  async initUsingUrl (keyCloakConfigurl: string) {
-    ConfigHelper.setKeycloakConfigUrl(keyCloakConfigurl)
-    await this.init()
-  }
-
-  async init (store?: Store<any>) {
+  async init (store?: Store<any>, isScheduleRefresh: boolean = true) {
     this.store = store
     const kcOptions: KeycloakInitOptions = {
       onLoad: 'check-sso',
@@ -42,6 +32,9 @@ class TokenServices {
           if (this.kc && authenticated) {
             ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, true)
             this.syncSessionStorage()
+            if (isScheduleRefresh) {
+              this.scheduleRefreshTimer()
+            }
             resolve(this.kc.token)
           } else {
             // If not authenticated that means token is invalid
@@ -80,11 +73,6 @@ class TokenServices {
         reject(new Error('Could not refresh Token:No Kc Instance'))
       }
     })
-  }
-
-  stopRefreshTimer () {
-    console.info('[TokenServices Stopping the timer] ')
-    clearTimeout(this.timerId)
   }
 
   private scheduleRefreshToken (refreshEarlyTimeinMilliseconds: number) {
@@ -143,7 +131,6 @@ class TokenServices {
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakToken)
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakIdToken)
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakRefreshToken)
-      ConfigHelper.removeFromSession(SessionStorageKeys.UserFullName)
       ConfigHelper.removeFromSession(SessionStorageKeys.UserKcId)
       ConfigHelper.removeFromSession(SessionStorageKeys.UserAccountType)
     }
