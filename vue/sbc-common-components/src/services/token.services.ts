@@ -131,25 +131,6 @@ class TokenServices {
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakToken)
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakIdToken)
       ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakRefreshToken)
-      ConfigHelper.removeFromSession(SessionStorageKeys.UserKcId)
-      ConfigHelper.removeFromSession(SessionStorageKeys.UserAccountType)
-    }
-  }
-
-  static decodeToken () {
-    try {
-      const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)
-      if (token) {
-        const base64Url = token.split('.')[1]
-        const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-        return JSON.parse(base64)
-      } else {
-        throw new Error('null JWT')
-      }
-    } catch (error) {
-      throw new Error('Error parsing JWT - ' + error)
     }
   }
 }

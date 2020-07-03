@@ -200,8 +200,8 @@ declare module 'vuex' {
     this.$options.computed = {
       ...(this.$options.computed || {}),
       ...mapState('account', ['currentAccount', 'pendingApprovalCount']),
-      ...mapGetters('account', ['accountName', 'loginSource', 'switchableAccounts', 'username']),
-      ...mapGetters('auth', ['isAuthenticated'])
+      ...mapGetters('account', ['accountName', 'switchableAccounts', 'username']),
+      ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
     }
     this.$options.methods = {
       ...(this.$options.methods || {}),
@@ -219,7 +219,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   private readonly pendingApprovalCount!: number
   private readonly username!: string
   private readonly accountName!: string
-  private readonly loginSource!: string
+  private readonly currentLoginSource!: string
   private readonly isAuthenticated!: boolean
   private readonly switchableAccounts!: UserSettings[]
   private readonly loadUserInfo!: () => KCUserProfile
@@ -262,15 +262,15 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   get isIDIR (): boolean {
-    return this.loginSource === LoginSource.IDIR
+    return this.currentLoginSource === LoginSource.IDIR
   }
 
   get isBceid (): boolean {
-    return this.loginSource === LoginSource.BCEID
+    return this.currentLoginSource === LoginSource.BCEID
   }
 
   get isBcscOrBceid (): boolean {
-    return [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(this.loginSource) >= 0
+    return [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(this.currentLoginSource) >= 0
   }
 
   private async mounted () {

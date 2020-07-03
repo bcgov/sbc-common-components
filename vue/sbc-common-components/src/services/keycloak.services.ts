@@ -5,16 +5,7 @@ import { SessionStorageKeys } from '../util/constants'
 import { Store } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
 import AuthModule from '../store/modules/auth'
-
-interface UserToken extends KeycloakTokenParsed {
-  lastname: string;
-  firstname: string;
-  email: string;
-  // eslint-disable-next-line camelcase
-  realm_access_roles: string[];
-  jti: string;
-  username: string;
-}
+import { decodeKCToken } from '../util/common-util'
 
 class KeyCloakService {
   private kc: KeycloakInstance | undefined
@@ -63,17 +54,18 @@ class KeyCloakService {
 
   getUserInfo () : KCUserProfile {
     if (!this.parsedToken) {
-      this.parsedToken = this.decodeToken()
+      this.parsedToken = decodeKCToken()
     }
     return {
-      lastName: this.parsedToken.lastname,
-      firstName: this.parsedToken.firstname,
-      email: this.parsedToken.email,
-      roles: this.parsedToken.realm_access.roles,
-      keycloakGuid: this.parsedToken.sub,
-      userName: this.parsedToken.username,
-      fullName: this.parsedToken.name,
-      loginSource: this.parsedToken.loginSource
+      lastName: this.parsedToken?.lastname,
+      firstName: this.parsedToken?.firstname,
+      email: this.parsedToken?.email,
+      // eslint-disable-next-line camelcase
+      roles: this.parsedToken?.realm_access?.roles,
+      keycloakGuid: this.parsedToken?.sub,
+      userName: this.parsedToken?.username,
+      fullName: this.parsedToken?.name,
+      loginSource: this.parsedToken?.loginSource
     }
   }
 
@@ -126,20 +118,26 @@ class KeyCloakService {
   }
 
   async refreshToken () {
+    this.initSession()
     // Set the token expiry time as the minValidity to force refresh token
     if (!this.kc?.tokenParsed?.exp || !this.kc.timeSkew) {
       return
     }
     let tokenExpiresIn = this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100
-    this.kc && this.kc.updateToken(tokenExpiresIn)
-      .success(refreshed => {
-        if (refreshed) {
-          this.initSession()
-        }
-      })
-      .error(() => {
-        this.cleanupSession()
-      })
+    if (this.kc) {
+      this.kc.updateToken(tokenExpiresIn)
+        .success(refreshed => {
+          if (refreshed) {
+            this.initSession()
+          }
+        })
+        .error(() => {
+          this.cleanupSession()
+          return new Error('Could not refresh Token')
+        })
+    } else {
+      return new Error('Could not refresh Token:No Kc Instance')
+    }
   }
 
   verifyRoles (allowedRoles:[], disabledRoles:[]) {
@@ -151,21 +149,6 @@ class KeyCloakService {
       isAuthorized = true
     }
     return isAuthorized
-  }
-
-  decodeToken () {
-    try {
-      let token = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-      if (token) {
-        const base64Url = token.split('.')[1]
-        const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        }).join(''))
-        return JSON.parse(base64)
-      }
-    } catch (error) {
-      throw new Error('Error parsing JWT - ' + error)
-    }
   }
 
   // Setting keycloak config url as a static configuration to access from other parts of the app if needed
