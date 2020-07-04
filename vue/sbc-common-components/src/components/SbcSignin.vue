@@ -46,24 +46,20 @@ export default class SbcSignin extends Vue {
   private async mounted () {
     getModule(AccountModule, this.$store)
     // Initialize keycloak session
-    const kcInit = await this.initKeycloak(this.idpHint)
+    const kcInit = await KeyCloakService.initializeKeyCloak(this.idpHint, this.$store)
     await new Promise((resolve, reject) => {
       kcInit.success(async (authenticated: boolean) => {
         if (authenticated) {
           // Set values to session storage
-          KeyCloakService.initSession()
-          // emitting event for the header to get updated with :key increment from the parent component
-          this.$emit('keycloak-session-ready')
+          await KeyCloakService.initSession()
           // tell KeycloakServices to load the user info
-          this.loadUserInfo()
+          await this.loadUserInfo()
           // sync the account if there is one
           await this.syncAccount()
-          this.$emit('sync-user-profile-ready')
           // eslint-disable-next-line no-console
           console.info('[SignIn.vue]Logged in User.Starting refreshTimer')
-          let tokenService = new TokenService()
-          await tokenService.init()
-          tokenService.scheduleRefreshTimer()
+          await KeyCloakService.initializeToken(this.$store)
+          this.$emit('sync-user-profile-ready')
           resolve()
         }
       })
@@ -73,10 +69,6 @@ export default class SbcSignin extends Vue {
           }
         })
     })
-  }
-
-  async initKeycloak (idpHint: string) {
-    return KeyCloakService.init(idpHint, this.$store)
   }
 }
 </script>
