@@ -65,7 +65,7 @@ class KeyCloakService {
   }
 
   getUserInfo () : KCUserProfile {
-    if (!this.parsedToken) {
+    if (!this.parsedToken || !Object.keys(this.parsedToken).length) {
       this.parsedToken = decodeKCToken()
     }
     return {
