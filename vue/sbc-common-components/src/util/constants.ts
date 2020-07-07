@@ -29,3 +29,17 @@ export enum LoginSource {
   BCSC = 'BCSC',
   BCEID = 'BCEID'
 }
+
+export enum Role {
+  AccountHolder = 'account_holder',
+  PublicUser = 'public_user'
+}
+
+export enum Pages {
+  HOME = 'home',
+  USER_PROFILE = 'userprofile',
+  ACCOUNT = 'account',
+  SETTINGS = 'settings',
+  CHOOSE_AUTH_METHOD = 'choose-authentication-method',
+  NON_BCSC_INSTRUCTIONS = 'nonbcsc-info/instructions'
+}
