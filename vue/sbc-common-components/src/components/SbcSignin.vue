@@ -53,15 +53,14 @@ export default class SbcSignin extends NavigationMixin {
     await new Promise((resolve, reject) => {
       kcInit.success(async (authenticated: boolean) => {
         if (authenticated) {
+          // eslint-disable-next-line no-console
+          console.info('[SignIn.vue]Logged in User. Init Session and Starting refreshTimer')
           // Set values to session storage
           await KeyCloakService.initSession()
           // tell KeycloakServices to load the user info
           const userInfo = await this.loadUserInfo()
           // sync the account if there is one
           await this.syncAccount()
-          // eslint-disable-next-line no-console
-          console.info('[SignIn.vue]Logged in User.Starting refreshTimer')
-          await KeyCloakService.initializeToken(this.$store)
 
           // redirect to create account page if the user has no 'account holder' role
           const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))

@@ -49,7 +49,7 @@ class KeyCloakService {
     return this.kc.init({ token: token, onLoad: 'login-required' })
   }
 
-  initSession () {
+  async initSession () {
     if (!this.store) {
       return
     }
@@ -62,6 +62,8 @@ class KeyCloakService {
     const userInfo = this.getUserInfo()
     authModule.setKCGuid(userInfo?.keycloakGuid || '')
     authModule.setLoginSource(userInfo?.loginSource || '')
+
+    await this.syncSessionAndScheduleTokenRefresh()
   }
 
   getUserInfo () : KCUserProfile {
@@ -169,24 +171,25 @@ class KeyCloakService {
       this.kc.init(kcOptions)
         .success(authenticated => {
           console.info('[TokenServices] is User Authenticated?: Syncing ' + authenticated)
-          if (this.kc && authenticated) {
-            ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, true)
-            this.syncSessionStorage()
-            if (isScheduleRefresh) {
-              this.scheduleRefreshTimer()
-            }
-            resolve(this.kc.token)
-          } else {
-            // If not authenticated that means token is invalid
-            // Clear out session storage and go to auth home (TODO: Perhaps make this a propery parent apps could pass in?)
-            this.clearSession()
-            reject(new Error('NOT_AUTHENTICATED'))
-          }
+          resolve(this.syncSessionAndScheduleTokenRefresh(isScheduleRefresh))
         })
         .error(error => {
           reject(new Error('Could not Initialize KC' + error))
         })
     })
+  }
+
+  async syncSessionAndScheduleTokenRefresh (isScheduleRefresh: boolean = true) {
+    if (this.kc?.authenticated) {
+      this.syncSessionStorage()
+      if (isScheduleRefresh) {
+        this.scheduleRefreshTimer()
+      }
+      return this.kc.token
+    } else {
+      this.clearSession()
+      return new Error('NOT_AUTHENTICATED')
+    }
   }
 
   scheduleRefreshTimer (refreshEarlyTime = 0) {
@@ -239,6 +242,9 @@ class KeyCloakService {
       if (this.kc.idToken) {
         ConfigHelper.addToSession(SessionStorageKeys.KeyCloakIdToken, this.kc.idToken)
       }
+      ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, true)
+    } else {
+      ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, false)
     }
   }
 
