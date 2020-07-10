@@ -62,24 +62,8 @@ export default class SbcSignin extends NavigationMixin {
           // sync the account if there is one
           await this.syncAccount()
 
-          // redirect to create account page if the user has no 'account holder' role
-          const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
-          if (isRedirectToCreateAccount) {
-            switch (userInfo.loginSource) {
-              case LoginSource.BCSC:
-                this.redirectToPath(this.inAuth, Pages.CHOOSE_AUTH_METHOD)
-                break
-              case LoginSource.BCEID:
-                this.redirectToPath(this.inAuth, Pages.NON_BCSC_INSTRUCTIONS)
-                break
-            }
-          }
-
           // emit an event to parent that user profile syncing is completed.
-          // the argument isRedirectToCreateAccount will be used to check in the parent signin view component
-          // to determine whether to perform the redirect on that end,
-          // if the value is true, then the redirection should be happening from this component.
-          this.$emit('sync-user-profile-ready', isRedirectToCreateAccount)
+          this.$emit('sync-user-profile-ready')
 
           resolve()
         }
