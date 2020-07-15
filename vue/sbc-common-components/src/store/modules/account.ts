@@ -110,10 +110,14 @@ export default class AccountModule extends VuexModule {
 
   @Action({ rawError: true })
   public async getCurrentUserProfile () {
-    const response = await UserService.getUserProfile('@me')
-    const userProfile = response?.data || {}
-    this.context.commit('user/setUserProfile', userProfile, { root: true })
-    return userProfile
+    try {
+      const response = await UserService.getUserProfile('@me')
+      const userProfile = response?.data || {}
+      this.context.commit('user/setUserProfile', userProfile, { root: true })
+      return userProfile
+    } catch (error) {
+      console.error('Error: ', error?.response)
+    }
   }
 
   @Action({ rawError: true })
