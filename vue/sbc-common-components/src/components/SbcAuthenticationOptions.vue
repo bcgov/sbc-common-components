@@ -86,7 +86,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
     if (this.redirectUrl?.trim()) {
       signinRoute += `/${encodeURIComponent(this.redirectUrl.trim())}`
     }
-    this.redirectToPath(this.inAuth, signinRoute)
+    this.redirectInTriggeredApp(signinRoute)
   }
 
   private goToCreateAccount () {
