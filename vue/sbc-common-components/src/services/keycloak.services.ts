@@ -129,12 +129,13 @@ class KeyCloakService {
     }
   }
 
-  async refreshToken () {
+  async refreshToken (isForceRefresh?: boolean) {
     // Set the token expiry time as the minValidity to force refresh token
-    if (!this.kc?.tokenParsed?.exp || !this.kc.timeSkew) {
+    if (!isForceRefresh && (!this.kc?.tokenParsed?.exp || !this.kc.timeSkew)) {
       return
     }
-    let tokenExpiresIn = this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100
+    // if isForceRefresh is true, send -1 in updateToken to force update the token
+    let tokenExpiresIn = (isForceRefresh) ? -1 : this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100
     if (this.kc) {
       this.kc.updateToken(tokenExpiresIn)
         .success(refreshed => {
