@@ -47,6 +47,7 @@ declare module 'vuex' {
   }
 })
 export default class PaySystemAlert extends Vue {
+  private statusAPIResponse : ServiceStatus | null = null
   private readonly paySystemStatus!: ServiceStatus
   private readonly fetchPaySystemStatus!: () => Promise<ServiceStatus>
   private getBoolean (value: boolean | string | number): boolean {
@@ -70,7 +71,11 @@ export default class PaySystemAlert extends Vue {
 
   private async mounted () {
     getModule(StatusModule, this.$store)
-    await this.fetchPaySystemStatus()
+    try {
+      this.statusAPIResponse = await this.fetchPaySystemStatus()
+    } catch (error) {
+      this.statusAPIResponse = null
+    }
   }
 
   private get alertMessage () {
@@ -78,7 +83,7 @@ export default class PaySystemAlert extends Vue {
   }
 
   private get hasPayMessage () {
-    return !this.getBoolean(this.paySystemStatus?.currentStatus) || this.paySystemStatus?.customMessage !== undefined
+    return this.statusAPIResponse && (!this.getBoolean(this.paySystemStatus?.currentStatus) || this.paySystemStatus?.customMessage)
   }
 }
 </script>
