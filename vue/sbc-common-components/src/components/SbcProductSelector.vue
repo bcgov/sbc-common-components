@@ -19,7 +19,7 @@
         >
           <v-icon>mdi-apps</v-icon>
           <span>
-            Products & Services
+            Products and Services
           </span>
           <v-icon class="ml-1">
             mdi-menu-down
@@ -30,7 +30,7 @@
       <v-card>
         <div class="menu-header">
           <v-card-title class="body-1">
-            Products & Services
+            Products and Services
           </v-card-title>
           <v-divider></v-divider>
         </div>
@@ -61,7 +61,7 @@
                   alt="Government of British Columbia Logo"
                   title="Government of British Columbia">
               </picture>
-              <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
+              <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
             </a>
             <div class="app-header__actions">
             </div>
@@ -73,7 +73,7 @@
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <div>
-              <h1>BC Registries Products <span class="lb">&amp; Services</span></h1>
+              <h1>BC Registries Products <span class="lb">and Services</span></h1>
               <p class="view-header__desc">Easy access to a wide range of information products and services, including access <span class="ls">to British Columbia Provincial and Municipal Government information.</span></p>
             </div>
             <div>

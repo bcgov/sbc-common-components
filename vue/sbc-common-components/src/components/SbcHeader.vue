@@ -12,7 +12,7 @@
             alt="Government of British Columbia Logo"
             title="Government of British Columbia">
         </picture>
-        <span class="brand__title">BC Registries <span class="brand__title--wrap">& Online Services</span></span>
+        <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
       </a>
       <div class="app-header__actions">
 
