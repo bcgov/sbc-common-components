@@ -1,5 +1,5 @@
 //
-// Copyright © 2019 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
 // the License. You may obtain a copy of the License at
@@ -34,15 +34,18 @@
     <v-expand-transition>
       <v-form v-if="editing" ref="addressForm" name="address-form" lazy-validation>
         <div class="form__row">
-          <!-- NB: "name" attribute is needed for moveElementId() -->
-          <v-text-field autocomplete="address-complete"
+          <!-- NB1: AddressComplete needs to be enabled each time user clicks in this search field.
+               NB2: Only process first keypress -- assumes if user moves between instances of this
+                   component then they are using the mouse (and thus, clicking). -->
+          <v-text-field autocomplete="off"
                         filled
                         class="street-address"
-                        name="street-address"
+                        :id="streetAddressId"
                         :label="streetAddressLabel"
                         v-model="addressLocal.streetAddress"
                         :rules="[...rules.streetAddress, ...spaceRules]"
-                        @click="enableAddressComplete"
+                        @keypress.once="enableAddressComplete()"
+                        @click="enableAddressComplete()"
           />
         </div>
         <div class="form__row">
@@ -98,9 +101,8 @@
                     :items="getCountries()"
                     :rules="[...rules.addressCountry, ...spaceRules]"
           />
-          <!-- special field to select PCA country, separate from our model field -->
-          <!-- NB: "name" attribute is needed for moveElementId() -->
-          <input type="hidden" name="address-country-pca" :value="addressCountry" />
+          <!-- special field to select AddressComplete country, separate from our model field -->
+          <input type="hidden" :id="addressCountryId" :value="addressCountry" />
         </div>
         <div class="form__row">
           <v-textarea auto-grow
@@ -122,6 +124,7 @@ import Vue from 'vue'
 import { required } from 'vuelidate/lib/validators'
 import { Component, Mixins, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Validation } from 'vue-plugin-helper-decorator'
+import { uniqueId } from 'lodash'
 import ValidationMixin from '../mixins/validation-mixin'
 import CountriesProvincesMixin from '../mixins/countries-provinces-mixin'
 
@@ -129,6 +132,7 @@ import CountriesProvincesMixin from '../mixins/countries-provinces-mixin'
  * The component for displaying and editing an address.
  * Vuelidate is used to implement the validation rules (eg, what 'required' means and whether it's satisfied).
  * Vuetify is used to display any validation errors/styling.
+ * Optionally uses Canada Post AddressComplete (aka Postal Code Anywhere - PCA) for address lookup.
  */
 @Component({
   mixins: [ValidationMixin, CountriesProvincesMixin]
@@ -136,7 +140,7 @@ import CountriesProvincesMixin from '../mixins/countries-provinces-mixin'
 export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvincesMixin) {
   /**
    * The validation object used by Vuelidate to compute address model validity.
-   * @returns The Vuelidate validations object.
+   * @returns the Vuelidate validations object
    */
   @Validation()
   public validations (): any {
@@ -144,7 +148,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 
   /**
-   * Contains the address (if any) to be edited.
+   * The address to be displayed/edited.
    * Default is "empty address" in case parent doesn't provide it (eg, for new address).
    */
   @Prop({
@@ -160,52 +164,54 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   })
   readonly address: object
 
-  /**
-   * Indicates whether the address should be shown in editing mode (true) or display mode (false).
-   */
+  /** Whether the address should be shown in editing mode (true) or display mode (false). */
   @Prop({ default: false })
   readonly editing: boolean
 
-  /**
-   * The address schema containing Vuelidate rules.
-   */
+  /** The address schema containing Vuelidate rules. */
   @Prop({ default: null })
   readonly schema: any
 
-  /**
-   * A local (working) copy of the address, to contain the fields edited by the component (ie, the model).
-   */
-  private addressLocal: object = { }
+  /** A local (working) copy of the address, to contain the fields edited by the component (ie, the model). */
+  private addressLocal: object = {}
 
-  /**
-   * A local (working) copy of the address schema.
-   */
-  // TODO: this misses the initial country setting (re: on edit)
-  private schemaLocal: any = { ...this.schema }
+  /** A local (working) copy of the address schema. */
+  private schemaLocal: any = {}
 
-  /**
-   * Getter for Address Country, to simplify template and so we can watch it below.
-   */
+  /** A unique id for this instance of this component. */
+  private uniqueId = uniqueId()
+
+  /** A unique id for the Street Address input. */
+  private get streetAddressId (): string {
+    return `street-address-${this.uniqueId}`
+  }
+
+  /** A unique id for the Address Country input. */
+  private addressCountryId (): string {
+    return `address-country-${this.uniqueId}`
+  }
+
+  /** The Address Country, to simplify the template and so we can watch it below. */
   private get addressCountry (): string {
     return this.addressLocal['addressCountry']
   }
 
-  /**
-   * Getters for labels.
-   * @returns The labels with 'optional' as needed.
-   */
+  /** The Street Address Additional label with 'optional' as needed. */
   private get streetAddressAdditionalLabel (): string {
     return 'Additional Street Address' + (this.isSchemaRequired('streetAddressAdditional') ? '' : ' (Optional)')
   }
 
+  /** The Street Address label with 'optional' as needed. */
   private get streetAddressLabel (): string {
     return 'Street Address' + (this.isSchemaRequired('streetAddress') ? '' : ' (Optional)')
   }
 
+  /** The Address City label with 'optional' as needed. */
   private get addressCityLabel (): string {
     return 'City' + (this.isSchemaRequired('addressCity') ? '' : ' (Optional)')
   }
 
+  /** The Address Region label with 'optional' as needed. */
   private get addressRegionLabel (): string {
     let label: string
     let required = this.isSchemaRequired('addressRegion')
@@ -224,6 +230,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
     return label + (required ? '' : ' (Optional)')
   }
 
+  /** The Postal Code label with 'optional' as needed. */
   private get postalCodeLabel (): string {
     let label: string
     if (this.addressLocal['addressCountry'] === 'US') {
@@ -234,10 +241,12 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
     return label + (this.isSchemaRequired('postalCode') ? '' : ' (Optional)')
   }
 
+  /** The Address Country label with 'optional' as needed. */
   private get addressCountryLabel (): string {
     return 'Country' + (this.isSchemaRequired('addressCountry') ? '' : ' (Optional)')
   }
 
+  /** The Delivery Instructions label with 'optional' as needed. */
   private get deliveryInstructionsLabel (): string {
     return 'Delivery Instructions' + (this.isSchemaRequired('deliveryInstructions') ? '' : ' (Optional)')
   }
@@ -255,25 +264,30 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   ]
 
   /**
-   * Getter for Vuetify rules object. Used to display any validation errors/styling.
-   * @remark As a getter, this is initialized between created() and mounted().
-   * @returns The Vuetify validation rules object.
+   * The Vuetify rules object. Used to display any validation errors/styling.
+   * NB: As a getter, this is initialized between created() and mounted().
+   * @returns the Vuetify validation rules object
    */
   private get rules (): { [attr: string]: Array<Function> } {
     return this.createVuetifyRulesObject('addressLocal')
   }
 
-  /**
-   * Emits an update message for the {@link address} property, so that the caller can ".sync" with it.
-   */
+  /** Emits an update message for the address prop, so that the caller can ".sync" with it. */
   @Emit('update:address')
-  private emitAddress (val: object): void { }
+  private emitAddress (address: object): void { }
+
+  /** Emits the validity of the address entered by the user. */
+  @Emit('valid')
+  private emitValid (valid: boolean): void { }
 
   /**
-   * Emits the Vuelidate state of the address entered by the user.
+   * Watches changes to the Schema object, so that if the parent changes the data, then
+   * the working copy of it is updated.
    */
-  @Emit('valid')
-  private emitValid (val: boolean): void { }
+  @Watch('schema', { deep: true, immediate: true })
+  private onSchemaChanged (): void {
+    this.schemaLocal = { ...this.schema }
+  }
 
   /**
    * Watches changes to the Address object, so that if the parent changes the data, then
@@ -316,31 +330,26 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 
   /**
-   * Function to determine whether to use a country's known regions (ie, provinces/states).
-   * @param code The short code of the country.
-   * @returns Whether to use v-select or v-text-field for input.
+   * Determines whether to use a country's known regions (ie, provinces/states).
+   * @param code the short code of the country
+   * @returns whether to use v-select (true) or v-text-field (false) for input
    */
   private useCountryRegions (code: string): boolean {
     return (code === 'CA' || code === 'US')
   }
 
-  /**
-   * Enables AddressComplete for this instance of the address.
-   */
+  /** Enables AddressComplete for this instance of the address. */
   private enableAddressComplete (): void {
-    // If you want to use this component with the Canada Post AddressComplete service, it needs the following:
-    //  1. The AddressComplete JavaScript script include must be done to set up "window.pca".
-    //  2. Your AddressComplete account key must be defined as "window.addressCompleteKey".
+    // If you want to use this component with the Canada Post AddressComplete service:
+    // 1. The AddressComplete JavaScript script (and stylesheet) must be loaded.
+    // 2. Your AddressComplete account key must be defined.
     const pca = window['pca']
     const key = window['addressCompleteKey']
     if (!pca || !key) {
+      // eslint-disable-next-line no-console
+      console.log('AddressComplete not initialized due to missing script and/or key')
       return
     }
-
-    // Sets the id for the two form elements that are used by the AddressComplete code. If necessary this removes the
-    // id from previous elements.
-    this.moveElementId('street-address')
-    this.moveElementId('address-country-pca')
 
     // Destroy the old object if it exists, and create a new one.
     if (window['currentAddressComplete']) {
@@ -350,42 +359,19 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 
   /**
-   * Sets the id attribute of the _named_ element to its name. If there was a pre-existing element with the id already
-   * set, it will be unset.
-   *
-   * @param name the name of the element for which to set the id.
-   */
-  private moveElementId (name: string): void {
-    const oldElement = document.getElementById(name)
-    const thisElement = this.$el.querySelector('[name="' + name + '"]')
-
-    // If it's already set, don't do it again.
-    if (oldElement !== thisElement) {
-      if (oldElement) {
-        oldElement.id = ''
-      }
-
-      thisElement.id = name
-    }
-  }
-
-  /**
    * Creates the AddressComplete object for this instance of the component.
-   *
-   * @param pca the Postal Code Anywhere object provided by AddressComplete.
-   * @param key the key for the Canada Post account that is to be charged for lookups.
-   *
-   * @return an object that is a pca.Address instance.
+   * @param pca the Postal Code Anywhere object provided by AddressComplete
+   * @param key the key for the Canada Post account that is to be charged for lookups
+   * @returns an object that is a pca.Address instance
    */
   private createAddressComplete (pca, key: string): object {
     // Set up the two fields that AddressComplete will use for input.
     // Ref: https://www.canadapost.ca/pca/support/guides/advanced
     // Note: Use special field for country, which user can't click, and which AC will overwrite
     //       but that we don't care about.
-    //       (Option `populate: false` doesn't seem to work.)
     const fields = [
-      { element: 'street-address', mode: pca.fieldMode.SEARCH },
-      { element: 'address-country-pca', mode: pca.fieldMode.COUNTRY }
+      { element: this.streetAddressId, field: 'Line1', mode: pca.fieldMode.SEARCH },
+      { element: this.addressCountryId, field: 'CountryName', mode: pca.fieldMode.COUNTRY }
     ]
     const options = { key }
 
@@ -401,13 +387,12 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
 
   /**
    * Callback to update the address data after the user chooses a suggested address.
-   *
-   * @param address the data object returned by the AddressComplete Retrieve API.
+   * @param address the data object returned by the AddressComplete Retrieve API
    */
   private addressCompletePopulate (address: object): void {
     const newAddressLocal: object = {}
 
-    newAddressLocal['streetAddress'] = address['Line1']
+    newAddressLocal['streetAddress'] = address['Line1'] || 'N/A'
     // Combine extra address lines into Street Address Additional field.
     newAddressLocal['streetAddressAdditional'] = this.combineLines(
       this.combineLines(address['Line2'], address['Line3']),
