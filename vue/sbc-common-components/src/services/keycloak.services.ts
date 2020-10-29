@@ -14,7 +14,7 @@ class KeyCloakService {
   private store: Store<any> | null = null
   private counter = 0
   private REFRESH_ATTEMPT_INTERVAL = 10 // in seconds
-  private timerId = 0
+  private timerId: any = 0
 
   public static getInstance (): KeyCloakService {
     return (this.instance) ? this.instance : new KeyCloakService()
