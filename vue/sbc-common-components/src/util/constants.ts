@@ -44,5 +44,6 @@ export enum Pages {
   USER_PROFILE_TERMS = 'userprofileterms',
   CREATE_ACCOUNT = 'setup-account',
   CHOOSE_AUTH_METHOD = 'choose-authentication-method',
-  NON_BCSC_INSTRUCTIONS = 'nonbcsc-info/instructions'
+  NON_BCSC_INSTRUCTIONS = 'nonbcsc-info/instructions',
+  ACCOUNT_FREEZ = 'account-freeze'
 }

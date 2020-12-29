@@ -5,4 +5,5 @@ export interface UserSettings {
   urlpath: string
   urlorigin: string
   accountType: string // will be only present for accounts
+  accountStatus: string
 }

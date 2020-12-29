@@ -408,6 +408,8 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       await this.loadUserInfo()
       await this.syncAccount()
       await this.updateProfile()
+      // checking for account status
+      await this.checkAccountStatus()
     }
   }
 
@@ -460,6 +462,13 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       return
     }
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/transactions`)
+  }
+
+  private checkAccountStatus () {
+    // redirect if accoutn status is suspended
+    if (this.currentAccount?.accountStatus && this.currentAccount?.accountStatus === 'NSF_SUSPENDED') {
+      this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
+    }
   }
 
   private async switchAccount (settings: UserSettings, inAuth?: boolean) {
