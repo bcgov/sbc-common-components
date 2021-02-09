@@ -306,6 +306,7 @@ import { KCUserProfile } from '../models/KCUserProfile'
 import keycloakService from '../services/keycloak.services'
 import LaunchDarklyService from '../services/launchdarkly.services'
 import SbcProductSelector from './SbcProductSelector.vue'
+import { AccountStatus } from '../util/enums'
 
 declare module 'vuex' {
   interface Store<S> {
@@ -466,7 +467,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   private checkAccountStatus () {
     // redirect if accoutn status is suspended
-    if (this.currentAccount?.accountStatus && this.currentAccount?.accountStatus === 'NSF_SUSPENDED') {
+    if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(status => status === this.currentAccount?.accountStatus)) {
       this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
     } else if (this.currentAccount?.accountStatus === 'PENDING_AFFIDAVIT_REVIEW') {
       this.redirectToPath(this.inAuth, `${Pages.PENDING_APPROVAL}/${this.accountName}/true`)
