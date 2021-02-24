@@ -28,22 +28,17 @@ class LaunchDarklyService {
   init (ldEnvKey: string) {
     var user = { 'anonymous': true }
 
-    if (!this.isFlagsAvailable) {
-      this.ldClient = initialize(ldEnvKey, user)
+    this.ldClient = initialize(ldEnvKey, user)
 
-      return new Promise((resolve) => {
-        this.ldClient.on('initialized', () => {
-          this.setFlags(this.ldClient.allFlags())
-          resolve()
-        })
-        this.ldClient.on('failed', () => {
-          this.setFlags(defaultFlagSet)
-          resolve()
-        })
-      })
-    }
     return new Promise((resolve) => {
-      resolve()
+      this.ldClient.on('initialized', () => {
+        this.setFlags(this.ldClient.allFlags())
+        resolve()
+      })
+      this.ldClient.on('failed', () => {
+        this.setFlags(defaultFlagSet)
+        resolve()
+      })
     })
   }
 
