@@ -397,7 +397,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   // only for GOVN type users
   get isGovmUser (): boolean {
-    return this.currentUser && this.currentUser.roles.includes(Role.GOVNAccountUser)
+    return this.currentUser && this.currentUser.roles.includes(Role.GOVMAccountUser)
   }
 
   get isBceid (): boolean {
