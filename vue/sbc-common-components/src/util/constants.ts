@@ -34,7 +34,7 @@ export enum Role {
   AccountHolder = 'account_holder',
   PublicUser = 'public_user',
   STAFF = 'staff',
-  GOV_ACCOUNT_USER = 'gov_account_user'
+  GOVNAccountUser = 'gov_account_user'
 }
 
 export enum Pages {

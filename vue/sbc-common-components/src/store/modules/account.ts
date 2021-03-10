@@ -69,7 +69,7 @@ export default class AccountModule extends VuexModule {
     if (response?.data) {
       const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
       this.context.commit('setCurrentAccount', currentAccountId ? orgs.find(org => String(org.id) === currentAccountId) : orgs[0])
-      if (this.currentUser?.loginSource === LoginSource.BCSC || this.currentUser.roles.includes(Role.GOV_ACCOUNT_USER)) {
+      if (this.currentUser?.loginSource === LoginSource.BCSC || this.currentUser.roles.includes(Role.GOVNAccountUser)) {
         await this.context.dispatch('fetchPendingApprovalCount')
       }
       return orgs
