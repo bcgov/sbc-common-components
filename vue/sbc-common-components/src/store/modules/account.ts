@@ -5,7 +5,7 @@ import { UserSettings } from '../../models/userSettings'
 import { KCUserProfile } from '../../models/KCUserProfile'
 import KeyCloakService from '../../services/keycloak.services'
 import ConfigHelper from '../../util/config-helper'
-import { SessionStorageKeys, LoginSource } from '../../util/constants'
+import { SessionStorageKeys, LoginSource, Role } from '../../util/constants'
 import UserService from '../../services/user.services'
 
 @Module({
@@ -69,7 +69,7 @@ export default class AccountModule extends VuexModule {
     if (response?.data) {
       const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
       this.context.commit('setCurrentAccount', currentAccountId ? orgs.find(org => String(org.id) === currentAccountId) : orgs[0])
-      if (this.currentUser?.loginSource === LoginSource.BCSC) {
+      if (this.currentUser?.loginSource === LoginSource.BCSC || this.currentUser.roles.includes(Role.GOV_ACCOUNT_USER)) {
         await this.context.dispatch('fetchPendingApprovalCount')
       }
       return orgs
@@ -135,18 +135,12 @@ export default class AccountModule extends VuexModule {
       return orgIdFromUrl || String(storageAccountId || '') || ''
     }
 
-    switch (this.currentUser?.loginSource) {
-      case LoginSource.IDIR:
-        break
-      case LoginSource.BCSC:
-      case LoginSource.BCEID:
-      case LoginSource.BCROS:
-      default:
-        const lastUsedAccount = getLastAccountId()
-        if (this.currentUser?.keycloakGuid) {
-          await this.syncUserSettings(lastUsedAccount)
-          ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
-        }
+    if (!this.currentUser.roles.includes(Role.STAFF)) {
+      const lastUsedAccount = getLastAccountId()
+      if (this.currentUser?.keycloakGuid) {
+        await this.syncUserSettings(lastUsedAccount)
+        ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
+      }
     }
   }
 

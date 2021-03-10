@@ -156,7 +156,7 @@
               </v-avatar>
               <div class="user-info">
                 <div class="user-name" data-test="user-name">{{ username }}</div>
-                <div class="account-name" v-if="!isIDIR" data-test="account-name">{{ accountName }}</div>
+                <div class="account-name" v-if="!isStaff" data-test="account-name">{{ accountName }}</div>
               </div>
               <v-icon class="ml-1">
                 mdi-menu-down
@@ -181,7 +181,7 @@
                 </v-list-item-avatar>
                 <v-list-item-content class="user-info">
                   <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                  <v-list-item-subtitle class="account-name" v-if="!isIDIR" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
+                  <v-list-item-subtitle class="account-name" v-if="!isStaff" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <!-- BEGIN: Hide if authentication is IDIR -->
@@ -206,7 +206,7 @@
             <v-list
               tile
               dense
-              v-if="currentAccount && !isIDIR"
+              v-if="currentAccount && !isStaff"
             >
               <v-subheader>ACCOUNT SETTINGS</v-subheader>
               <v-list-item @click="goToAccountInfo(currentAccount)">
@@ -234,7 +234,7 @@
             <v-divider></v-divider>
 
             <!-- Switch Account -->
-            <div v-if="!isIDIR">
+            <div v-if="!isStaff && !isGovmUser">
               <v-list
                 tile
                 dense
@@ -293,7 +293,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
-import { SessionStorageKeys, Account, IdpHint, LoginSource, Pages } from '../util/constants'
+import { SessionStorageKeys, Account, IdpHint, LoginSource, Pages, Role } from '../util/constants'
 import ConfigHelper from '../util/config-helper'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { UserSettings } from '../models/userSettings'
@@ -331,7 +331,7 @@ declare module 'vuex' {
     }
     this.$options.computed = {
       ...(this.$options.computed || {}),
-      ...mapState('account', ['currentAccount', 'pendingApprovalCount']),
+      ...mapState('account', ['currentAccount', 'pendingApprovalCount', 'currentUser']),
       ...mapGetters('account', ['accountName', 'switchableAccounts', 'username']),
       ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
     }
@@ -359,6 +359,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   private readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
   private readonly syncUserProfile!: () => Promise<void>
   private readonly syncWithSessionStorage!: () => void
+  private readonly currentUser!: any
 
   @Prop({ default: '' }) redirectOnLoginSuccess!: string;
   @Prop({ default: '' }) redirectOnLoginFail!: string;
@@ -389,8 +390,14 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     return this.currentAccount?.accountType === Account.PREMIUM
   }
 
-  get isIDIR (): boolean {
-    return this.currentLoginSource === LoginSource.IDIR
+  // only for internal staff who belongs to bcreg
+  get isStaff (): boolean {
+    return this.currentUser && this.currentUser.roles.includes(Role.STAFF)
+  }
+
+  // only for GOVN type users
+  get isGovmUser (): boolean {
+    return this.currentUser && this.currentUser.roles.includes(Role.GOV_ACCOUNT_USER)
   }
 
   get isBceid (): boolean {
