@@ -33,7 +33,7 @@ export enum LoginSource {
 export enum Role {
   AccountHolder = 'account_holder',
   PublicUser = 'public_user',
-  STAFF = 'staff',
+  Staff = 'staff',
   GOVMAccountUser = 'gov_account_user'
 }
 

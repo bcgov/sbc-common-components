@@ -392,7 +392,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   // only for internal staff who belongs to bcreg
   get isStaff (): boolean {
-    return this.currentUser && this.currentUser.roles.includes(Role.STAFF)
+    return this.currentUser && this.currentUser.roles.includes(Role.Staff)
   }
 
   // only for GOVN type users
