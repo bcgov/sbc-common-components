@@ -469,7 +469,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     // redirect if accoutn status is suspended
     if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(status => status === this.currentAccount?.accountStatus)) {
       this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
-    } else if (this.currentAccount?.accountStatus === AccountStatus.PENDING_AFFIDAVIT_REVIEW) {
+    } else if (this.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
       this.redirectToPath(this.inAuth, `${Pages.PENDING_APPROVAL}/${this.accountName}/true`)
     }
   }
