@@ -37,7 +37,7 @@
           <!-- NB1: AddressComplete needs to be enabled each time user clicks in this search field.
                NB2: Only process first keypress -- assumes if user moves between instances of this
                    component then they are using the mouse (and thus, clicking). -->
-          <v-text-field autocomplete="off"
+          <v-text-field autocomplete="chrome-off"
                         filled
                         class="street-address"
                         :id="streetAddressId"
