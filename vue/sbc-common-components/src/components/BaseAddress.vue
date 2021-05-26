@@ -38,6 +38,7 @@
                NB2: Only process first keypress -- assumes if user moves between instances of this
                    component then they are using the mouse (and thus, clicking). -->
           <v-text-field autocomplete="chrome-off"
+                        :name="Math.random()"
                         filled
                         class="street-address"
                         :id="streetAddressId"
