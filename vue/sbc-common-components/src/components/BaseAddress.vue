@@ -16,7 +16,7 @@
     <!-- Display fields -->
     <v-expand-transition>
       <div v-if="!editing" class="address-block">
-        <div class="address-block__info pre-wrap">
+        <div class="address-block__info pre-line">
           <div class="address-block__info-row">{{ addressLocal.streetAddress }}</div>
           <div class="address-block__info-row">{{ addressLocal.streetAddressAdditional }}</div>
           <div class="address-block__info-row">
@@ -458,8 +458,8 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 }
 
-.pre-wrap {
-  white-space: pre-wrap;
+.pre-line {
+  white-space: pre-line;
 }
 
 // make 'readonly' inputs looks disabled
