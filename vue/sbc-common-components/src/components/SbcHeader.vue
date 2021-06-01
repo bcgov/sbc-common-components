@@ -374,6 +374,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: false }) showProductSelector!: boolean;
   @Prop({ default: true }) showActions!: boolean;
+  @Prop({ default: '' }) dashboardReturnUrl !: string;
 
   private readonly loginOptions = [
     {
@@ -454,7 +455,8 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private goToCreateBCSCAccount () {
-    this.redirectToPath(this.inAuth, Pages.CREATE_ACCOUNT)
+    const redirectUrl: string = this.dashboardReturnUrl ? `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(this.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
+    this.redirectToPath(this.inAuth, redirectUrl)
   }
 
   private async goToAccountInfo (settings: UserSettings) {
