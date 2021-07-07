@@ -109,7 +109,7 @@ class KeyCloakService {
       // putting tokens back in from returning async calls  (see #2341)
       ConfigHelper.clearSession()
       ConfigHelper.addToSession(SessionStorageKeys.PreventStorageSync, true)
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         this.kc && this.kc.init(kcOptions)
           .then(authenticated => {
             if (!authenticated) {

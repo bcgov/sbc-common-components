@@ -30,7 +30,7 @@ class LaunchDarklyService {
 
     this.ldClient = initialize(ldEnvKey, user)
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.ldClient.on('initialized', () => {
         this.setFlags(this.ldClient.allFlags())
         resolve()
