@@ -26,7 +26,7 @@ class LaunchDarklyService {
   }
 
   init (ldEnvKey: string) {
-    var user = { 'anonymous': true }
+    var user = { key: 'anonymous' }
 
     this.ldClient = initialize(ldEnvKey, user)
 
