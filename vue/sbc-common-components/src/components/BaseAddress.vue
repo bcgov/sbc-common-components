@@ -37,7 +37,21 @@
           <!-- NB1: AddressComplete needs to be enabled each time user clicks in this search field.
                NB2: Only process first keypress -- assumes if user moves between instances of this
                    component then they are using the mouse (and thus, clicking). -->
-          <v-text-field autocomplete="chrome-off"
+          <v-text-field v-if="noPoBox"
+                        autocomplete="chrome-off"
+                        :name="Math.random()"
+                        filled
+                        class="street-address"
+                        hint="Address cannot be a PO Box"
+                        :id="streetAddressId"
+                        :label="streetAddressLabel"
+                        v-model="addressLocal.streetAddress"
+                        :rules="[...rules.streetAddress, ...spaceRules]"
+                        @keypress.once="enableAddressComplete()"
+                        @click="enableAddressComplete()"
+          />
+          <v-text-field v-else
+                        autocomplete="chrome-off"
                         :name="Math.random()"
                         filled
                         class="street-address"
@@ -48,7 +62,7 @@
                         @keypress.once="enableAddressComplete()"
                         @click="enableAddressComplete()"
           />
-        </div>
+       </div>
         <div class="form__row">
           <v-textarea auto-grow
                       filled
@@ -172,6 +186,9 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   /** The address schema containing Vuelidate rules. */
   @Prop({ default: null })
   readonly schema: any
+
+  @Prop({ default: false })
+  readonly noPoBox: boolean
 
   /** A local (working) copy of the address, to contain the fields edited by the component (ie, the model). */
   private addressLocal: object = {}
