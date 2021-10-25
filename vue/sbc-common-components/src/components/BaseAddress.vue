@@ -37,12 +37,11 @@
           <!-- NB1: AddressComplete needs to be enabled each time user clicks in this search field.
                NB2: Only process first keypress -- assumes if user moves between instances of this
                    component then they are using the mouse (and thus, clicking). -->
-          <v-text-field v-if="noPoBox"
-                        autocomplete="chrome-off"
+          <v-text-field autocomplete="chrome-off"
                         :name="Math.random()"
                         filled
                         class="street-address"
-                        hint="Address cannot be a PO Box"
+                        :hint="streetAddressHint"
                         :id="streetAddressId"
                         :label="streetAddressLabel"
                         v-model="addressLocal.streetAddress"
@@ -50,19 +49,7 @@
                         @keypress.once="enableAddressComplete()"
                         @click="enableAddressComplete()"
           />
-          <v-text-field v-else
-                        autocomplete="chrome-off"
-                        :name="Math.random()"
-                        filled
-                        class="street-address"
-                        :id="streetAddressId"
-                        :label="streetAddressLabel"
-                        v-model="addressLocal.streetAddress"
-                        :rules="[...rules.streetAddress, ...spaceRules]"
-                        @keypress.once="enableAddressComplete()"
-                        @click="enableAddressComplete()"
-          />
-       </div>
+        </div>
         <div class="form__row">
           <v-textarea auto-grow
                       filled
@@ -267,6 +254,10 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   /** The Delivery Instructions label with 'optional' as needed. */
   private get deliveryInstructionsLabel (): string {
     return 'Delivery Instructions' + (this.isSchemaRequired('deliveryInstructions') ? '' : ' (Optional)')
+  }
+
+  private get streetAddressHint (): string {
+    return this.noPoBox ? "Address cannot be a PO Box" : ""
   }
 
   /** Whether the specified prop is required according to the schema. */
