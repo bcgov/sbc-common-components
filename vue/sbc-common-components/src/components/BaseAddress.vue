@@ -42,6 +42,7 @@
                         filled
                         class="street-address"
                         :hint="streetAddressHint"
+                        persistent-hint
                         :id="streetAddressId"
                         :label="streetAddressLabel"
                         v-model="addressLocal.streetAddress"
