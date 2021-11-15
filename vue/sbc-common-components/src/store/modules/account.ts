@@ -120,6 +120,7 @@ export default class AccountModule extends VuexModule {
     } catch (error) {
       // for handling the 404 while first time user login in dir search
       // redirect to auth-web for first time logins from other apps, even if user is 404
+      // @ts-ignore - allow response of error
       console.error('Error: ', error?.response)
     }
   }
