@@ -2,6 +2,17 @@
   <v-row justify="center">
     <v-dialog v-model="mobileDevice" width="350px">
       <v-card>
+
+         <v-btn
+            icon
+            color="primary"
+            :right="true"
+            :absolute="true"
+            @click="mobileDevice = false"
+            class="mt-1"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         <v-card-title class="justify-center pb-0">
           <v-icon color="red" x-large>mdi-alert-circle-outline</v-icon>
         </v-card-title>
