@@ -36,8 +36,7 @@
         </v-card-text>
         <v-card-actions class="justify-center pt-0">
           <v-btn text class="mobile-alert-ok-btn" @click="mobileDevice = false"
-            >OK</v-btn
-          >
+            >OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
