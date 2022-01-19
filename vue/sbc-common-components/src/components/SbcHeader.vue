@@ -465,7 +465,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   get canCreateAccount (): boolean {
-    // bcros  cant create extra account themselves
+    // bcros  and idir can't create extra accounts themselves
     return [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()].indexOf(this.currentLoginSource) < 0
   }
 
