@@ -16,4 +16,5 @@ export enum AccountStatus {
 
 export enum LDFlags {
   WhatsNew = 'whats-new',
+  DisableBCEIDMultipleAccount ='disable-bceid-multiple-account'
 }

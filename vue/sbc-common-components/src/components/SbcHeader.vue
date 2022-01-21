@@ -467,7 +467,11 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   get canCreateAccount (): boolean {
     // bcros  and idir can't create extra accounts themselves
-    return [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()].indexOf(this.currentLoginSource) < 0
+    const disabledLogins:any = [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()]
+    if (this.disableBCEIDMultipleAccount) {
+      disabledLogins.push(LoginSource.BCEID.valueOf())
+    }
+    return disabledLogins.indexOf(this.currentLoginSource) < 0
   }
 
   get isBcscOrBceid (): boolean {
@@ -611,6 +615,10 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   private get isWhatsNewOpen (): boolean {
     return LaunchDarklyService.getFlag(LDFlags.WhatsNew) || false
+  }
+
+  private get disableBCEIDMultipleAccount (): boolean {
+    return LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) || false
   }
 }
 </script>
