@@ -51,7 +51,9 @@ export function getAccountIdFromCurrentUrl () {
 
 export function checkAndAppend (url, key = '', value = '') {
   const separator = (/\?/).test(url) ? '&' : '?'
-  return (value !== '' && key !== '') ? `${url}${separator}${key}=${value}` : url
+  // remove key from URL  if existing
+  const newUrl = removeAccountIdFromUrl(url, key)
+  return (value !== '' && key !== '') ? `${newUrl}${separator}${key}=${value}` : url
 }
 
 // if account id is not passed, will get it from session

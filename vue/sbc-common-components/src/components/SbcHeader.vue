@@ -345,7 +345,7 @@ import SbcProductSelector from './SbcProductSelector.vue'
 import NotificationPanel from './NotificationPanel.vue'
 import { AccountStatus, LDFlags } from '../util/enums'
 import NotificationModule from '../store/modules/notification'
-import { getAccountIdFromCurrentUrl, removeAccountIdFromUrl } from '../util/common-util'
+import { getAccountIdFromCurrentUrl, removeAccountIdFromUrl, appendAccountId } from '../util/common-util'
 
 declare module 'vuex' {
   interface Store<S> {
@@ -584,7 +584,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     this.$emit('account-switch-completed')
 
     if (!inAuth) {
-      window.location.assign(`${ConfigHelper.getAuthContextPath()}/${Pages.HOME}`)
+      window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.HOME}`))
     }
   }
 
