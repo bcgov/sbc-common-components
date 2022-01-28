@@ -502,7 +502,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     // TODO some other redirection happening need to check
     if (getAccountIdFromCurrentUrl()) {
       await Vue.nextTick()
-      window.history.pushState({}, document.title, removeAccountIdFromUrl(window.location.href))
+      window.history.replaceState({}, document.title, removeAccountIdFromUrl(window.location.href))
     }
   }
 
