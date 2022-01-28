@@ -499,7 +499,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     await this.fetchNotificationUnreadPriorityCount()
     await this.fetchNotificationUnreadCount()
 
-    // TODO some other redirection happening need to check
+    // remove id from URLsince its already stored in session
     if (getAccountIdFromCurrentUrl()) {
       await Vue.nextTick()
       window.history.replaceState({}, document.title, removeAccountIdFromUrl(window.location.href))
