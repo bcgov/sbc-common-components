@@ -55,3 +55,5 @@ export enum Pages {
 }
 
 export const ALLOWED_URIS_FOR_PENDING_ORGS: string[] = ['setup-non-bcsc-account']
+
+export const ACCOUNT_ID = 'accountid'

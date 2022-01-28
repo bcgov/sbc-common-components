@@ -1,5 +1,5 @@
 import ConfigHelper from './config-helper'
-import { SessionStorageKeys } from './constants'
+import { SessionStorageKeys, ACCOUNT_ID } from './constants'
 
 /**
  * Place to put all the custom utility methods
@@ -46,7 +46,7 @@ export function trimTrailingSlashURL (url) {
 
 export function getAccountIdFromCurrentUrl () {
   const urlParams = new URLSearchParams(window.location.search)
-  return urlParams.get('accountid') || false
+  return urlParams.get(ACCOUNT_ID) || false
 }
 
 export function checkAndAppend (url, key = '', value = '') {
@@ -61,10 +61,10 @@ export function checkAndAppend (url, key = '', value = '') {
 export function appendAccountId (url, accountId = '') {
   const sessionAccountId = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id || ''
   const currentAccount = accountId !== '' ? accountId : sessionAccountId
-  return checkAndAppend(url, 'accountId', currentAccount)
+  return checkAndAppend(url, ACCOUNT_ID, currentAccount)
 }
 
-export function removeAccountIdFromUrl (url, key = 'accountid') {
+export function removeAccountIdFromUrl (url, key = ACCOUNT_ID) {
   // replacing account id and formattig ie, removing extra ? or &
   return url.replace(new RegExp(key + '=\\w+'), '').replace('?&', '?').replace(/\?$/, '')
     .replace('&&', '&').replace(/&$/, '')
