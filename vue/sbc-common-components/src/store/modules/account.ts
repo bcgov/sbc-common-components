@@ -7,6 +7,7 @@ import KeyCloakService from '../../services/keycloak.services'
 import ConfigHelper from '../../util/config-helper'
 import { SessionStorageKeys, LoginSource, Role } from '../../util/constants'
 import UserService from '../../services/user.services'
+import { getAccountIdFromCurrentUrl } from '../../util/common-util'
 
 @Module({
   name: 'account',
@@ -68,7 +69,9 @@ export default class AccountModule extends VuexModule {
     const response = await AccountService.getUserSettings(this.currentUser?.keycloakGuid)
     if (response?.data) {
       const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
-      this.context.commit('setCurrentAccount', currentAccountId ? orgs.find(org => String(org.id) === currentAccountId) : orgs[0])
+      const currentAccount = orgs.find(org => String(org.id) === currentAccountId)
+      // if passed account is not user account list setting first one as current account
+      this.context.commit('setCurrentAccount', currentAccount || orgs[0])
       if (this.currentUser?.loginSource === LoginSource.BCSC || this.currentUser.roles.includes(Role.GOVMAccountUser)) {
         await this.context.dispatch('fetchPendingApprovalCount')
       }
@@ -128,11 +131,12 @@ export default class AccountModule extends VuexModule {
   @Action({ rawError: true })
   public async syncAccount () {
     function getLastAccountId (): string {
+      const currentAccount = getAccountIdFromCurrentUrl()
       let pathList = window.location.pathname.split('/')
       let indexOfAccount = pathList.indexOf('account')
       let nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
       let orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
-      const storageAccountId = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
+      const storageAccountId = currentAccount || JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
       return orgIdFromUrl || String(storageAccountId || '') || ''
     }
 
@@ -140,6 +144,7 @@ export default class AccountModule extends VuexModule {
       const lastUsedAccount = getLastAccountId()
       if (this.currentUser?.keycloakGuid) {
         await this.syncUserSettings(lastUsedAccount)
+
         ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
       }
     }

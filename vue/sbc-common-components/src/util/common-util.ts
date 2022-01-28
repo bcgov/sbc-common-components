@@ -43,3 +43,26 @@ export function decodeKCToken () {
 export function trimTrailingSlashURL (url) {
   return (url) ? url.trim().replace(/\/+$/, '') : ''
 }
+
+export function getAccountIdFromCurrentUrl () {
+  const urlParams = new URLSearchParams(window.location.search)
+  return urlParams.get('accountid') || false
+}
+
+export function checkAndAppend (url, key = '', value = '') {
+  const separator = (/\?/).test(url) ? '&' : '?'
+  return (value !== '' && key !== '') ? `${url}${separator}${key}=${value}` : url
+}
+
+// if account id is not passed, will get it from session
+// there are some cases we need to pass account id, ie  to watch account id and get URL dynamically
+export function appendAccountId (url, accountId = '') {
+  const sessionAccountId = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id || ''
+  const currentAccount = accountId !== '' ? accountId : sessionAccountId
+  return checkAndAppend(url, 'accountId', currentAccount)
+}
+
+export function removeAccountIdFromUrl (url, key = 'accountid') {
+  return url.replace(new RegExp(key + '=\\w+'), '').replace('?&', '?').replace(/\?$/, '')
+    .replace('&&', '&')
+}
