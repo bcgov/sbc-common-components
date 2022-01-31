@@ -520,11 +520,13 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private goToHome () {
-    this.redirectToPath(this.inAuth, Pages.HOME)
+    const url = this.inAuth ? Pages.HOME : appendAccountId(Pages.HOME)
+    this.redirectToPath(this.inAuth, url)
   }
 
   private goToUserProfile () {
-    this.redirectToPath(this.inAuth, Pages.USER_PROFILE)
+    const url = this.inAuth ? Pages.USER_PROFILE : appendAccountId(Pages.USER_PROFILE)
+    this.redirectToPath(this.inAuth, url)
   }
 
   private goToCreateAccount () {
