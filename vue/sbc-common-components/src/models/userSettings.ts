@@ -6,4 +6,5 @@ export interface UserSettings {
   urlorigin: string
   accountType: string // will be only present for accounts
   accountStatus: string
+  additionalLabel?:string
 }
