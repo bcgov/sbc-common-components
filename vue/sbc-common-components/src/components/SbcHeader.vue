@@ -281,7 +281,10 @@
                     </v-list-item-icon>
                     <v-list-item-content>
                     <v-list-item-title>{{ settings.label }}</v-list-item-title>
-                    <v-list-item-subtitle class="font-italic" v-if="settings.additionalLabel">{{ `- ${settings.additionalLabel}` }}</v-list-item-subtitle>
+                    <v-list-item-subtitle
+                    class="font-italic"
+                    :class="{'primary--text' : settings.id === currentAccount.id}"
+                    v-if="settings.additionalLabel">{{ `- ${settings.additionalLabel}` }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
 
