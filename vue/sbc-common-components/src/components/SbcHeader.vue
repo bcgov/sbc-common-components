@@ -621,7 +621,9 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private getContextPath (): string {
-    let baseUrl = (this.$router && (this.$router as any)['history'] && (this.$router as any)['history'].base) || ''
+    // [FAS] - Logout not redirecting to Login Screen#11120
+    //  adeded default as /, if no base URL precent
+    let baseUrl = (this.$router && (this.$router as any)['history'] && (this.$router as any)['history'].base) || '/'
     baseUrl += (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/') ? '/' : ''
     return baseUrl
   }
