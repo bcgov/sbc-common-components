@@ -17,15 +17,35 @@
     <v-expand-transition>
       <div v-if="!editing" class="address-block">
         <div class="address-block__info pre-line">
-          <div class="address-block__info-row">{{ addressLocal.streetAddress }}</div>
-          <div class="address-block__info-row">{{ addressLocal.streetAddressAdditional }}</div>
-          <div class="address-block__info-row">
-            <span>{{ addressLocal.addressCity }}</span>
-            <span v-if="addressLocal.addressRegion">&nbsp;{{ addressLocal.addressRegion }}</span>
-            <span v-if="addressLocal.postalCode">&nbsp;{{ addressLocal.postalCode }}</span>
+          <div class="address-block__info-row street-address">
+            {{ addressLocal.streetAddress }}
           </div>
-          <div class="address-block__info-row">{{ getCountryName(addressCountry) }}</div>
-          <div class="address-block__info-row">{{ addressLocal.deliveryInstructions }}</div>
+
+          <div class="address-block__info-row street-address-additional">
+            {{ addressLocal.streetAddressAdditional }}
+          </div>
+
+          <div class="address-block__info-row">
+            <span class="address-city">{{ addressLocal.addressCity }}</span>
+
+            <template v-if="addressLocal.addressRegion">
+              <span class="address-region">&nbsp;{{ addressLocal.addressRegion }}</span>
+            </template>
+
+            <template v-if="addressLocal.postalCode">
+              <span class="postal-code">&nbsp;{{ addressLocal.postalCode }}</span>
+            </template>
+          </div>
+
+          <div class="address-block__info-row address-country">
+            {{ getCountryName(addressCountry) }}
+          </div>
+
+          <template v-if="addressLocal.deliveryInstructions">
+            <div class="address-block__info-row delivery-instructions mt-5">
+              {{ addressLocal.deliveryInstructions }}
+            </div>
+          </template>
         </div>
       </div>
     </v-expand-transition>
