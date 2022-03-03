@@ -356,7 +356,7 @@ import SbcProductSelector from './SbcProductSelector.vue'
 import NotificationPanel from './NotificationPanel.vue'
 import { AccountStatus, LDFlags } from '../util/enums'
 import NotificationModule from '../store/modules/notification'
-import { getAccountIdFromCurrentUrl, removeAccountIdFromUrl, appendAccountId } from '../util/common-util'
+import { appendAccountId } from '../util/common-util'
 
 declare module 'vuex' {
   interface Store<S> {
@@ -509,12 +509,6 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     await this.fetchNotificationCount()
     await this.fetchNotificationUnreadPriorityCount()
     await this.fetchNotificationUnreadCount()
-
-    // remove id from URLsince its already stored in session
-    if (getAccountIdFromCurrentUrl()) {
-      await Vue.nextTick()
-      window.history.replaceState({}, document.title, removeAccountIdFromUrl(window.location.href))
-    }
   }
 
   @Watch('isAuthenticated')
