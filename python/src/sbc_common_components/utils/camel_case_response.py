@@ -18,12 +18,13 @@ An after request util to convert all response keys to camelCase from snake_case.
 """
 import json
 from typing import Dict
+from flask import request
 
 
 def convert_to_camel(response):
     """Convert keys to camelCase."""
 
-    if response.headers['Content-Type'] == 'application/json':
+    if response.headers['Content-Type'] == 'application/json' and 'swagger.json' not in request.base_url:
         response.set_data(json.dumps(camelcase_dict(json.loads(response.get_data()), {})))
     return response
 
