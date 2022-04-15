@@ -3,11 +3,11 @@
     <v-dialog v-model="browserUnSupported" max-width="720px" persistent>
       <v-card>
         <v-card-title>
-          <div>Unspported Browser </div>
+          <div>Unsupported Browser </div>
         </v-card-title>
         <v-card-text>
           <p>
-            Internet Explorer 11 is not longer supported as it is coming to end-of-support by Microsoft starting on June 15, 2022.
+            Internet Explorer 11 is no longer supported as it is coming to end-of-support by Microsoft starting on June 15, 2022.
             Download one of following browsers for best experience.
             <a href="https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support" target="_blank">
               Learn more <v-icon class="text-decoration: none" color="primary" x-small>mdi-open-in-new</v-icon>
