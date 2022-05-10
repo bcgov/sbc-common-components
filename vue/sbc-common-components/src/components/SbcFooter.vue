@@ -9,15 +9,15 @@
           <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
         </ul>
-        <v-tooltip left nudge-top="30" v-if="aboutText" attach=".app-footer">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon icon v-bind="attrs" v-on="on" color="#8099b3">mdi-information-outline</v-icon>
-          </template>
-          <div v-html="aboutText"></div>
-        </v-tooltip>
-        <span style="color: #FCBA19;padding-top:3.5px;">
-          <i>A BC Online Application</i>
-        </span>
+        <div class="d-flex align-center">
+          <span class="font-italic">A BC Online Application</span>
+          <v-tooltip left nudge-top="30" v-if="aboutText" attach=".app-footer">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon icon v-bind="attrs" v-on="on" color="#8099b3" class="pl-4">mdi-information-outline</v-icon>
+            </template>
+            <div v-html="aboutText"></div>
+          </v-tooltip>
+        </div>
       </nav>
     </div>
   </footer>
@@ -97,4 +97,16 @@ export default class SbcFooter extends Vue {
       opacity: 1!important;
     }
   }
+
+// disable left pointer
+.v-tooltip__content:after {
+  margin-top: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-right: 0 !important;
+}
+
+span {
+  color: #FCBA19; // same as $BCgovGold5
+}
 </style>
