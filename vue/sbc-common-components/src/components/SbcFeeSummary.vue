@@ -16,7 +16,7 @@
         <li class="container fee-list__item"
           :key="lineItem.filingType"
           >
-          <div class="fee-list__item-name">{{lineItem.filingType}}</div>
+          <div class="fee-list__item-name">{{filingLabel ? filingLabel : lineItem.filingType}}</div>
           <div class="fee-list__item-value" v-if="lineItem.fee > 0">{{lineItem.fee | currency}}</div>
           <div class="fee-list__item-value" v-else>No Fee</div>
         </li>
@@ -70,6 +70,9 @@ export default class SbcFeeSummary extends Vue {
 
   @Prop({ default: '' })
   private payURL!: string
+
+  @Prop()
+  private filingLabel!: string
 
   /* class properties */
   private fees: Fee[] = []
