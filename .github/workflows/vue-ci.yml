@@ -3,7 +3,7 @@ name: SBC-Common-Components Web CI
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - "vue/sbc-common-components/**"
 
