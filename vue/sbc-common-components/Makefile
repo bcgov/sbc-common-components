@@ -1,6 +1,9 @@
 .PHONY: setup
 .PHONY: ci cd
 
+PROJECT_NAME:=sbc-common-components-web
+DOCKER_NAME:=sbc-common-components-web
+
 #################################################################################
 # COMMANDS -- Setup
 # expects the terminal to be openshift login
@@ -25,6 +28,14 @@ lint:  ## Run linting ofcode.
 
 test:  ## Unit testing
 	npm run test:unit
+
+build: ## Build the docker container
+	docker build . -t $(DOCKER_NAME) \
+		--build-arg VCS_REF=$(shell git rev-parse --short HEAD) \
+		--build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
+
+build-nc: ## Build the docker container without caching
+	docker build --no-cache -t $(DOCKER_NAME) .
 
 #################################################################################
 # Self Documenting Commands                                                     #
