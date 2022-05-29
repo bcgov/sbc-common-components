@@ -1,3 +1,4 @@
+import 'mutationobserver-shim'
 import { shallowMount, mount } from '@vue/test-utils'
 import SbcFeeSummary from '@/components/SbcFeeSummary.vue'
 import Vue from 'vue'
@@ -12,6 +13,10 @@ Vue.filter('currency', () => 'foo')
 jest.mock('../../src/services/fee.services')
 
 describe('SbcFeeSummary.vue', () => {
+  let vuetify
+  beforeEach(() => {
+    vuetify = new Vuetify()
+  })
   it('renders page .msg when passed', () => {
     let mockDetails = [{ 'filingType': 'Change of Director', 'filingTypeCode': 'OTADD', 'filingFees': 55, 'serviceFees': 0, 'fee': 0, 'tax': { 'gst': 0, 'pst': 0 } }]
     FeeService.getFee = jest.fn().mockResolvedValue(mockDetails)
@@ -23,7 +28,8 @@ describe('SbcFeeSummary.vue', () => {
       waiveFees: false
     }]
     const wrapper = mount(SbcFeeSummary, {
-      propsData: { filingData }
+      propsData: { filingData },
+      vuetify
     })
 
     expect(wrapper.findAll('header').exists()).toBe(true)
@@ -46,7 +52,8 @@ describe('SbcFeeSummary.vue', () => {
     }]
     // @ts-ignore
     const wrapper = mount(SbcFeeSummary, {
-      propsData: { filingData }
+      propsData: { filingData },
+      vuetify
     })
 
     expect(wrapper.props().filingData).toBe(filingData)
@@ -65,7 +72,8 @@ describe('SbcFeeSummary.vue', () => {
     }]
     // @ts-ignore
     const wrapper = mount(SbcFeeSummary, {
-      propsData: { filingData }
+      propsData: { filingData },
+      vuetify
     })
 
     expect(FeeService.getFee).toBeCalled()
