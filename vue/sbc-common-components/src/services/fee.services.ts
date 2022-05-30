@@ -13,7 +13,7 @@ export default {
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken)
     const accountId = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id || 0
 
-    if (filingData.length < 1) {
+    if (false || filingData.length < 1) {
       Promise.resolve()
     }
 
