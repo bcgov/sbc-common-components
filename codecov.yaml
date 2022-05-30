@@ -35,5 +35,5 @@ comment:
 flags:
   sbccommoncomponentsweb:
     paths:
-      - vue/sbc-common-components
+      - vue/sbc-common-components/src
     carryforward: true
