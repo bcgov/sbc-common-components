@@ -64,12 +64,12 @@ jobs:
         id: test
         run: |
           make test
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     flags: authweb
-      #     name: codecov-vue
-      #     fail_ci_if_error: true
+       - name: Upload coverage to Codecov
+         uses: codecov/codecov-action@v1
+         with:
+           flags: sbccommoncomponentsweb
+           name: codecov-vue
+           fail_ci_if_error: true
 
   build-check:
     needs: setup-job
@@ -77,7 +77,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: build to check strictness
-        id: build
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
         run: |
-          make build-nc
+          make setup
+      - run: npm run build --if-present
+        working-directory: ${{env.working-directory}}
