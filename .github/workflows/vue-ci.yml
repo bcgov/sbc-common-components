@@ -85,4 +85,4 @@ jobs:
         run: |
           make setup
       - run: npm run build --if-present
-        working-directory: ${{env.working-directory}}
+        working-directory: ./vue/sbc-common-components/
