@@ -47,7 +47,7 @@ class ExceptionHandler():
         """Handle standard exception."""
         if isinstance(error, HTTPException):
             logger.error(error)
-            message = dict(messaage=error.message if hasattr(error, 'message') else error.description)
+            message = dict(message=error.message if hasattr(error, 'message') else error.description)
         else:
             logger.exception(error)
             message = dict(message='Internal server error')
