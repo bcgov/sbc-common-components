@@ -60,7 +60,6 @@ class ExceptionHandler():
         """Register common exceptons or errors."""
         self.app = app
         self.register(AuthError, self.auth_handler)
-        self.register(HTTPException)
         self.register(SQLAlchemyError, self.db_handler)
         self.register(Exception)
         for exception in default_exceptions:
