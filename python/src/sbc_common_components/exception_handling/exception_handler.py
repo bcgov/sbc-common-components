@@ -37,10 +37,10 @@ class ExceptionHandler():
     def db_handler(self, error):  # pylint: disable=no-self-use
         """Handle Database error."""
         logger.exception(error)
-        error_code = error.__dict__['code'] if hasattr(error.__dict__, 'code') else type(error).__name__
-        message = str(error.__dict__['orig']) if hasattr(error.__dict__, 'orig') else ''
+        error_text = error.__dict__['code'] if hasattr(error.__dict__, 'code') else ''
+        message = str(error.__dict__['orig']) if hasattr(error.__dict__, 'orig') else 'Internal server error'
         status_code = error.status_code if hasattr(error, 'status_code') else 500
-        return {'error': '{}'.format(error_code),
+        return {'error': '{}'.format(error_text),
                 'message': '{}'.format(message)}, status_code, RESPONSE_HEADERS
 
     def std_handler(self, error):  # pylint: disable=no-self-use
