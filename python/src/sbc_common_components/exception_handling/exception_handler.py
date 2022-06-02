@@ -42,18 +42,12 @@ class ExceptionHandler():
 
     def std_handler(self, error):  # pylint: disable=no-self-use
         """Handle standard exception."""
-        message_content = ''
-        if hasattr(error, 'message'):
-            message_content = error.message
-        elif hasattr(error, 'description'):
-            message_content = error.description
-        else:
-            message_content = '{0}'.format(error.args)
-        message = dict(messaage=message_content)
         if isinstance(error, HTTPException):
             logger.error(error)
+            message = dict(messaage=error.message if hasattr(error, 'message') else error.description)
         else:
             logger.exception(error)
+            message = dict(message='Internal server error')
         return message, error.code if isinstance(error, HTTPException) else 500, RESPONSE_HEADERS
 
     def init_app(self, app):
