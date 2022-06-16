@@ -356,7 +356,7 @@ import SbcProductSelector from './SbcProductSelector.vue'
 import NotificationPanel from './NotificationPanel.vue'
 import { AccountStatus, LDFlags } from '../util/enums'
 import NotificationModule from '../store/modules/notification'
-import { appendAccountId } from '../util/common-util'
+import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
 
 declare module 'vuex' {
   interface Store<S> {
@@ -525,8 +525,10 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private goToHome () {
-    const url = this.inAuth ? Pages.HOME : appendAccountId(Pages.HOME)
-    this.redirectToPath(this.inAuth, url)
+    // always bcros home page
+    const url = appendAccountId(ConfigHelper.getRegistryHomeURL())
+    // redirect to home page
+    window.location.assign(url)
   }
 
   private goToUserProfile () {
@@ -590,8 +592,22 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     await this.syncCurrentAccount(settings)
     this.$emit('account-switch-completed')
 
+    // check for allowed redirect to determine whether need to redirect back to that page or dashboard
+    // list of Allowed URLs
+    const allowedRedirectURls = ConfigHelper.getAllowedUrlForRedirectToSamePage()
+    // default redirect to dashboard
+    const defaultRedirect = `${ConfigHelper.getRegistryHomeURL()}/${Pages.REGISTRY_DASHBOARD}`
+
+    const currentURL = trimTrailingSlashURL(`${window.location.origin}${window.location.pathname}`)
+    const redirect = allowedRedirectURls.indexOf(currentURL) > -1 ? currentURL : defaultRedirect
+
+    // @Prop({ default: false }) skipAccountSwitchRedirect!: boolean;
+
+    // skipAccountSwitchRedirect as prop and check here if need to avoid redirect to dashboard
+    // handle all the condtion (like NFS/pending approval page) in own app when we are doing it
+
     if (!inAuth) {
-      window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.HOME}`))
+      window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.ACCOUNT_SWITCHING}?redirectToUrl=${redirect}`))
     }
   }
 

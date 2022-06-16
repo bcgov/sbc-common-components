@@ -11,6 +11,9 @@ export enum SessionStorageKeys {
   StatusApiUrl = 'STATUS_API_URL',
   WhatsNew = 'WHATS_NEW',
   SessionSynced = 'SESSION_SYNCED',
+  RegistryHomeUrl = 'REGISTRY_HOME_URL',
+  NameRequestUrl = 'NAME_REQUEST_URL',
+  PprWebUrl = 'PPR_WEB_URL',
   SiteminderLogoutUrl = 'SITEMINDER_LOGOUT_URL'
 }
 
@@ -52,7 +55,9 @@ export enum Pages {
   CHOOSE_AUTH_METHOD = 'choose-authentication-method',
   NON_BCSC_INSTRUCTIONS = 'nonbcsc-info/instructions',
   ACCOUNT_FREEZ = 'account-freeze',
-  PENDING_APPROVAL = 'pendingapproval'
+  PENDING_APPROVAL = 'pendingapproval',
+  ACCOUNT_SWITCHING = 'account-switching',
+  REGISTRY_DASHBOARD = 'dashboard'
 }
 
 export const ALLOWED_URIS_FOR_PENDING_ORGS: string[] = ['setup-non-bcsc-account']
