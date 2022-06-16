@@ -31,11 +31,27 @@ export default class ConfigHelper {
     return trimTrailingSlashURL(sessionStorage.getItem(SessionStorageKeys.AuthWebUrl) || '')
   }
 
+  static getRegistryHomeURL () {
+    return trimTrailingSlashURL(sessionStorage.getItem(SessionStorageKeys.RegistryHomeUrl) || '')
+  }
+
+  static getNameRequestURL () {
+    return trimTrailingSlashURL(sessionStorage.getItem(SessionStorageKeys.NameRequestUrl) || '')
+  }
+
+  static getPprWebURL () {
+    return trimTrailingSlashURL(sessionStorage.getItem(SessionStorageKeys.PprWebUrl) || '')
+  }
+
   static setKeycloakConfigUrl (keycloakConfigUrl: string) {
     this.keycloakConfigUrl = keycloakConfigUrl
   }
 
   static getKeycloakConfigUrl (): string {
     return this.keycloakConfigUrl
+  }
+
+  static getAllowedUrlForRedirectToSamePage (): any {
+    return [ConfigHelper.getRegistryHomeURL(), ConfigHelper.getNameRequestURL(), ConfigHelper.getPprWebURL()]
   }
 }
