@@ -10,7 +10,8 @@ export enum SessionStorageKeys {
   AuthWebUrl = 'AUTH_WEB_URL',
   StatusApiUrl = 'STATUS_API_URL',
   WhatsNew = 'WHATS_NEW',
-  SessionSynced = 'SESSION_SYNCED'
+  SessionSynced = 'SESSION_SYNCED',
+  SiteminderLogoutUrl = 'SITEMINDER_LOGOUT_URL'
 }
 
 export enum Account {
