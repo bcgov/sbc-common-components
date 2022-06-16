@@ -601,6 +601,11 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     const currentURL = trimTrailingSlashURL(`${window.location.origin}${window.location.pathname}`)
     const redirect = allowedRedirectURls.indexOf(currentURL) > -1 ? currentURL : defaultRedirect
 
+    // @Prop({ default: false }) skipAccountSwitchRedirect!: boolean;
+
+    // skipAccountSwitchRedirect as prop and check here if need to avoid redirect to dashboard
+    // handle all the condtion (like NFS/pending approval page) in own app when we are doing it
+
     if (!inAuth) {
       window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.ACCOUNT_SWITCHING}?redirectToUrl=${redirect}`))
     }
