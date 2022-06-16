@@ -37,24 +37,28 @@ class ExceptionHandler():
     def db_handler(self, error):  # pylint: disable=no-self-use
         """Handle Database error."""
         logger.exception(error)
-        return {'error': '{}'.format(error.__dict__['code']),
-                'message': '{}'.format(str(error.__dict__['orig']))}, error.status_code, RESPONSE_HEADERS
+        error_text = error.__dict__['code'] if hasattr(error.__dict__, 'code') else ''
+        message_text = str(error.__dict__['orig']) if hasattr(error.__dict__, 'orig') else 'Internal server error'
+        status_code = error.status_code if hasattr(error, 'status_code') else 500
+        return {'error': '{}'.format(error_text),
+                'message': '{}'.format(message_text)}, status_code, RESPONSE_HEADERS
 
     def std_handler(self, error):  # pylint: disable=no-self-use
         """Handle standard exception."""
-        message = dict(messaage=error.message if hasattr(error, 'message') else error.description)
         if isinstance(error, HTTPException):
             logger.error(error)
+            message = dict(message=error.message if hasattr(error, 'message') else error.description)
         else:
             logger.exception(error)
+            message = dict(message='Internal server error')
         return message, error.code if isinstance(error, HTTPException) else 500, RESPONSE_HEADERS
 
     def init_app(self, app):
         """Register common exceptons or errors."""
         self.app = app
         self.register(AuthError, self.auth_handler)
-        self.register(HTTPException)
         self.register(SQLAlchemyError, self.db_handler)
+        self.register(Exception)
         for exception in default_exceptions:
             self.register(self._get_exc_class_and_code(exception))
 
