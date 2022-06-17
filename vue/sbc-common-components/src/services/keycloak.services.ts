@@ -116,7 +116,6 @@ class KeyCloakService {
               resolve()
             }
             redirectUrl = redirectUrl || `${window.location.origin}${process.env.VUE_APP_PATH}`
-
             const siteminderLogoutUrl = ConfigHelper.getFromSession(SessionStorageKeys.SiteminderLogoutUrl) || undefined
             if (siteminderLogoutUrl) {
               redirectUrl = `${siteminderLogoutUrl}?retUrl=${redirectUrl}&retnow=1`
