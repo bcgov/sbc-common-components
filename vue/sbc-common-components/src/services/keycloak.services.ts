@@ -119,7 +119,7 @@ class KeyCloakService {
 
             const siteminderLogoutUrl = ConfigHelper.getFromSession(SessionStorageKeys.SiteminderLogoutUrl) || undefined
             if (siteminderLogoutUrl) {
-              redirectUrl = siteminderLogoutUrl.replace('{redirectUrl}', redirectUrl)
+              redirectUrl = `${siteminderLogoutUrl}?retUrl=${redirectUrl}&retnow=1`
             }
             this.kc && this.kc.logout({ redirectUri: redirectUrl })
               .then(() => {
