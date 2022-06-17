@@ -105,6 +105,7 @@ class KeyCloakService {
         idToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || undefined,
         pkceMethod: 'S256'
       }
+      const siteminderLogoutUrl = ConfigHelper.getFromSession(SessionStorageKeys.SiteminderLogoutUrl) || undefined
       // Here we clear session storage, and add a flag in to prevent the app from
       // putting tokens back in from returning async calls  (see #2341)
       ConfigHelper.clearSession()
@@ -116,7 +117,6 @@ class KeyCloakService {
               resolve()
             }
             redirectUrl = redirectUrl || `${window.location.origin}${process.env.VUE_APP_PATH}`
-            const siteminderLogoutUrl = ConfigHelper.getFromSession(SessionStorageKeys.SiteminderLogoutUrl) || undefined
             if (siteminderLogoutUrl) {
               redirectUrl = `${siteminderLogoutUrl}?retUrl=${redirectUrl}&retnow=1`
             }
