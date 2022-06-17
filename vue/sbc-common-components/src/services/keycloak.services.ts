@@ -118,7 +118,7 @@ class KeyCloakService {
             }
             redirectUrl = redirectUrl || `${window.location.origin}${process.env.VUE_APP_PATH}`
             if (siteminderLogoutUrl) {
-              redirectUrl = `${siteminderLogoutUrl}?retUrl=${redirectUrl}&retnow=1`
+              redirectUrl = `${siteminderLogoutUrl}?returl=${redirectUrl}&retnow=1`
             }
             this.kc && this.kc.logout({ redirectUri: redirectUrl })
               .then(() => {
