@@ -50,8 +50,4 @@ export default class ConfigHelper {
   static getKeycloakConfigUrl (): string {
     return this.keycloakConfigUrl
   }
-
-  static getAllowedUrlForRedirectToSamePage (): any {
-    return [ConfigHelper.getRegistryHomeURL(), ConfigHelper.getNameRequestURL(), ConfigHelper.getPprWebURL()]
-  }
 }
