@@ -42,7 +42,7 @@
           </div>
 
           <template v-if="addressLocal.deliveryInstructions">
-            <div class="address-block__info-row delivery-instructions mt-5">
+            <div class="address-block__info-row delivery-instructions mt-5 font-italic">
               {{ addressLocal.deliveryInstructions }}
             </div>
           </template>
