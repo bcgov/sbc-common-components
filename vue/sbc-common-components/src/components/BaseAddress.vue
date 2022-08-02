@@ -161,6 +161,7 @@ import CountriesProvincesMixin from '../mixins/countries-provinces-mixin'
   mixins: [ValidationMixin, CountriesProvincesMixin]
 })
 export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvincesMixin) {
+  $v: any
   /**
    * The validation object used by Vuelidate to compute address model validity.
    * @returns the Vuelidate validations object
