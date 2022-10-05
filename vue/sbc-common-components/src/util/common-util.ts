@@ -66,6 +66,6 @@ export function appendAccountId (url, accountId = '') {
 
 export function removeAccountIdFromUrl (url, key = ACCOUNT_ID) {
   // replacing account id and formattig ie, removing extra ? or &
-  return url.replace(new RegExp(key + '=\\w+'), '').replace('?&', '?').replace(/\?$/, '')
+  return url?.replace(new RegExp(key + '=\\w+'), '').replace('?&', '?').replace(/\?$/, '')
     .replace('&&', '&').replace(/&$/, '')
 }
