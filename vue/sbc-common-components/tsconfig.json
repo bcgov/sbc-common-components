@@ -41,8 +41,5 @@
   ],
   "files": [
     "./node_modules/vue/types/index.d.ts"
-  ],
-  "vueCompilerOptions": {
-    "target": 2.7
-  }
+  ]
 }
