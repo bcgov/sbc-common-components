@@ -472,6 +472,10 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   flex: 1 1 auto;
 }
 
+.address-block__info-row {
+  color: $gray7;
+}
+
 // Form Row Elements
 .form__row.three-column {
   align-items: stretch;
@@ -485,6 +489,20 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
     flex-basis: 0;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+  }
+}
+
+// text field labels
+::v-deep .v-label {
+  color: $gray7;
+  font-size: $px-16;
+  font-weight: normal;
+}
+
+// text field inputs
+::v-deep {
+  .v-input input {
+    color: $gray9;
   }
 }
 
