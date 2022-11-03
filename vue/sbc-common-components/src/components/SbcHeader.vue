@@ -273,7 +273,7 @@
                     v-for="(settings, id) in switchableAccounts"
                     :key="id"
                     @click="switchAccount(settings, inAuth)"
-                    :two-line="settings.additionalLabel"
+                    :two-line="!!settings.additionalLabel"
                   >
 
                     <v-list-item-icon left>
