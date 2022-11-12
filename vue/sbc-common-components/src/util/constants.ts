@@ -21,6 +21,8 @@ export enum Account {
   ANONYMOUS = 'ANONYMOUS',
   PREMIUM = 'PREMIUM',
   BASIC = 'BASIC',
+  SBC_STAFF = 'SBC_STAFF',
+  STAFF = 'STAFF'
 }
 
 export enum IdpHint {

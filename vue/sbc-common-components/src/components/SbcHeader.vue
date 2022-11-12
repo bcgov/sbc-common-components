@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-flex">
     <header class="app-header" id="appHeader">
       <v-container class="justify-space-between">
         <a @click="goToHome()" class="brand">
@@ -180,7 +180,7 @@
                 </v-avatar>
                 <div class="user-info">
                   <div class="user-name" data-test="user-name">{{ username }}</div>
-                  <div class="account-name" v-if="!isStaff" data-test="account-name">{{ accountName }}</div>
+                  <div class="account-name" data-test="account-name">{{ accountName }}</div>
                 </div>
                 <v-icon class="ml-1">
                   mdi-menu-down
@@ -205,7 +205,7 @@
                   </v-list-item-avatar>
                   <v-list-item-content class="user-info">
                     <v-list-item-title class="user-name" data-test="menu-user-name">{{ username }}</v-list-item-title>
-                    <v-list-item-subtitle class="account-name" v-if="!isStaff" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class="account-name" data-test="menu-account-name">{{ accountName }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <!-- BEGIN: Hide if authentication is IDIR -->
@@ -230,7 +230,7 @@
               <v-list
                 tile
                 dense
-                v-if="currentAccount && !isStaff"
+                v-if="currentAccount"
               >
                 <v-subheader>ACCOUNT SETTINGS</v-subheader>
                 <v-list-item @click="goToAccountInfo(currentAccount)">
@@ -460,7 +460,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   ]
 
   get showTransactions (): boolean {
-    return this.currentAccount?.accountType === Account.PREMIUM
+    return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF].includes(this.currentAccount?.accountType as Account)
   }
 
   // only for internal staff who belongs to bcreg

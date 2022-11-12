@@ -128,6 +128,11 @@ header {
   background: $BCgovBlue5;
 }
 
+ul {
+    padding: 0;
+    list-style-type: none;
+}
+
 .container {
   display: flex;
   flex-flow: row nowrap;

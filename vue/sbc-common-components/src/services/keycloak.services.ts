@@ -117,8 +117,8 @@ class KeyCloakService {
               resolve()
             }
             redirectUrl = redirectUrl || `${window.location.origin}${process.env.VUE_APP_PATH}`
-            if (siteminderLogoutUrl) {
-              redirectUrl = `${siteminderLogoutUrl}?returl=${redirectUrl}&retnow=1`
+            if (siteminderLogoutUrl?.includes('http')) {
+              redirectUrl = `${siteminderLogoutUrl}?returl=${redirectUrl.replace(/(https?:\/\/)|(\/)+/g, '$1$2')}&retnow=1`
             }
             this.kc && this.kc.logout({ redirectUri: redirectUrl })
               .then(() => {

@@ -140,13 +140,11 @@ export default class AccountModule extends VuexModule {
       return orgIdFromUrl || String(storageAccountId || '') || ''
     }
 
-    if (!this.currentUser.roles.includes(Role.Staff)) {
-      const lastUsedAccount = getLastAccountId()
-      if (this.currentUser?.keycloakGuid) {
-        await this.syncUserSettings(lastUsedAccount)
+    const lastUsedAccount = getLastAccountId()
+    if (this.currentUser?.keycloakGuid) {
+      await this.syncUserSettings(lastUsedAccount)
 
-        ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
-      }
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
     }
   }
 
