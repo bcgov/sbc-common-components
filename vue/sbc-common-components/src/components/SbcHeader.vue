@@ -246,7 +246,6 @@
                   <v-list-item-title>Team Members</v-list-item-title>
                 </v-list-item>
                 <v-list-item
-                  v-if="showTransactions"
                   @click="goToTransactions()">
                   <v-list-item-icon left>
                     <v-icon>mdi-file-document-outline</v-icon>
@@ -460,7 +459,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   ]
 
   get showTransactions (): boolean {
-    return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF, Account.BASIC].includes(this.currentAccount?.accountType as Account)
+    return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF].includes(this.currentAccount?.accountType as Account)
   }
 
   // only for internal staff who belongs to bcreg
