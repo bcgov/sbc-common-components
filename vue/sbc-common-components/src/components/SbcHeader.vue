@@ -460,7 +460,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   ]
 
   get showTransactions (): boolean {
-    return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF].includes(this.currentAccount?.accountType as Account)
+    return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF, Account.BASIC].includes(this.currentAccount?.accountType as Account)
   }
 
   // only for internal staff who belongs to bcreg
