@@ -22,6 +22,14 @@ $BCgovBlue7: #002753;
 $BCgovBlue8: #002049;
 $BCgovBlue9: #001438;
 
+// BC GOV BACKGROUND
+$BCgovBG: #f2f2f2;
+
+// BC GOV TEXT
+$BCgovBullet: #CCCCCC;
+$BCgoveBueText1: #1a5a96; // PRIMARY BLUE TEXT
+$BCgoveBueText2: #0000EE; // LINK TEXT HOVER
+
 // Accent Blue
 $BCgovABlue1: #6e93ff;
 $BCgovABlue2: #3b6cff;
@@ -55,10 +63,14 @@ $BCgovInputBG: #ffffff;
 // Font Colors
 $BCgovFontColorInverted: #ffffff;
 
-// Other App Colours
-$app-notification-red: #F44336;
-$app-notification-blue: #2196F3;
-$app-notification-orange: #FCBA19;
+// App Colors
+$app-blue: #1669bb; // same as the Vuetify theme primary
+$app-lt-blue: #E2E8EE; // LOW OPACITY PRIMARY BLUE
+$app-background-blue: #E4EDF7; // Hover Background Blue
+$app-dk-blue: #38598a;
+
+// p, span tag text color incase needs to be same as vuetify component text
+$TextColorGray: #00000099;
 
 // Sizes for Fonts
 $px-11: 0.6875rem;
@@ -71,3 +83,8 @@ $px-17: 1.0625rem;
 $px-18: 1.1250rem;
 
 $app-header-height: 70px; // 70px
+
+// Other App Colours
+$app-notification-red: #F44336;
+$app-notification-blue: #2196F3;
+$app-notification-orange: #FCBA19;

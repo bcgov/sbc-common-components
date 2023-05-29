@@ -1,3 +1,7 @@
+import 'vuetify/dist/vuetify.min.css'
+import '/src/assets/scss/test.scss'
+import '/src/assets/scss/theme.scss'
+
 import Vue from 'vue'
 import Vuetify, {
   VAlert,
@@ -22,6 +26,8 @@ export default new Vuetify({
     },
     themes: {
       light: {
+        primary: '#1669bb',
+        error: '#D3272C',
         grey: {
           base: '#adb5bd',
           lighten5: '#f8f9fa',
@@ -54,9 +60,15 @@ export default new Vuetify({
         },
         bcgovgold: {
           base: '#fcba19'
-        }
+        },
+        navBg: {
+          base: '#001438'
+        },
+        navMenuBg: {
+          base: '#26527d'
+        },
+        anchor: '#1A5A96'
       }
-
     }
   }
 })
