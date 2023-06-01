@@ -147,7 +147,7 @@
                 <v-list-item two-line v-if="pendingApprovalCount > 0" @click="goToTeamMembers()">
                   <v-list-item-content>
                     <v-list-item-title>You have {{ pendingApprovalCount }} pending approvals</v-list-item-title>
-                    <v-list-item-subtitle>{{ pendingApprovalCount }} <span>{{pendingApprovalCount == '1' ? 'team member' : 'team members'}}</span> require approval to access this account</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ pendingApprovalCount }} <span>{{pendingApprovalCount == 1 ? 'team member' : 'team members'}}</span> require approval to access this account</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>

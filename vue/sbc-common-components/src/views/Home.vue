@@ -6,14 +6,14 @@
           <h1>Start a B.C. based Business and <br>keep Business Records up to date</h1>
           <p class="mt-7 mb-10">The Business Registry manages the creation (incorporation and registration) <br> and listing of businesses
             and organizations in British Columbia.</p>
-          <div class="hero-banner__cta-btns mb-2">
-            <!-- Authenticated -->
+            <div class="hero-banner__cta-btns mb-2">
+                          <!-- Authenticated -->
             <div v-if="userProfile" class="cta-btns-authenticated">
               <v-btn large color="bcgovblue" class="cta-btn-auth font-weight-bold white--text mr-4"
                      @click="goToManageBusinesses()">
                 Manage my Business
               </v-btn>
-              <!-- <NameRequestButton :isWide="true" /> -->
+              <NameRequestButton :isWide="true" />
             </div>
 
             <!-- Non-authenticated -->
@@ -39,7 +39,6 @@
                   </template>
                   <sbc-auth-menu />
                 </v-menu>
-                <name-request-button />
               </div>
               <div class="d-flex mt-8">
                 <span class="body-1">New to BC Registries?</span>
@@ -49,20 +48,21 @@
                 </router-link>
               </div>
             </div>
-          </div>
-          <v-dialog v-model="accountDialog" max-width="640">
-            <!-- <LoginBCSC> -->
+            </div>
+            <v-dialog v-model="accountDialog" max-width="640">
+            <LoginBCSC>
               <template v-slot:actions>
                 <v-btn large color="primary" class="login-btn" @click="login()">Log in</v-btn>
                 <v-btn large depressed color="default" @click="accountDialog = false">Cancel</v-btn>
               </template>
-            <!-- </LoginBCSC> -->
+            </LoginBCSC>
           </v-dialog>
         </v-container>
       </header>
       <div class="how-to-container py-6">
         <v-container class="py-10">
           <h2>How does it work?</h2>
+          <h1 class="notAvailable">Info Stepper</h1>
           <transition
             name="slide-x-transition"
             mode="out-in">
@@ -74,7 +74,10 @@
           </transition>
         </v-container>
       </div>
-      <!-- <TestimonialQuotes /> -->
+      <h1 class="notAvailable">Testimonial Quotes</h1>
+      <div class="bcsc-container py-6">
+        <h1 class="notAvailable">BCS PANEL GOES HERE</h1>
+      </div>
       <div class="contact-info-container">
         <v-container>
           <v-row>
@@ -90,28 +93,27 @@
                 <span>Business Registry Frequently Asked Questions</span>
               </a>
             </v-col>
-
-            <v-col cols="12" md="5">
               <h3 class="mb-6">Contact Us</h3>
               <p class="mb-5">For support or questions about this application, contact us at:</p>
               <ul class="contact-info__list mb-5">
                 <li>
-                  <span>{{ $t('labelTollFree') }}</span>
-                  <a :href="`tel:+${$t('techSupportTollFree')}`">{{ $t('techSupportTollFree') }}</a>
+                  <span>{{ ('Toll Free') }}</span>
+                  <a :href="`tel:+${('1-877-526-1526')}`">{{ ('1-877-526-1526') }}</a>
                 </li>
                 <li>
-                  <span>{{ $t('labelPhone') }}</span>
-                  <a :href="`tel:+1${$t('techSupportPhone')}`">{{ $t('techSupportPhone') }}</a>
+                  <span>{{ ('Phone') }}</span>
+                  <a :href="`tel:+1${('250-387-7848')}`">{{ ('250-387-7848') }}</a>
                 </li>
                 <li>
-                  <span>{{ $t('labelEmail') }}</span>
-                  <a :href="'mailto:' + $t('techSupportEmail') + '?subject=' + $t('techSupportEmailSubject')">{{ $t('techSupportEmail') }}</a>
+                  <span>{{ ('Email') }}</span>
+                  <a :href="'mailto:' + ('BCRegistries@gov.bc.ca') + '?subject=' + ('BC Registries - Business Registry Support Request')">{{ ('BCRegistries@gov.bc.ca') }}</a>
                 </li>
               </ul>
               <p class="mb-0">
-                <strong>{{ $t('labelHoursOfOperation') }}</strong><br>
-                {{ $t('hoursOfOperation') }}
+                <strong>{{ ('Hours of Operation:') }}</strong><br>
+                {{ ('Monday to Friday, 8:30am - 4:30pm Pacific Time') }}
               </p>
+            <v-col cols="12" md="5">
             </v-col>
           </v-row>
         </v-container>
@@ -143,36 +145,36 @@ import { User } from '@/models/user'
     ...mapMutations('org', ['resetCurrentOrganisation'])
   }
 })
-export default class HomeView extends Vue {
-  private readonly userProfile!: User
-  private readonly currentAccountSettings!: AccountSettings
-  private readonly currentMembership!: Member
-  private readonly getUserProfile!: (identifier: string) => User
-  private readonly currentUser!: KCUserProfile
-  private noPasscodeDialog = false
-  private accountDialog = false
-  private isDirSearchUser: boolean = false
-  private readonly resetCurrentOrganisation!: () => void
-  private readonly coopAssocUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/businesses-incorporated-companies/cooperative-associations'
-  private get showManageBusinessesBtn (): boolean {
+export default class Home extends Vue {
+  public readonly userProfile!: User
+  public readonly currentAccountSettings!: AccountSettings
+  public readonly currentMembership!: Member
+  public readonly getUserProfile!: (identifier: string) => User
+  public readonly currentUser!: KCUserProfile
+  public noPasscodeDialog = false
+  public accountDialog = false
+  public isDirSearchUser: boolean = false
+  public readonly resetCurrentOrganisation!: () => void
+  public readonly coopAssocUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/businesses-incorporated-companies/cooperative-associations'
+  public get showManageBusinessesBtn (): boolean {
     return this.currentAccountSettings && this.currentMembership?.membershipStatus === MembershipStatus.Active
   }
 
-  private get showCreateAccountBtn (): boolean {
+  public get showCreateAccountBtn (): boolean {
     return !!this.currentAccountSettings
   }
 
-  private goToManageBusinesses (): void {
+  public goToManageBusinesses (): void {
     let manageBusinessUrl = { path: `/${Pages.MAIN}/${this.currentAccountSettings.id}` }
     this.$router.push(manageBusinessUrl)
   }
 
-  private createAccount (): void {
+  public createAccount (): void {
     this.resetCurrentOrganisation()
     this.$router.push(`/${Pages.CREATE_ACCOUNT}`)
   }
 
-  private login () {
+  public login () {
     this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)
   }
 
@@ -184,7 +186,13 @@ export default class HomeView extends Vue {
 
 <style lang="scss" scoped>
   @import "../assets/scss/theme.scss";
-
+  .notAvailable {
+    color: rgb(225, 10, 10);
+    font-size: 2rem;
+    font-weight: 400;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.333);
+  }
   .v-alert.covid-alert {
     margin-bottom: 0;
     padding: 0;
@@ -466,6 +474,7 @@ export default class HomeView extends Vue {
     .container {
       padding-top: 2rem;
       padding-bottom: 2.5rem;
+      font-size: 1rem;
     }
 
     h3 {

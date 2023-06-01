@@ -7,7 +7,22 @@ import Vuetify, {
   VAlert,
   VContainer,
   VIcon,
-  VBtn
+  VBtn,
+  VOverlay,
+  VRow,
+  VCardActions,
+  VDialog,
+  VCard,
+  VCardTitle,
+  VCardText,
+  VMenu,
+  VDivider,
+  VList,
+  VListItem,
+  VListItemTitle,
+  VListItemIcon,
+  VCol,
+  VImg
 } from 'vuetify/lib'
 
 Vue.use(Vuetify, {
@@ -15,7 +30,22 @@ Vue.use(Vuetify, {
     VAlert,
     VContainer,
     VIcon,
-    VBtn
+    VBtn,
+    VOverlay,
+    VRow,
+    VCardActions,
+    VDialog,
+    VCard,
+    VCardTitle,
+    VCardText,
+    VMenu,
+    VDivider,
+    VList,
+    VListItem,
+    VListItemTitle,
+    VListItemIcon,
+    VCol,
+    VImg
   }
 })
 

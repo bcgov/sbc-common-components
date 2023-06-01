@@ -1,7 +1,19 @@
 <template>
   <div class="layout-wrapper">
-    <sbc-loader :show="showLoading" />
-    <sbc-header></sbc-header>
+    <sbc-loader  />
+    <sbc-header
+    class="flex-column"
+        :key="$store.state.refreshKey"
+        :in-auth="true"
+        :show-product-selector="false"
+        :show-login-menu="false"
+        :isModuleRegistered="false"
+        :isAuthenticated="false"
+        :notificationCount="2"
+        :isWhatsNewOpen = "true"
+        @account-switch-started="false"
+        @account-switch-completed="false"
+        @hook:mounted="true"></sbc-header>
     <div class="app-body">
       <div id="app">
         <div id="nav">
@@ -14,15 +26,6 @@
           <router-link to="/Home">Home </router-link>
         </div>
         <router-view/>
-      </div>
-      <slot name="app-body"></slot>
-      <div class="app-body__inner">
-        <slot name="app-body_inner"></slot>
-        <div class="container">
-          <main>
-            <slot></slot>
-          </main>
-        </div>
       </div>
     </div>
     <sbc-footer></sbc-footer>
@@ -47,15 +50,10 @@ export default Vue.extend({
 })
 </script>
 <style lang="scss">
-#app{
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 #nav{
-  padding: 30px;
+  padding: 5px;
+  text-align: justify;
+  text-align-last: center;
   a{
     font-weight: bold;
     color: #adb5bd;
