@@ -22,7 +22,9 @@ import Vuetify, {
   VListItemTitle,
   VListItemIcon,
   VCol,
-  VImg
+  VImg,
+  VApp,
+  VSnackbar
 } from 'vuetify/lib'
 
 Vue.use(Vuetify, {
@@ -45,7 +47,9 @@ Vue.use(Vuetify, {
     VListItemTitle,
     VListItemIcon,
     VCol,
-    VImg
+    VImg,
+    VApp,
+    VSnackbar
   }
 })
 

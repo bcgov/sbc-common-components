@@ -23,6 +23,7 @@
     "axios": "^0.21.1",
     "clickout-event": "^1.1.2",
     "core-js": "^3.1.4",
+    "moment": "^2.29.4",
     "country-list": "^2.2.0",
     "keycloak-js": "^9.0.3",
     "launchdarkly-js-client-sdk": "^2.16.1",
