@@ -24,7 +24,8 @@ import Vuetify, {
   VCol,
   VImg,
   VApp,
-  VSnackbar
+  VSnackbar,
+  VBadge
 } from 'vuetify/lib'
 
 Vue.use(Vuetify, {
@@ -49,7 +50,8 @@ Vue.use(Vuetify, {
     VCol,
     VImg,
     VApp,
-    VSnackbar
+    VSnackbar,
+    VBadge
   }
 })
 

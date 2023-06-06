@@ -100,7 +100,6 @@ import CommonUtils from '@/util/common-util'
 })
 export default class App extends Mixins() {
   public authModule = getModule(AuthModule, this.$store)
-  public businessStore = getModule(BusinessModule, this.$store)
   public readonly loadUserInfo!: () => KCUserProfile
   public showNotification = false
   public notificationText = ''
@@ -166,39 +165,16 @@ export default class App extends Mixins() {
     this.accountPendingRedirect()
   }
 
-  public async created () {
-    // If session is synced, then sync user details
-    if (ConfigHelper.getFromSession(SessionStorageKeys.SessionSynced) === 'true' && !CommonUtils.isSigningIn() && !CommonUtils.isSigningOut()) {
-      this.loadUserInfo()
-      await this.syncUser()
-      this.$store.commit('loadComplete')
-    }
-  }
-
   public async mounted (): Promise<void> {
     this.showLoading = false
 
-    EventBus.$on('show-toast', (eventInfo: Event) => {
-      this.showNotification = true
-      this.notificationText = eventInfo.message
-      this.toastType = eventInfo.type
-      this.toastTimeout = eventInfo.timeout
-    })
-
     // set logout url after refresh
-    this.setLogOutUrl()
-
     // Listen for event from signin component so it can initiate setup
     this.$root.$on('signin-complete', async (callback) => {
       await this.setup(true)
       // set logout url on first time sigin
-      this.setLogOutUrl()
       callback()
     })
-  }
-
-  public setLogOutUrl () {
-    this.logoutUrl = (this.$store.getters['auth/currentLoginSource'] === LoginSource.BCROS) ? ConfigHelper.getBcrosURL() : ''
   }
 
   public destroyed () {

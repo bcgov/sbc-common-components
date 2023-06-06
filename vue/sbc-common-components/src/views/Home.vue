@@ -93,6 +93,7 @@
                 <span>Business Registry Frequently Asked Questions</span>
               </a>
             </v-col>
+            <v-col cols="12" md="5">
               <h3 class="mb-6">Contact Us</h3>
               <p class="mb-5">For support or questions about this application, contact us at:</p>
               <ul class="contact-info__list mb-5">
@@ -113,7 +114,6 @@
                 <strong>{{ ('Hours of Operation:') }}</strong><br>
                 {{ ('Monday to Friday, 8:30am - 4:30pm Pacific Time') }}
               </p>
-            <v-col cols="12" md="5">
             </v-col>
           </v-row>
         </v-container>
