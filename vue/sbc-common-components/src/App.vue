@@ -14,7 +14,7 @@
         :isWhatsNewOpen = "true"
         @account-switch-started="false"
         @account-switch-completed="false"
-        @hook:mounted="true"
+        @hook:mounted="setup"
         ref="header" :redirect-on-logout="logoutUrl">
         <template v-slot:login-button-text>
           Log in with BC Services Card
@@ -152,20 +152,8 @@ export default class App extends Mixins() {
     this.showLoading = true
   }
 
-  public async completeAccountSwitch () {
-    await this.syncUser()
-    this.showLoading = false
-    this.toastType = 'primary'
-    this.notificationText = `Switched to account '${this.currentAccountSettings.label}'`
-    this.showNotification = true
-
-    this.$store.commit('updateHeader')
-
-    this.accountFreezeRedirect()
-    this.accountPendingRedirect()
-  }
-
   public async mounted (): Promise<void> {
+    sessionStorage.setItem(SessionStorageKeys.StatusApiUrl, 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
     this.showLoading = false
 
     // set logout url after refresh

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import SignIn from './views/SigninView.vue'
+import SignoutView from './views/SignoutView.vue'
 
 Vue.use(Router)
 
@@ -24,22 +26,22 @@ export default new Router({
     {
       path: '/SignIn',
       name: 'Sign In',
-      component: () => import('./views/SignIn.vue')
+      component: SignIn
     },
     {
       path: '/SignOut',
       name: 'Sign out',
-      component: () => import('./views/SignOut.vue')
+      component: () => import('./views/SignoutView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login.vue')
+      component: () => import('./views/LoginView.vue')
     },
-    {
-      path: '/home',
-      name: 'home',
-      component: () => import('./views/Home.vue')
-    }
+    { path: '/signin/:idpHint', name: 'signin', component: SignIn, props: true, meta: { requiresAuth: false } },
+    { path: '/signin/:idpHint/:redirectUrl', name: 'signin-redirect', component: SignIn, props: true, meta: { requiresAuth: false } },
+    { path: '/signin/:idpHint/:redirectUrl/:redirectUrlLoginFail', name: 'signin-redirect-fail', component: SignIn, props: true, meta: { requiresAuth: false } },
+    { path: '/signout', name: 'signout', component: SignoutView, props: true, meta: { requiresAuth: true } },
+    { path: '/signout/:redirectUrl', name: 'signout-redirect', component: SignoutView, props: true, meta: { requiresAuth: true } }
   ]
 })

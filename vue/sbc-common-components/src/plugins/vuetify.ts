@@ -3,57 +3,10 @@ import '/src/assets/scss/test.scss'
 import '/src/assets/scss/theme.scss'
 
 import Vue from 'vue'
-import Vuetify, {
-  VAlert,
-  VContainer,
-  VIcon,
-  VBtn,
-  VOverlay,
-  VRow,
-  VCardActions,
-  VDialog,
-  VCard,
-  VCardTitle,
-  VCardText,
-  VMenu,
-  VDivider,
-  VList,
-  VListItem,
-  VListItemTitle,
-  VListItemIcon,
-  VCol,
-  VImg,
-  VApp,
-  VSnackbar,
-  VBadge
-} from 'vuetify/lib'
 
-Vue.use(Vuetify, {
-  components: {
-    VAlert,
-    VContainer,
-    VIcon,
-    VBtn,
-    VOverlay,
-    VRow,
-    VCardActions,
-    VDialog,
-    VCard,
-    VCardTitle,
-    VCardText,
-    VMenu,
-    VDivider,
-    VList,
-    VListItem,
-    VListItemTitle,
-    VListItemIcon,
-    VCol,
-    VImg,
-    VApp,
-    VSnackbar,
-    VBadge
-  }
-})
+import Vuetify from 'vuetify'
+
+Vue.use(Vuetify)
 
 export default new Vuetify({
   theme: {

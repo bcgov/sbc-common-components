@@ -6,7 +6,9 @@ import AccountModule from '@/store/modules/account'
 import AuthModule from '@/store/modules/auth'
 import NotificationModule from '@/store/modules/notification'
 import ProductModule from '@/store/modules/product'
+import UserModule from '@/store/modules/userStub'
 import Vue from 'vue'
+import { use } from 'vue/types/umd'
 
 Vue.use(Vuex)
 
@@ -34,7 +36,8 @@ const storeOptions: StoreOptions<RootState> = {
     account: AccountModule,
     auth: AuthModule,
     notification: NotificationModule,
-    product: ProductModule
+    product: ProductModule,
+    user: UserModule
   }
 }
 

@@ -15,11 +15,11 @@ import LoadingScreen from './LoadingScreen.vue'
 })
 
 export default class SbcSignout extends Vue {
-  private isLoading = true
+  isLoading = true
 
   @Prop({ default: '' }) redirectUrl!: string
 
-  private async mounted () {
+  async mounted () {
     await KeyCloakService.logout(this.redirectUrl ? decodeURIComponent(this.redirectUrl) : undefined)
   }
 }

@@ -124,7 +124,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { IdpHint, LoginSource, Pages } from '@/util/constants'
+import { Pages } from '@/util/constants'
 import { Member, MembershipStatus } from '@/models/Organization'
 import { mapMutations, mapState } from 'vuex'
 import { AccountSettings } from '@/models/account-settings'
@@ -179,7 +179,6 @@ export default class Home extends Vue {
   }
 
   mounted () {
-    this.isDirSearchUser = (this.currentUser?.loginSource === LoginSource.BCROS)
   }
 }
 </script>

@@ -29,7 +29,7 @@
             aria-label="whatsnew"
             attach="#appHeader"
             @click.stop="notificationPanel=true"
-            v-if="!isAuthenticated && notificationCount > 0 && isWhatsNewOpen"
+            v-if="!isAuthenticated && isWhatsNewOpen"
           >
             <v-badge
               dot
@@ -407,29 +407,29 @@ declare module 'vuex' {
   }
 })
 export default class SbcHeader extends Mixins(NavigationMixin) {
-  private ldClient!: LDClient
-  private readonly currentAccount!: UserSettings | null
-  private readonly pendingApprovalCount!: number
-  private readonly username!: string
-  private readonly accountName!: string
-  private readonly currentLoginSource!: string
-  private readonly isAuthenticated!: boolean
-  private readonly switchableAccounts!: UserSettings[]
-  private readonly loadUserInfo!: () => KCUserProfile
-  private readonly syncAccount!: () => Promise<void>
-  private readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
-  private readonly syncUserProfile!: () => Promise<void>
-  private readonly syncWithSessionStorage!: () => void
-  private readonly currentUser!: any
-  private notificationPanel = false
-  private readonly notificationUnreadPriorityCount!: number
-  private readonly notificationUnreadCount!: number
-  private readonly fetchNotificationUnreadPriorityCount!: () => Promise<void>
-  private readonly fetchNotificationUnreadCount!: () => Promise<void>
-  private readonly markAsRead!: () => Promise<void>
-  private readonly notificationCount!: number
-  private readonly fetchNotificationCount!: () => Promise<void>
-  private readonly syncNotifications!: () => Promise<void>
+  ldClient!: LDClient
+  readonly currentAccount!: UserSettings | null
+  readonly pendingApprovalCount!: number
+  readonly username!: string
+  readonly accountName!: string
+  readonly currentLoginSource!: string
+  readonly isAuthenticated!: boolean
+  readonly switchableAccounts!: UserSettings[]
+  readonly loadUserInfo!: () => KCUserProfile
+  readonly syncAccount!: () => Promise<void>
+  readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
+  readonly syncUserProfile!: () => Promise<void>
+  readonly syncWithSessionStorage!: () => void
+  readonly currentUser!: any
+  notificationPanel = false
+  readonly notificationUnreadPriorityCount!: number
+  readonly notificationUnreadCount!: number
+  readonly fetchNotificationUnreadPriorityCount!: () => Promise<void>
+  readonly fetchNotificationUnreadCount!: () => Promise<void>
+  readonly markAsRead!: () => Promise<void>
+  readonly notificationCount!: number
+  readonly fetchNotificationCount!: () => Promise<void>
+  readonly syncNotifications!: () => Promise<void>
 
   @Prop({ default: '' }) redirectOnLoginSuccess!: string;
   @Prop({ default: '' }) redirectOnLoginFail!: string;
@@ -440,7 +440,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: true }) showLoginMenu!: boolean;
   @Prop({ default: '' }) dashboardReturnUrl !: string;
 
-  private readonly loginOptions = [
+  readonly loginOptions = [
     {
       idpHint: IdpHint.BCSC,
       option: 'BC Services Card',
@@ -485,7 +485,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     return [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(this.currentLoginSource) >= 0
   }
 
-  private async mounted () {
+  async mounted () {
     getModule(AccountModule, this.$store)
     getModule(AuthModule, this.$store)
     getModule(NotificationModule, this.$store)
@@ -507,40 +507,40 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   @Watch('isAuthenticated')
-  private async onisAuthenticated (isAuthenitcated: string, oldVal: string) {
+  async onisAuthenticated (isAuthenitcated: string, oldVal: string) {
     if (isAuthenitcated) {
       await this.updateProfile()
     }
   }
 
-  private async updateProfile () {
+  async updateProfile () {
     if (this.isBceid) {
       await this.syncUserProfile()
     }
   }
 
-  private goToHome () {
+  goToHome () {
     // always bcros home page
     const url = appendAccountId(ConfigHelper.getRegistryHomeURL())
     // redirect to home page
     window.location.assign(url)
   }
 
-  private goToUserProfile () {
+  goToUserProfile () {
     const url = this.inAuth ? Pages.USER_PROFILE : appendAccountId(Pages.USER_PROFILE)
     this.redirectToPath(this.inAuth, url)
   }
 
-  private goToCreateAccount () {
+  goToCreateAccount () {
     this.redirectToPath(this.inAuth, Pages.CHOOSE_AUTH_METHOD)
   }
 
-  private goToCreateBCSCAccount () {
+  goToCreateBCSCAccount () {
     const redirectUrl: string = this.dashboardReturnUrl ? `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(this.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
     this.redirectToPath(this.inAuth, redirectUrl)
   }
 
-  private async goToAccountInfo (settings: UserSettings) {
+  async goToAccountInfo (settings: UserSettings) {
     if (!this.currentAccount || !settings) {
       return
     }
@@ -548,21 +548,21 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/account-info`)
   }
 
-  private goToTeamMembers () {
+  goToTeamMembers () {
     if (!this.currentAccount) {
       return
     }
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/team-members`)
   }
 
-  private goToTransactions () {
+  goToTransactions () {
     if (!this.currentAccount) {
       return
     }
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/transactions`)
   }
 
-  private checkAccountStatus () {
+  checkAccountStatus () {
     // redirect if accoutn status is suspended
     if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(status => status === this.currentAccount?.accountStatus)) {
       // Avoid redirecting when navigating back from PAYBC for NSF.
@@ -581,7 +581,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   }
 
-  private async switchAccount (settings: UserSettings, inAuth?: boolean) {
+  async switchAccount (settings: UserSettings, inAuth?: boolean) {
     this.$emit('account-switch-started')
     if (this.$route.params.orgId) {
       // If route includes a URL param for account, we need to refresh with the new account id
@@ -623,7 +623,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   }
 
-  private getContextPath (): string {
+  getContextPath (): string {
     // [FAS] - Logout not redirecting to Login Screen#11120
     //  adeded default as /, if no base URL precent
     let baseUrl = (this.$router && (this.$router as any)['history'] && (this.$router as any)['history'].base) || '/'
@@ -631,18 +631,18 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     return baseUrl
   }
 
-  private async closeNotificationPanel () {
+  async closeNotificationPanel () {
     this.notificationPanel = false
     if (this.notificationUnreadCount > 0) {
       await this.markAsRead()
     }
   }
 
-  private get isWhatsNewOpen (): boolean {
+  get isWhatsNewOpen (): boolean {
     return LaunchDarklyService.getFlag(LDFlags.WhatsNew) || false
   }
 
-  private get disableBCEIDMultipleAccount (): boolean {
+  get disableBCEIDMultipleAccount (): boolean {
     return LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) || false
   }
 }
