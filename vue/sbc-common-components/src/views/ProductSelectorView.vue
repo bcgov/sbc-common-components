@@ -37,7 +37,7 @@ export default class ProductSelectorView extends Vue {
 }
 
 .prod{
-  background-color: red;
+  background-color: #003366;
   justify-content: center;
 }
 </style>

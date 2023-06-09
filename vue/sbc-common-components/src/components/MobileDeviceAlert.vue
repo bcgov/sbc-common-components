@@ -48,9 +48,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class MobileDeviceAlert extends Vue {
-  private mobileDevice: boolean = false
+  mobileDevice: boolean = false
 
-  private isMobileDevice (): boolean {
+  isMobileDevice (): boolean {
     if (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
@@ -62,7 +62,7 @@ export default class MobileDeviceAlert extends Vue {
     return false
   }
 
-  private async mounted () {
+  async mounted () {
     this.mobileDevice = this.isMobileDevice()
   }
 }

@@ -57,20 +57,20 @@
             <router-link to="/BaseAddress">Base Address</router-link> |
             <router-link to="/BrowserVersionAlert">Browser Version Alert</router-link> |
             <router-link to="/FeeSummary">Fee Summary</router-link> |
-            <router-link class="disabled" to="/LoadingScreen">Loading Screen</router-link> |
-            <router-link class="disabled" to="/Loader">Loader</router-link> |
+            <router-link to="/LoadingScreen">Loading Screen</router-link> |
+            <router-link to="/Loader">Loader</router-link> |
             <router-link to="/Login">Login</router-link> |
-            <router-link class="disabled" to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
-            <router-link class="disabled" to="/NavigationBar">Navigation Bar</router-link> |
-            <router-link class="disabled" to="/NotificationPanel">Notification Panel</router-link> |
-            <router-link class="disabled" to="/PaySystemAlert">Pay System Alert</router-link> |
+            <router-link to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
+            <router-link to="/NavigationBar">Navigation Bar</router-link> |
+            <router-link to="/NotificationPanel">Notification Panel</router-link> |
+            <router-link to="/PaySystemAlert">Pay System Alert</router-link> |
             <router-link to="/ProductSelector">Product Selector</router-link> |
             <router-link to="/SignIn">Sign In</router-link> |
             <router-link class="disabled" to="/SignOut">Sign Out</router-link> |
-            <router-link class="disabled" to="/SystemAlert">System Alert</router-link> |
+            <router-link to="/SystemAlert">System Alert</router-link> |
             <router-link to="/SystemBanner">System Banner</router-link> |
-            <router-link class="disabled" to="/System Error">System Error</router-link> |
-            <router-link class="disabled" to="/SystemErrorModal">System Error Modal</router-link>
+            <router-link to="/SystemError">System Error</router-link> |
+            <router-link to="/SystemErrorModal">System Error Modal</router-link>
           </v-col>
         </v-row>
       </div>
@@ -213,6 +213,7 @@ export default class App extends Mixins() {
   padding: 5px;
   text-align: justify;
   text-align-last: center;
+  z-index: 100;
   a{
     font-weight: bold;
     color: #adb5bd;
@@ -250,9 +251,13 @@ export default class App extends Mixins() {
     text-align: justify;
     text-align-last: center;
     padding-bottom: 20px;
+    margin-bottom: 20px;
     text-transform: uppercase;
     text-decoration: underline;
     text-decoration-color: #fcba19;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
   }
 
   .app-body {

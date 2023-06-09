@@ -40,16 +40,16 @@ const i18n = new VueI18n({
 })
 export default class SbcSystemAlert extends Vue {
   @Prop({ default: [] })
-  private serviceData: { serviceName: string, serviceNameDesc: string }[]
+  serviceData: { serviceName: string, serviceNameDesc: string }[]
 
   @Prop({ default: '' })
-  private statusURL: string
+  statusURL: string
 
   /* class properties */
-  private isSbcSystemDown: boolean = false
-  private alertMessage: string = ''
+  isSbcSystemDown: boolean = false
+  alertMessage: string = ''
 
-  private mounted (): void {
+  mounted (): void {
     StatusServices.getServiceStatus(this.serviceData['serviceName'])
       .then((response) => {
         this.isSbcSystemDown = !getBoolean(response.data && response.data.currentStatus)

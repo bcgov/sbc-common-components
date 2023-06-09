@@ -91,17 +91,17 @@ import { UserSettings } from '../models/userSettings'
   }
 })
 export default class NavigationBar extends Vue {
-  private readonly currentAccount!: UserSettings | null
-  private readonly isAuthenticated!: boolean
+  readonly currentAccount!: UserSettings | null
+  readonly isAuthenticated!: boolean
   @Prop() configuration!: NavigationBarConfig
   @Prop({ default: false }) hide!: boolean
-  private mobileNavDrawer = false
+  mobileNavDrawer = false
 
-  private get showNavBar (): boolean {
+  get showNavBar (): boolean {
     return !this.hide && this.configuration && this.configuration.menuItems.length > 0
   }
 
-  private isMenuItemEnabled (menuItem: NavigationMenuItem): boolean {
+  isMenuItemEnabled (menuItem: NavigationMenuItem): boolean {
     return !(menuItem.meta.requiresAuth && !this.isAuthenticated) || (menuItem.meta.requiresAccount && !this.currentAccount)
   }
 }

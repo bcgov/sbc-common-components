@@ -1,5 +1,8 @@
 <template>
+  <div>
+    <h1 class="pageTitle">Sign Out</h1>
     <sbc-signout :redirect-url="redirectbackUrl"></sbc-signout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,4 +37,20 @@ async mounted () {
 </script>
 
 <style lang="scss" scoped>
+  .pageTitle{
+    position: absolute;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #003366;
+    text-align: justify;
+    text-align-last: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-color: #fcba19;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+  }
 </style>

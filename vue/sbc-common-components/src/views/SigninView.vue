@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="pageTitle">Signin</h1>
+    <h1 class="pageTitle">Sign in</h1>
     <sbc-signin
       :idp-hint="idpHint"
       :in-auth="true"
@@ -73,4 +73,20 @@ export default class Signin extends Mixins() {
 </script>
 
 <style lang="scss" scoped>
+  .pageTitle{
+    position: absolute;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #003366;
+    text-align: justify;
+    text-align-last: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-color: #fcba19;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+  }
 </style>

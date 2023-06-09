@@ -65,7 +65,7 @@ import { Fee, FilingData } from '../models'
 @Component({})
 export default class SbcFeeSummary extends Vue {
   /* This prop is an array of filing data. See model for details. */
-  @Prop({ default: [] })
+  @Prop({ default: () => [] })
   filingData!: Array<FilingData>
 
   @Prop({ default: '' })

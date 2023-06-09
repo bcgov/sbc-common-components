@@ -1,12 +1,10 @@
 <template>
   <v-overlay :value="show">
-      <v-progress-circular size="50" width="5" color="#ffffff"
+      <v-progress-circular size="50" width="5" :color="progressColor"
         :indeterminate="indeterminate"
         :z-index="zIndex"
       ></v-progress-circular>
-      <!--
       <span class="ml-3">{{message}}</span>
-      -->
   </v-overlay>
 </template>
 
@@ -17,12 +15,12 @@ import Vue from 'vue'
 @Component({})
 export default class SbcLoader extends Vue {
   @Prop({ default: false })
-  private show!: boolean
+  show!: boolean
   @Prop({ default: 'Account Switching In Progress' })
-  private message!: string
+  message!: string
   @Prop({ default: '' })
-  private progressColor!: string
-  private indeterminate = true
-  private zIndex = 9
+  progressColor!: string
+  indeterminate = true
+  zIndex = 9
 }
 </script>

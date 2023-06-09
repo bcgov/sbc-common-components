@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Base Address Form</h1>
+    <h1 class="pageTitle">Base Address Form</h1>
     <base-address
     ref="baseAddress"
     :editing="true"
