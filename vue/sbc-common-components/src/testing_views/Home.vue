@@ -1,19 +1,17 @@
 <template>
   <div>
     <article>
-      <header class="hero-banner d-flex align-center" :class="{'auth': userProfile}">
+      <header class="hero-banner d-flex align-center" :class="{'auth': true}">
         <v-container>
           <h1>Start a B.C. based Business and <br>keep Business Records up to date</h1>
           <p class="mt-7 mb-10">The Business Registry manages the creation (incorporation and registration) <br> and listing of businesses
             and organizations in British Columbia.</p>
             <div class="hero-banner__cta-btns mb-2">
                           <!-- Authenticated -->
-            <div v-if="userProfile" class="cta-btns-authenticated">
-              <v-btn large color="bcgovblue" class="cta-btn-auth font-weight-bold white--text mr-4"
-                     @click="goToManageBusinesses()">
+            <div v-if="true" class="cta-btns-authenticated">
+              <v-btn large color="bcgovblue" class="cta-btn-auth font-weight-bold white--text mr-4">
                 Manage my Business
               </v-btn>
-              <NameRequestButton :isWide="true" />
             </div>
 
             <!-- Non-authenticated -->
@@ -67,10 +65,8 @@
             name="slide-x-transition"
             mode="out-in">
             <router-view
-              :userProfile="userProfile"
               @login="login()"
-              @account-dialog="accountDialog = true"
-              @manage-businesses="goToManageBusinesses()"/>
+              @account-dialog="accountDialog = true"></router-view>
           </transition>
         </v-container>
       </div>
@@ -125,12 +121,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Pages } from '@/util/constants'
-import { Member, MembershipStatus } from '@/models/Organization'
 import { mapMutations, mapState } from 'vuex'
-import { AccountSettings } from '@/models/account-settings'
 import { KCUserProfile } from '../models/KCUserProfile'
 import SbcAuthMenu from '../components/SbcAuthMenu.vue'
-import { User } from '@/models/user'
 
 @Component({
   name: 'Home',
@@ -146,35 +139,19 @@ import { User } from '@/models/user'
   }
 })
 export default class Home extends Vue {
-  public readonly userProfile!: User
-  public readonly currentAccountSettings!: AccountSettings
-  public readonly currentMembership!: Member
-  public readonly getUserProfile!: (identifier: string) => User
-  public readonly currentUser!: KCUserProfile
-  public noPasscodeDialog = false
-  public accountDialog = false
-  public isDirSearchUser: boolean = false
-  public readonly resetCurrentOrganisation!: () => void
-  public readonly coopAssocUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/businesses-incorporated-companies/cooperative-associations'
-  public get showManageBusinessesBtn (): boolean {
-    return this.currentAccountSettings && this.currentMembership?.membershipStatus === MembershipStatus.Active
-  }
+  readonly currentUser!: KCUserProfile
+  noPasscodeDialog = false
+  accountDialog = false
+  isDirSearchUser: boolean = false
+  readonly resetCurrentOrganisation!: () => void
+  readonly coopAssocUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/businesses-incorporated-companies/cooperative-associations'
 
-  public get showCreateAccountBtn (): boolean {
-    return !!this.currentAccountSettings
-  }
-
-  public goToManageBusinesses (): void {
-    let manageBusinessUrl = { path: `/${Pages.MAIN}/${this.currentAccountSettings.id}` }
-    this.$router.push(manageBusinessUrl)
-  }
-
-  public createAccount (): void {
+  createAccount (): void {
     this.resetCurrentOrganisation()
     this.$router.push(`/${Pages.CREATE_ACCOUNT}`)
   }
 
-  public login () {
+  login () {
     this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)
   }
 

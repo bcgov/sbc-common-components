@@ -44,7 +44,6 @@
         type="warning"
         class="mb-0 text-center colour-dk-text"
         v-if="bannerText"
-        v-html="bannerText"
       />
     </div>
       <div id="nav">
@@ -87,16 +86,13 @@ import SbcFooter from '/src/components/SbcFooter.vue'
 import SbcHeader from '/src/components/SbcHeader.vue'
 import SbcLoader from '/src/components/SbcLoader.vue'
 import KeyCloakService from '../src/services/keycloak.services'
-import { LoginSource, LDFlags, Pages, Role, SessionStorageKeys } from '@/util/constants'
+import { LDFlags, Pages, SessionStorageKeys } from '@/util/constants'
 import { appendAccountId } from '../src/util/common-util'
 import { getModule } from 'vuex-module-decorators'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import AuthModule from '../src/store/modules/auth'
-import { Event } from '@/models/event'
 import { KCUserProfile } from '../src/models/KCUserProfile'
 import LaunchDarklyService from '../src/services/launchdarkly.services'
-import CommonUtils from '@/util/common-util'
-
 @Component({
   components: {
     SbcHeader,
@@ -117,14 +113,14 @@ import CommonUtils from '@/util/common-util'
   }
 })
 export default class App extends Mixins() {
-  public authModule = getModule(AuthModule, this.$store)
-  public readonly loadUserInfo!: () => KCUserProfile
-  public showNotification = false
-  public notificationText = ''
-  public showLoading = true
-  public toastType = 'primary'
-  public toastTimeout = 6000
-  public logoutUrl = ''
+  authModule = getModule(AuthModule, this.$store)
+  readonly loadUserInfo!: () => KCUserProfile
+  showNotification = false
+  notificationText = ''
+  showLoading = true
+  toastType = 'primary'
+  toastTimeout = 6000
+  logoutUrl = ''
 
   $refs: {
     header: SbcHeader
@@ -145,49 +141,16 @@ export default class App extends Mixins() {
     return bannerText?.trim()
   }
 
-  /** The route breadcrumbs list. */
-  get breadcrumbs (): Array<BreadcrumbIF> {
-    const currentAccountId = this.currentOrganization?.id || ''
-    const breadcrumb = this.$route?.meta?.breadcrumb || []
-    // updating breadcrumb url with account id if its external URL
-    const breadcrumbwithAccountId = breadcrumb.map(items => {
-      const newItem = { ...items }
-      if (newItem && newItem.href) {
-        newItem.href = appendAccountId(items.href, currentAccountId.toString())
-      }
-      return newItem
-    })
-
-    return [...(breadcrumbwithAccountId || [])]
-  }
-
   /** The About text. */
   get aboutText (): string {
     return process.env.ABOUT_TEXT
   }
 
-  public startAccountSwitch () {
+  startAccountSwitch () {
     this.showLoading = true
   }
 
-  public async mounted (): Promise<void> {
-    sessionStorage.setItem(SessionStorageKeys.StatusApiUrl, 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
-    this.showLoading = false
-
-    // set logout url after refresh
-    // Listen for event from signin component so it can initiate setup
-    this.$root.$on('signin-complete', async (callback) => {
-      await this.setup(true)
-      // set logout url on first time sigin
-      callback()
-    })
-  }
-
-  public destroyed () {
-    this.$root.$off('signin-complete')
-  }
-
-  public async setup (isSigninComplete?: boolean) {
+  async setup (isSigninComplete?: boolean) {
     // Header added modules to store so can access mapped actions now
     if (this.$store.getters['auth/isAuthenticated']) {
       try {
@@ -195,7 +158,6 @@ export default class App extends Mixins() {
           await KeyCloakService.initializeToken(this.$store)
         }
         this.loadUserInfo()
-        await this.syncUser()
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('App.vue.setup Error: ' + e)
