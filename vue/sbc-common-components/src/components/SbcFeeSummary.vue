@@ -66,20 +66,20 @@ import { Fee, FilingData } from '../models'
 export default class SbcFeeSummary extends Vue {
   /* This prop is an array of filing data. See model for details. */
   @Prop({ default: [] })
-  private filingData!: Array<FilingData>
+  filingData!: Array<FilingData>
 
   @Prop({ default: '' })
-  private payURL!: string
+  payURL!: string
 
   @Prop()
-  private filingLabel!: string
+  filingLabel!: string
 
   /* class properties */
-  private fees: Fee[] = []
-  private fetchError: string = ''
+  fees: Fee[] = []
+  fetchError: string = ''
 
   /* lifecycle event */
-  private mounted (): void {
+  mounted (): void {
     // console.log('%c FeeModule-Data Received on Mount as %s %s', 'color: blue; font-size: 12px',
     //   JSON.stringify(this.filingData), this.payURL)
 
@@ -95,13 +95,13 @@ export default class SbcFeeSummary extends Vue {
   }
 
   /* getter */
-  private get totalFilingFees (): number {
+  get totalFilingFees (): number {
     return this.fees.reduce((acc: number, item: Fee) => acc + item.total, 0)
   }
 
   /* watcher */
   @Watch('filingData')
-  private onFilingDataChanged (val: string, oldVal: string): void {
+  onFilingDataChanged (val: string, oldVal: string): void {
     // console.log('%c FeeModule-Watch Activated as %s', 'color: blue; font-size: 12px',
     //   JSON.stringify(this.filingData))
 
@@ -116,7 +116,7 @@ export default class SbcFeeSummary extends Vue {
 
   /* emitter */
   @Emit('total-fee')
-  private emitTotalFee (val: number): void {}
+  emitTotalFee (val: number): void {}
 }
 </script>
 

@@ -140,16 +140,16 @@ import { getModule } from 'vuex-module-decorators'
   }
 })
 export default class SbcProductSelector extends Vue {
-  private dialog = false
-  private readonly products!: Products
-  private readonly syncProducts!: () => Promise<void>
+  dialog = false
+  readonly products!: Products
+  readonly syncProducts!: () => Promise<void>
 
-  private async mounted () {
+  async mounted () {
     getModule(ProductModule, this.$store)
     await this.syncProducts()
   }
 
-  private goToProductPage (product: Product): void {
+  goToProductPage (product: Product): void {
     window.open(product.url, '_blank')
   }
 }

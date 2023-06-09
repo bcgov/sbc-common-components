@@ -84,17 +84,17 @@ import 'clickout-event'
   }
 })
 export default class NotificationPanel extends Vue {
-  private readonly notifications!: Notification[]
+  readonly notifications!: Notification[]
 
   /** Prop to display the dialog. */
   @Prop() showNotifications: boolean
 
   @Emit('closeNotifications')
-  private async emitClose () {
+  async emitClose () {
 
   }
 
-  private async mounted () {
+  async mounted () {
     getModule(NotificationModule, this.$store)
   }
 }

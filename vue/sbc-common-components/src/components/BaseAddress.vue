@@ -199,51 +199,51 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   @Prop({ default: false })
   readonly noPoBox: boolean
 
-  resetRegion() {
+  resetRegion () {
     this.addressLocal['addressRegion'] = ''
   }
 
   /** A local (working) copy of the address, to contain the fields edited by the component (ie, the model). */
-  private addressLocal: object = {}
+  addressLocal: object = {}
 
   /** A local (working) copy of the address schema. */
-  private schemaLocal: any = {}
+  schemaLocal: any = {}
 
   /** A unique id for this instance of this component. */
-  private uniqueId = uniqueId()
+  uniqueId = uniqueId()
 
   /** A unique id for the Street Address input. */
-  private get streetAddressId (): string {
+  get streetAddressId (): string {
     return `street-address-${this.uniqueId}`
   }
 
   /** A unique id for the Address Country input. */
-  private addressCountryId (): string {
+  addressCountryId (): string {
     return `address-country-${this.uniqueId}`
   }
 
   /** The Address Country, to simplify the template and so we can watch it below. */
-  private get addressCountry (): string {
+  get addressCountry (): string {
     return this.addressLocal['addressCountry']
   }
 
   /** The Street Address Additional label with 'optional' as needed. */
-  private get streetAddressAdditionalLabel (): string {
+  get streetAddressAdditionalLabel (): string {
     return 'Additional Street Address' + (this.isSchemaRequired('streetAddressAdditional') ? '' : ' (Optional)')
   }
 
   /** The Street Address label with 'optional' as needed. */
-  private get streetAddressLabel (): string {
+  get streetAddressLabel (): string {
     return 'Street Address' + (this.isSchemaRequired('streetAddress') ? '' : ' (Optional)')
   }
 
   /** The Address City label with 'optional' as needed. */
-  private get addressCityLabel (): string {
+  get addressCityLabel (): string {
     return 'City' + (this.isSchemaRequired('addressCity') ? '' : ' (Optional)')
   }
 
   /** The Address Region label with 'optional' as needed. */
-  private get addressRegionLabel (): string {
+  get addressRegionLabel (): string {
     let label: string
     let required = this.isSchemaRequired('addressRegion')
 
@@ -262,7 +262,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 
   /** The Postal Code label with 'optional' as needed. */
-  private get postalCodeLabel (): string {
+  get postalCodeLabel (): string {
     let label: string
     if (this.addressLocal['addressCountry'] === 'US') {
       label = 'Zip Code'
@@ -273,26 +273,26 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   }
 
   /** The Address Country label with 'optional' as needed. */
-  private get addressCountryLabel (): string {
+  get addressCountryLabel (): string {
     return 'Country' + (this.isSchemaRequired('addressCountry') ? '' : ' (Optional)')
   }
 
   /** The Delivery Instructions label with 'optional' as needed. */
-  private get deliveryInstructionsLabel (): string {
+  get deliveryInstructionsLabel (): string {
     return 'Delivery Instructions' + (this.isSchemaRequired('deliveryInstructions') ? '' : ' (Optional)')
   }
 
-  private get streetAddressHint (): string {
+  get streetAddressHint (): string {
     return this.noPoBox ? 'Address cannot be a PO Box' : ''
   }
 
   /** Whether the specified prop is required according to the schema. */
-  private isSchemaRequired (prop: string): boolean {
+  isSchemaRequired (prop: string): boolean {
     return Boolean(this.schemaLocal && this.schemaLocal[prop] && this.schemaLocal[prop].required)
   }
 
   /** Array of validation rules used by input elements to prevent extra whitespace. */
-  private readonly spaceRules: Array<Function> = [
+  readonly spaceRules: Array<Function> = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     v => !/\s\s/g.test(v) || 'Invalid word spacing' // multiple inline spaces
@@ -303,24 +303,24 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * NB: As a getter, this is initialized between created() and mounted().
    * @returns the Vuetify validation rules object
    */
-  private get rules (): { [attr: string]: Array<Function> } {
+  get rules (): { [attr: string]: Array<Function> } {
     return this.createVuetifyRulesObject('addressLocal')
   }
 
   /** Emits an update message for the address prop, so that the caller can ".sync" with it. */
   @Emit('update:address')
-  private emitAddress (address: object): void { }
+  emitAddress (address: object): void { }
 
   /** Emits the validity of the address entered by the user. */
   @Emit('valid')
-  private emitValid (valid: boolean): void { }
+  emitValid (valid: boolean): void { }
 
   /**
    * Watches changes to the Schema object, so that if the parent changes the data, then
    * the working copy of it is updated.
    */
   @Watch('schema', { deep: true, immediate: true })
-  private onSchemaChanged (): void {
+  onSchemaChanged (): void {
     this.schemaLocal = { ...this.schema }
   }
 
@@ -329,7 +329,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * the working copy of it is updated.
    */
   @Watch('address', { deep: true, immediate: true })
-  private onAddressChanged (): void {
+  onAddressChanged (): void {
     this.addressLocal = { ...this.address }
   }
 
@@ -337,7 +337,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * Watches changes to the Address Country and updates the schema accordingly.
    */
   @Watch('addressCountry')
-  private onAddressCountryChanged (): void {
+  onAddressCountryChanged (): void {
     // skip this if component is called without a schema (eg, display mode)
     if (this.schema) {
       if (this.useCountryRegions(this.addressLocal['addressCountry'])) {
@@ -359,7 +359,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * Will notify the parent object with the new address and whether or not the address is valid.
    */
   @Watch('addressLocal', { deep: true, immediate: true })
-  private onAddressLocalChanged (): void {
+  onAddressLocalChanged (): void {
     this.emitAddress(this.addressLocal)
     this.emitValid(!this.$v.$invalid)
   }
@@ -369,12 +369,12 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * @param code the short code of the country
    * @returns whether to use v-select (true) or v-text-field (false) for input
    */
-  private useCountryRegions (code: string): boolean {
+  useCountryRegions (code: string): boolean {
     return (code === 'CA' || code === 'US')
   }
 
   /** Enables AddressComplete for this instance of the address. */
-  private enableAddressComplete (): void {
+  enableAddressComplete (): void {
     // If you want to use this component with the Canada Post AddressComplete service:
     // 1. The AddressComplete JavaScript script (and stylesheet) must be loaded.
     // 2. Your AddressComplete account key must be defined.
@@ -399,7 +399,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * @param key the key for the Canada Post account that is to be charged for lookups
    * @returns an object that is a pca.Address instance
    */
-  private createAddressComplete (pca, key: string): object {
+  createAddressComplete (pca, key: string): object {
     // Set up the two fields that AddressComplete will use for input.
     // Ref: https://www.canadapost.ca/pca/support/guides/advanced
     // Note: Use special field for country, which user can't click, and which AC will overwrite
@@ -424,7 +424,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
    * Callback to update the address data after the user chooses a suggested address.
    * @param address the data object returned by the AddressComplete Retrieve API
    */
-  private addressCompletePopulate (address: object): void {
+  addressCompletePopulate (address: object): void {
     const newAddressLocal: object = {}
 
     newAddressLocal['streetAddress'] = address['Line1'] || 'N/A'
@@ -457,7 +457,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
     Vue.nextTick(() => { (this.$refs.addressForm as any).validate() })
   }
 
-  private combineLines (line1: string, line2: string) {
+  combineLines (line1: string, line2: string) {
     if (!line1) return line2
     if (!line2) return line1
     return line1 + '\n' + line2

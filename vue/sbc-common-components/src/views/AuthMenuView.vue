@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1 class="pageTitle">Login</h1>
-    <sbc-login :redirectUrl="redirectUrl" />
+    <h1 class="pageTitle">Auth Menu</h1>
+    <sbc-auth-menu />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
 // Components
-import SbcLogin from '../../src/components/SbcLogin.vue'
+import SbcAuthMenu from '../../src/components/SbcAuthMenu.vue'
   /**
    * Operation:
    * 1. When this component is first loaded (ie, we are not authenticated) then the
@@ -17,10 +17,10 @@ import SbcLogin from '../../src/components/SbcLogin.vue'
    */
   @Component({
     components: {
-      SbcLogin
+      SbcAuthMenu
     }
   })
-export default class LoginView extends Vue {
+export default class AuthMenuView extends Vue {
   get redirectUrl () {
     return (this.$route.query.redirect as string)
   }
@@ -29,8 +29,4 @@ export default class LoginView extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
-
-::v-deep .sbc-signin-button {
-  width: 100%;
-}
 </style>

@@ -7,7 +7,7 @@
         :key="$store.state.refreshKey"
         :in-auth="true"
         :show-product-selector="false"
-        :show-login-menu="false"
+        :show-login-menu="true"
         :isModuleRegistered="false"
         :isAuthenticated="false"
         :notificationCount="2"
@@ -47,15 +47,33 @@
         v-html="bannerText"
       />
     </div>
-    <div id="nav">
-          <router-link to="/">Main</router-link> |
-          <router-link to="/SignIn">Sign In</router-link> |
-          <router-link to="/SignOut">Sign Out</router-link> |
-          <router-link to="/Login">Login</router-link> |
-          <router-link to="/NotificationPanel">Notification Panel</router-link> |
-          <router-link to="/About">About</router-link> |
-          <router-link to="/Home">Home </router-link>
-    </div>
+      <div id="nav">
+        <v-row justify="center">
+          <v-col cols="12" md="7">
+            <router-link to="/">Main</router-link> |
+            <router-link to="/AuthMenu">Auth Menu</router-link> |
+            <router-link to="/AuthenticationOptions">Authentication Options</router-link> |
+            <router-link to="/AuthenticationOptionsDialog">Authentication Options Dialog</router-link> |
+            <router-link to="/BaseAddress">Base Address</router-link> |
+            <router-link to="/BrowserVersionAlert">Browser Version Alert</router-link> |
+            <router-link to="/FeeSummary">Fee Summary</router-link> |
+            <router-link class="disabled" to="/LoadingScreen">Loading Screen</router-link> |
+            <router-link class="disabled" to="/Loader">Loader</router-link> |
+            <router-link to="/Login">Login</router-link> |
+            <router-link class="disabled" to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
+            <router-link class="disabled" to="/NavigationBar">Navigation Bar</router-link> |
+            <router-link class="disabled" to="/NotificationPanel">Notification Panel</router-link> |
+            <router-link class="disabled" to="/PaySystemAlert">Pay System Alert</router-link> |
+            <router-link to="/ProductSelector">Product Selector</router-link> |
+            <router-link to="/SignIn">Sign In</router-link> |
+            <router-link class="disabled" to="/SignOut">Sign Out</router-link> |
+            <router-link class="disabled" to="/SystemAlert">System Alert</router-link> |
+            <router-link to="/SystemBanner">System Banner</router-link> |
+            <router-link class="disabled" to="/System Error">System Error</router-link> |
+            <router-link class="disabled" to="/SystemErrorModal">System Error Modal</router-link>
+          </v-col>
+        </v-row>
+      </div>
     <div class="app-body">
       <router-view />
     </div>
@@ -201,8 +219,17 @@ export default class App extends Mixins() {
     &.router-link-exact-active{
       color: #003366;
     }
+    &:hover{
+      color: #2de0a5;
+    }
   }
 }
+.navCol{
+  padding: 10px;
+  text-align: justify;
+  text-align-last: center;
+}
+
 .app-container {
     display: flex;
     flex-flow: column nowrap;
@@ -216,10 +243,26 @@ export default class App extends Mixins() {
     width: 100%;
     z-index: 2;
   }
+  .pageTitle{
+    font-size: 3rem;
+    font-weight: bold;
+    color: #003366;
+    text-align: justify;
+    text-align-last: center;
+    padding-bottom: 20px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-color: #fcba19;
+  }
 
   .app-body {
     flex: 1 1 auto;
     position: relative;
   }
+  .disabled {
+    pointer-events: none;
+    background: red;
+    opacity: 0.24;
+}
 
 </style>

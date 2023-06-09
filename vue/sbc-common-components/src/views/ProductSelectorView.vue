@@ -1,15 +1,17 @@
 <template>
   <div>
-    <h1 class="pageTitle">Login</h1>
-    <sbc-login :redirectUrl="redirectUrl" />
+  <h1 class="pageTitle">Product Selector</h1>
+  <div class="prod">
+    <sbc-product-selector/>
   </div>
+</div>
 </template>
 
 <script lang="ts">
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
 // Components
-import SbcLogin from '../../src/components/SbcLogin.vue'
+import SbcProductSelector from '../components/SbcProductSelector.vue'
   /**
    * Operation:
    * 1. When this component is first loaded (ie, we are not authenticated) then the
@@ -17,10 +19,10 @@ import SbcLogin from '../../src/components/SbcLogin.vue'
    */
   @Component({
     components: {
-      SbcLogin
+      SbcProductSelector
     }
   })
-export default class LoginView extends Vue {
+export default class ProductSelectorView extends Vue {
   get redirectUrl () {
     return (this.$route.query.redirect as string)
   }
@@ -32,5 +34,10 @@ export default class LoginView extends Vue {
 
 ::v-deep .sbc-signin-button {
   width: 100%;
+}
+
+.prod{
+  background-color: red;
+  justify-content: center;
 }
 </style>

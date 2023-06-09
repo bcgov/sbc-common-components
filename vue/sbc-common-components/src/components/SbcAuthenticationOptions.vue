@@ -79,7 +79,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
   @Prop({ default: false }) inAuth!: boolean
   @Prop({ default: false }) isDialog!: boolean
 
-  private authOptions = [
+  authOptions = [
     {
       type: LoginSource.BCSC,
       title: 'BC Services Card',
@@ -100,7 +100,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
     }
   ]
 
-  private selectAuthType (authOption) {
+  selectAuthType (authOption) {
     let signinRoute = `${Pages.SIGNIN}/${authOption.idpHint}`
     if (this.redirectUrl?.trim()) {
       signinRoute += `/${encodeURIComponent(this.redirectUrl.trim())}`
@@ -108,7 +108,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
     this.redirectInTriggeredApp(signinRoute)
   }
 
-  private goToCreateAccount () {
+  goToCreateAccount () {
     this.redirectToPath(this.inAuth, Pages.CHOOSE_AUTH_METHOD)
   }
 
@@ -116,7 +116,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
    * Emits an event to the parent to close.
    */
   @Emit('close')
-  private emitClose (): void {}
+  emitClose (): void {}
 }
 </script>
 

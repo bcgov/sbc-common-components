@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Signin</h1>
+    <h1 class="pageTitle">Signin</h1>
     <sbc-signin
       :idp-hint="idpHint"
       :in-auth="true"

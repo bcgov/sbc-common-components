@@ -25,7 +25,7 @@ export default class SbcAuthenticationOptionsDialog extends Vue {
    * Emits an event to the parent to close.
    */
   @Emit('close')
-  private emitClose (): void {}
+  emitClose (): void {}
 }
 </script>
 
