@@ -8,10 +8,6 @@
         :in-auth="true"
         :show-product-selector="false"
         :show-login-menu="true"
-        :isModuleRegistered="false"
-        :isAuthenticated="false"
-        :notificationCount="2"
-        :isWhatsNewOpen = "true"
         @account-switch-started="false"
         @account-switch-completed="false"
         @hook:mounted="setup"
@@ -42,7 +38,7 @@
       <v-alert
         tile dense
         type="warning"
-        class="mb-0 text-center colour-dk-text"
+        class="mb-0 text-center color-dk-text"
         v-if="bannerText"
       />
     </div>
@@ -167,6 +163,10 @@ export default class App extends Mixins() {
       }
     }
     this.$store.commit('loadComplete')
+  }
+  public async mounted (): Promise<void> {
+    sessionStorage.setItem(SessionStorageKeys.StatusApiUrl, 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
+    this.showLoading = false
   }
 }
 </script>

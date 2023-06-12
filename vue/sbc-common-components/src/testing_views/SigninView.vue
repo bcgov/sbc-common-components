@@ -12,10 +12,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IdpHint, Pages, SessionStorageKeys } from '@/util/constants'
-import { Member, MembershipStatus, Organization } from '@/models/Organization'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-import { AccountSettings } from '@/models/account-settings'
-import CommonUtils from '@/util/common-util'
 import ConfigHelper from '@/util/config-helper'
 import { KCUserProfile } from '../models/KCUserProfile'
 import SbcSignin from '../components/SbcSignin.vue'

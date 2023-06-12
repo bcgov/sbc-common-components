@@ -44,16 +44,16 @@ import NavigationMixin from '../mixins/navigation-mixin'
   }
 })
 export default class SbcSignin extends NavigationMixin {
-  private isLoading = true
+  isLoading = true
   @Prop({ default: 'bcsc' }) idpHint!: string
   @Prop({ default: '' }) redirectUrlLoginFail!: string
   @Prop({ default: false }) inAuth!: boolean;
-  private readonly loadUserInfo!: () => KCUserProfile
-  private readonly syncAccount!: () => Promise<void>
-  private readonly getCurrentUserProfile!: (isAuth: boolean) => Promise<any>
-  private readonly updateUserProfile!: () => Promise<void>
+  readonly loadUserInfo!: () => KCUserProfile
+  readonly syncAccount!: () => Promise<void>
+  readonly getCurrentUserProfile!: (isAuth: boolean) => Promise<any>
+  readonly updateUserProfile!: () => Promise<void>
 
-  private async mounted () {
+  async mounted () {
     getModule(AccountModule, this.$store)
     // Initialize keycloak session
     const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint, this.$store)

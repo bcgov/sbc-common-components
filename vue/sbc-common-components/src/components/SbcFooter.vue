@@ -33,7 +33,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 export default class SbcFooter extends Vue {
   /** Optional About text. */
   @Prop({ default: '' })
-  private aboutText: string
+  aboutText: string
 }
 </script>
 

@@ -76,25 +76,25 @@ declare module 'vuex' {
   }
 })
 export default class SbcAuthMenu extends Mixins(NavigationMixin) {
-  private ldClient!: LDClient
-  private readonly currentAccount!: UserSettings | null
-  private readonly accountName!: string
-  private readonly currentLoginSource!: string
-  private readonly isAuthenticated!: boolean
-  private readonly loadUserInfo!: () => KCUserProfile
-  private readonly syncAccount!: () => Promise<void>
-  // private readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
-  private readonly syncUserProfile!: () => Promise<void>
-  private readonly syncWithSessionStorage!: () => void
-  private readonly getCurrentUserProfile!: (isAuth: boolean) => Promise<any>
-  private readonly updateUserProfile!: () => Promise<void>
+  ldClient!: LDClient
+  readonly currentAccount!: UserSettings | null
+  readonly accountName!: string
+  readonly currentLoginSource!: string
+  readonly isAuthenticated!: boolean
+  readonly loadUserInfo!: () => KCUserProfile
+  readonly syncAccount!: () => Promise<void>
+  // readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
+  readonly syncUserProfile!: () => Promise<void>
+  readonly syncWithSessionStorage!: () => void
+  readonly getCurrentUserProfile!: (isAuth: boolean) => Promise<any>
+  readonly updateUserProfile!: () => Promise<void>
 
   @Prop({ default: '' }) redirectOnLoginSuccess!: string;
   @Prop({ default: '' }) redirectOnLoginFail!: string;
   @Prop({ default: false }) inAuth!: boolean;
   @Prop({ default: false }) fromLogin!: boolean;
 
-  private readonly loginOptions = [
+  readonly loginOptions = [
     {
       idpHint: IdpHint.BCSC,
       option: 'BC Services Card',
@@ -124,7 +124,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
     return [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(this.currentLoginSource) >= 0
   }
 
-  private async mounted () {
+  async mounted () {
     getModule(AccountModule, this.$store)
     getModule(AuthModule, this.$store)
     this.syncWithSessionStorage()
@@ -138,23 +138,23 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
   }
 
   @Watch('isAuthenticated')
-  private async onisAuthenticated (isAuthenitcated: string, oldVal: string) {
+  async onisAuthenticated (isAuthenitcated: string, oldVal: string) {
     if (isAuthenitcated) {
       await this.updateProfile()
     }
   }
 
-  private async updateProfile () {
+  async updateProfile () {
     if (this.isBceid) {
       await this.syncUserProfile()
     }
   }
 
-  private goToCreateBCSCAccount () {
+  goToCreateBCSCAccount () {
     this.redirectToPath(this.inAuth, Pages.CREATE_ACCOUNT)
   }
 
-  private checkAccountStatus () {
+  checkAccountStatus () {
     // redirect if account status is suspended
     if (this.currentAccount?.accountStatus && this.currentAccount?.accountStatus === 'NSF_SUSPENDED') {
       this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
@@ -222,7 +222,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
     }
   }
 
-  private getContextPath (): string {
+  getContextPath (): string {
     let baseUrl = (this.$router && (this.$router as any)['history'] && (this.$router as any)['history'].base) || ''
     baseUrl += (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/') ? '/' : ''
     return baseUrl
