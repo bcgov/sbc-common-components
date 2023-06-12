@@ -5,7 +5,7 @@ to display the component properly.
 <template>
   <div>
     <h1 class="pageTitle">Mobile Device Alert</h1>
-    <h2>Please refer to the note at the top of MobileDeviceAlertView.vue if
+    <h2 class="note">Please refer to the note at the top of MobileDeviceAlertView.vue if
         you are using this page to test the MobileDeviceAlert component.</h2>
     <br>
     <v-row justify="center">
@@ -69,3 +69,9 @@ export default class MobileDeviceAlertView extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+  .note{
+    text-align: justify;
+    text-align-last: center;
+  }
+</style>
