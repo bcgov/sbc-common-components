@@ -16,7 +16,7 @@ const API_URL = 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1'
 describe('get status for payment service', () => {
   const results: any = []
   const mockAxiosSpreadResult = jest.fn()
-  var serviceName = 'PAYBC'
+  const serviceName = 'PAYBC'
   beforeAll(() => {
     // @ts-ignore
     Axios.get.mockClear()

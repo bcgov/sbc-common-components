@@ -12,7 +12,7 @@ jest.mock('axios', () => ({
 }), {
   virtual: true
 })
-var mockKcJosn = {
+const mockKcJosn = {
   'realm': 'test',
   'auth-server-url': 'https://sso-dev.pathfinder.gov.bc.ca/auth',
   'ssl-required': 'external',

@@ -46,7 +46,7 @@ class KeyCloakService {
       }
       return kcLogin(options)
     }
-    let kcOptions :KeycloakInitOptions = {
+    const kcOptions :KeycloakInitOptions = {
       onLoad: 'login-required',
       checkLoginIframe: false,
       timeSkew: 0,
@@ -93,10 +93,10 @@ class KeyCloakService {
   }
 
   async logout (redirectUrl?: string) {
-    let token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
+    const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     if (token) {
       this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
-      let kcOptions :KeycloakInitOptions = {
+      const kcOptions :KeycloakInitOptions = {
         onLoad: 'login-required',
         checkLoginIframe: false,
         timeSkew: 0,
@@ -141,7 +141,7 @@ class KeyCloakService {
       return
     }
     // if isForceRefresh is true, send -1 in updateToken to force update the token
-    let tokenExpiresIn = (isForceRefresh) ? -1 : this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100
+    const tokenExpiresIn = (isForceRefresh) ? -1 : this.kc.tokenParsed.exp - Math.ceil(new Date().getTime() / 1000) + this.kc.timeSkew + 100
     if (this.kc) {
       this.kc.updateToken(tokenExpiresIn)
         .then(refreshed => {
@@ -161,7 +161,7 @@ class KeyCloakService {
   verifyRoles (allowedRoles:[], disabledRoles:[]) {
     let isAuthorized = false
     if (allowedRoles || disabledRoles) {
-      let userInfo = this.getUserInfo()
+      const userInfo = this.getUserInfo()
       isAuthorized = allowedRoles ? allowedRoles.some(role => userInfo.roles.includes(role)) : !disabledRoles.some(role => userInfo.roles.includes(role))
     } else {
       isAuthorized = true
@@ -169,7 +169,7 @@ class KeyCloakService {
     return isAuthorized
   }
 
-  async initializeToken (store?: Store<any>, isScheduleRefresh: boolean = true, forceLogin: boolean = false) {
+  async initializeToken (store?: Store<any>, isScheduleRefresh = true, forceLogin = false) {
     this.store = store
     const kcOptions: KeycloakInitOptions = {
       onLoad: forceLogin ? 'login-required' : 'check-sso',
@@ -195,7 +195,7 @@ class KeyCloakService {
     })
   }
 
-  async syncSessionAndScheduleTokenRefresh (isScheduleRefresh: boolean = true) {
+  async syncSessionAndScheduleTokenRefresh (isScheduleRefresh = true) {
     if (this.kc?.authenticated) {
       this.syncSessionStorage()
       if (isScheduleRefresh) {
@@ -209,7 +209,7 @@ class KeyCloakService {
   }
 
   scheduleRefreshTimer (refreshEarlyTime = 0) {
-    let refreshEarlyTimeinMilliseconds = Math.max(this.REFRESH_ATTEMPT_INTERVAL, refreshEarlyTime) * 1000
+    const refreshEarlyTimeinMilliseconds = Math.max(this.REFRESH_ATTEMPT_INTERVAL, refreshEarlyTime) * 1000
     this.scheduleRefreshToken(refreshEarlyTimeinMilliseconds)
   }
 
@@ -229,7 +229,7 @@ class KeyCloakService {
     if (expiresIn < 0) {
       throw new Error('Refresh Token Expired. No more token refreshes')
     }
-    let refreshInMilliSeconds = (expiresIn * 1000) - refreshEarlyTimeinMilliseconds // in milliseconds
+    const refreshInMilliSeconds = (expiresIn * 1000) - refreshEarlyTimeinMilliseconds // in milliseconds
     console.info('[TokenServices] Token Refresh Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
     this.timerId = setTimeout(() => {
       console.log('[TokenServices] Refreshing Token Attempt: %s ', ++this.counter)

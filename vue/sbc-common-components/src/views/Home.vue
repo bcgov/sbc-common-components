@@ -1,15 +1,27 @@
 <template>
   <div>
     <article>
-      <header class="hero-banner d-flex align-center" :class="{'auth': true}">
+      <header
+        class="hero-banner d-flex align-center"
+        :class="{'auth': true}"
+      >
         <v-container>
           <h1>Start a B.C. based Business and <br>keep Business Records up to date</h1>
-          <p class="mt-7 mb-10">The Business Registry manages the creation (incorporation and registration) <br> and listing of businesses
-            and organizations in British Columbia.</p>
-            <div class="hero-banner__cta-btns mb-2">
-                          <!-- Authenticated -->
-            <div v-if="true" class="cta-btns-authenticated">
-              <v-btn large color="bcgovblue" class="cta-btn-auth font-weight-bold white--text mr-4">
+          <p class="mt-7 mb-10">
+            The Business Registry manages the creation (incorporation and registration) <br> and listing of businesses
+            and organizations in British Columbia.
+          </p>
+          <div class="hero-banner__cta-btns mb-2">
+            <!-- Authenticated -->
+            <div
+              v-if="true"
+              class="cta-btns-authenticated"
+            >
+              <v-btn
+                size="large"
+                color="bcgovblue"
+                class="cta-btn-auth font-weight-bold text-white mr-4"
+              >
                 Manage my Business
               </v-btn>
             </div>
@@ -19,39 +31,61 @@
               <div>
                 <!-- Login Menu -->
                 <v-menu
-                  bottom
+                  location="bottom"
                   width="330"
                   transition="slide-y-transition"
                 >
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
-                      large
-                      color="bcgovblue"
-                      class="mr-4 font-weight-bold white--text"
-                      aria-label="log in"
                       id="loginBtn"
-                      v-on="on">
+                      size="large"
+                      color="bcgovblue"
+                      class="mr-4 font-weight-bold text-white"
+                      aria-label="log in"
+                      v-on="on"
+                    >
                       <span>Log in to my BC Registries Account</span>
-                      <v-icon class="mr-n1 ml-2">mdi-menu-down</v-icon>
+                      <v-icon class="mr-n1 ml-2">
+                        mdi-menu-down
+                      </v-icon>
                     </v-btn>
                   </template>
                   <sbc-auth-menu />
                 </v-menu>
               </div>
               <div class="d-flex mt-8">
-                <span class="body-1">New to BC Registries?</span>
-                <router-link class="ml-2 body-1 font-weight-bold"
+                <span class="text-body-1">New to BC Registries?</span>
+                <router-link
+                  class="ml-2 text-body-1 font-weight-bold"
                   to="/choose-authentication-method"
-                >Create a BC Registries Account
+                >
+                  Create a BC Registries Account
                 </router-link>
               </div>
             </div>
-            </div>
-            <v-dialog v-model="accountDialog" max-width="640">
+          </div>
+          <v-dialog
+            v-model="accountDialog"
+            max-width="640"
+          >
             <LoginBCSC>
-              <template v-slot:actions>
-                <v-btn large color="primary" class="login-btn" @click="login()">Log in</v-btn>
-                <v-btn large depressed color="default" @click="accountDialog = false">Cancel</v-btn>
+              <template #actions>
+                <v-btn
+                  size="large"
+                  color="primary"
+                  class="login-btn"
+                  @click="login()"
+                >
+                  Log in
+                </v-btn>
+                <v-btn
+                  size="large"
+                  variant="flat"
+                  color="default"
+                  @click="accountDialog = false"
+                >
+                  Cancel
+                </v-btn>
               </template>
             </LoginBCSC>
           </v-dialog>
@@ -60,38 +94,67 @@
       <div class="how-to-container py-6">
         <v-container class="py-10">
           <h2>How does it work?</h2>
-          <h1 class="notAvailable">Info Stepper</h1>
+          <h1 class="notAvailable">
+            Info Stepper
+          </h1>
           <transition
             name="slide-x-transition"
-            mode="out-in">
+            mode="out-in"
+          >
             <router-view
               @login="login()"
-              @account-dialog="accountDialog = true"></router-view>
+              @account-dialog="accountDialog = true"
+            />
           </transition>
         </v-container>
       </div>
-      <h1 class="notAvailable">Testimonial Quotes</h1>
+      <h1 class="notAvailable">
+        Testimonial Quotes
+      </h1>
       <div class="bcsc-container py-6">
-        <h1 class="notAvailable">BCS PANEL GOES HERE</h1>
+        <h1 class="notAvailable">
+          BCS PANEL GOES HERE
+        </h1>
       </div>
       <div class="contact-info-container">
         <v-container>
           <v-row>
-            <v-col cols="12" md="7">
-              <h3 class="mb-6">Need more information?</h3>
-              <p class="mb-4">To learn more about Cooperative Associations in British Columbia, please
-                <a :href="coopAssocUrl" target="_blank" rel="noopener noreferrer">
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <h3 class="mb-6">
+                Need more information?
+              </h3>
+              <p class="mb-4">
+                To learn more about Cooperative Associations in British Columbia, please
+                <a
+                  :href="coopAssocUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   visit the Cooperative Associations information page
                 </a>.
               </p>
-              <a class="link-w-icon" href="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization/business-registry-faq"
-                 target="_blank" rel="noopener noreferrer">
+              <a
+                class="link-w-icon"
+                href="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization/business-registry-faq"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>Business Registry Frequently Asked Questions</span>
               </a>
             </v-col>
-            <v-col cols="12" md="5">
-              <h3 class="mb-6">Contact Us</h3>
-              <p class="mb-5">For support or questions about this application, contact us at:</p>
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <h3 class="mb-6">
+                Contact Us
+              </h3>
+              <p class="mb-5">
+                For support or questions about this application, contact us at:
+              </p>
               <ul class="contact-info__list mb-5">
                 <li>
                   <span>{{ ('Toll Free') }}</span>
@@ -119,45 +182,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent } from 'vue'
 import { Pages } from '@/util/constants'
 import { mapMutations, mapState } from 'vuex'
-import { KCUserProfile } from '../models/KCUserProfile'
-import SbcAuthMenu from '../components/SbcAuthMenu.vue'
 
-@Component({
-  name: 'Home',
+export default defineComponent({
+  name: 'HomePage',
   components: {
-    SbcAuthMenu
   },
   computed: {
     ...mapState('user', ['userProfile', 'currentUser']),
     ...mapState('org', ['currentAccountSettings', 'currentMembership'])
   },
   methods: {
-    ...mapMutations('org', ['resetCurrentOrganisation'])
+    ...mapMutations('org', ['resetCurrentOrganisation']),
+    createAccount (): void {
+      this.resetCurrentOrganisation()
+      this.$router.push(`/${Pages.CREATE_ACCOUNT}`)
+    },
+    login () {
+      this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)
+    }
+  },
+  mounted () {
+    // Logic for mounted hook
   }
 })
-export default class Home extends Vue {
-  readonly currentUser!: KCUserProfile
-  noPasscodeDialog = false
-  accountDialog = false
-  isDirSearchUser: boolean = false
-  readonly resetCurrentOrganisation!: () => void
-  readonly coopAssocUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/businesses-incorporated-companies/cooperative-associations'
-
-  createAccount (): void {
-    this.resetCurrentOrganisation()
-    this.$router.push(`/${Pages.CREATE_ACCOUNT}`)
-  }
-
-  login () {
-    this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)
-  }
-
-  mounted () {
-  }
-}
 </script>
 
 <style lang="scss" scoped>

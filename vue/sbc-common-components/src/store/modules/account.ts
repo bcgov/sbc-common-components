@@ -1,13 +1,17 @@
+/* eslint-disable */
+// External
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import AccountService from '../../services/account.services'
-import { Member } from '../../models/member'
-import { UserSettings } from '../../models/userSettings'
-import { KCUserProfile } from '../../models/KCUserProfile'
+// BC Registry
+import AccountService from '../../../src/services/account.services'
+import { Member } from '../../../src/models/member'
+import { UserSettings } from '../../../src/models/userSettings'
+import { KCUserProfile } from '../../../src/models/KCUserProfile'
+import ConfigHelper from '../../../src/util/config-helper'
+import { SessionStorageKeys, LoginSource, Role } from '../../../src/util/constants'
+import UserService from '../../../src/services/user.services'
+import { getAccountIdFromCurrentUrl } from '../../../src/util/common-util'
+// Local
 import KeyCloakService from '../../services/keycloak.services'
-import ConfigHelper from '../../util/config-helper'
-import { SessionStorageKeys, LoginSource, Role } from '../../util/constants'
-import UserService from '../../services/user.services'
-import { getAccountIdFromCurrentUrl } from '../../util/common-util'
 
 @Module({
   name: 'account',
@@ -139,7 +143,6 @@ export default class AccountModule extends VuexModule {
       const storageAccountId = currentAccount || JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
       return orgIdFromUrl || String(storageAccountId || '') || ''
     }
-
     const lastUsedAccount = getLastAccountId()
     if (this.currentUser?.keycloakGuid) {
       await this.syncUserSettings(lastUsedAccount)

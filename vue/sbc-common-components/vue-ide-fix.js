@@ -5,7 +5,7 @@
 
 import Vue from 'vue'
 
-Vue.component('v-select', {})
-Vue.component('v-text-field', {})
-Vue.component('v-btn', {})
-Vue.component('router-link', {})
+Vue.component('VSelect', {})
+Vue.component('VTextField', {})
+Vue.component('VBtn', {})
+Vue.component('RouterLink', {})

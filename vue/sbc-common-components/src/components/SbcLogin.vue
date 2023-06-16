@@ -5,31 +5,31 @@
         <div class="mt-5 mb-10 font-weight-bold">
           <h1>BC Registries Account Login</h1>
         </div>
-        <v-card
-          class="mx-auto"
-          max-width="460"
-        >
+        <v-card class="mx-auto" max-width="460">
           <v-card-title>
             <v-img
               max-height="260"
-              src="../assets/img/BCReg_Generic_Login_image.jpg"
+              src="../../src/assets/img/BCReg_Generic_Login_image.jpg"
               alt="Generic Login Image">
             </v-img>
           </v-card-title>
-          <v-card-text >
-            <v-menu>
-              <template v-slot:activator="{ on }">
+          <v-card-text>
+            <v-menu anchor="center">
+              <template v-slot:activator="{ props }">
                 <v-btn
-                  large
-                  class="white--text font-weight-bold"
+                  class="mt-2 mx-auto"
+                  color="primary"
+                  size="large"
                   aria-label="log in"
                   id="loginBtn"
-                  v-on="on">
+                  v-bind="props">
                   <span>Log in to my BC Registries Account</span>
                   <v-icon class="mr-n1 ml-2">mdi-menu-down</v-icon>
                 </v-btn>
               </template>
-              <sbc-auth-menu :fromLogin="true" :redirect-on-login-success="redirectUrl" />
+              <sbc-auth-menu
+                :fromLogin="true"
+                :redirect-on-login-success="props.redirectUrl"/>
             </v-menu>
             <div class="mb-12"></div>
           </v-card-text>
@@ -39,24 +39,20 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+<script setup lang="ts">
 import SbcAuthMenu from './SbcAuthMenu.vue'
 
-@Component({
-  components: {
-    SbcAuthMenu
+const props = defineProps({
+  redirectUrl: {
+    type: String,
+    default: ''
   }
 })
-export default class Login extends Vue {
-  @Prop({ default: '' }) redirectUrl!: string
-}
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/scss/theme.scss";
+@import '~../../src/assets/scss/theme.scss';
 #loginBtn {
-  background-color: $BCgovBlue5 !important;
+  background-color: $BCgovBlue5 !important
 }
-
 </style>

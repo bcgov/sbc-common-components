@@ -1,29 +1,21 @@
 <template>
   <loading-screen :is-loading="isLoading"></loading-screen>
 </template>
-<script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import KeyCloakService from '../services/keycloak.services'
-import LoadingScreen from './LoadingScreen.vue'
 
-@Component({
-  methods: {
-  },
-  components: {
-    LoadingScreen
+<script setup lang="ts">
+import KeyCloakService from '../../src/services/keycloak.services'
+
+const isLoading = true
+const props = defineProps({
+  redirectUrl: {
+    type: String,
+    default: ''
   }
 })
 
-export default class SbcSignout extends Vue {
-  isLoading = true
-
-  @Prop({ default: '' }) redirectUrl!: string
-
-  async mounted () {
-    await KeyCloakService.logout(this.redirectUrl ? decodeURIComponent(this.redirectUrl) : undefined)
-  }
-}
+await KeyCloakService.logout(
+  props.redirectUrl ? decodeURIComponent(props.redirectUrl) : undefined
+)
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

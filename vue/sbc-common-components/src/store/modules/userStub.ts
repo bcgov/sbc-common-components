@@ -1,7 +1,7 @@
 import { Module, VuexModule } from 'vuex-module-decorators'
 
 export interface UserTerms {
-
+  id: number
 }
 
 @Module({

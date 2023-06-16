@@ -22,7 +22,7 @@ export default {
       if (!filing.filingTypeCode) {
         Promise.resolve()
       }
-      let url = prepareUrl(filing, payApiUrl)
+      const url = prepareUrl(filing, payApiUrl)
       promises.push(Axios.get(url, { headers: { Authorization: `Bearer ${token}`, 'Account-Id': accountId } }))
     }
 
@@ -66,7 +66,7 @@ export default {
 }
 
 const prepareUrl = (filing: FilingData, payApiUrl: string) => {
-  let queryParams = []
+  const queryParams = []
   if (filing.waiveFees) {
     queryParams.push(`waiveFees=${!!filing.waiveFees}`)
   }

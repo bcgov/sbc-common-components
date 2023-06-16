@@ -1,162 +1,179 @@
 <template>
-    <v-menu
-      fixed
-      bottom
-      left
-      transition="slide-y-transition"
-      attach="#appHeader"
-      v-model="dialog"
-    >
-      <template v-slot:activator="{ on }">
-        <v-btn
-          large
-          text
-          dark
-          class="mobile-icon-only px-2"
-          aria-label="products and services"
-          v-on="on"
-          data-test="product-selector-btn"
-        >
-          <v-icon>mdi-apps</v-icon>
-          <span>
-            Products and Services
-          </span>
-          <v-icon class="ml-1">
-            mdi-menu-down
-          </v-icon>
-        </v-btn>
-      </template>
+  <v-menu
+    fixed
+    bottom
+    left
+    transition="slide-y-transition"
+    attach="#appHeader"
+    v-model="dialog">
+    <template v-slot:activator="{ props }">
+      <v-btn
+        large
+        text
+        dark
+        class="mobile-icon-only px-2"
+        aria-label="products and services"
+        v-bind="props"
+        variant="text"
+        data-test="product-selector-btn">
+        <v-icon>mdi-apps</v-icon>
+        <span> Products and Services </span>
+        <v-icon class="ml-1"> mdi-menu-down </v-icon>
+      </v-btn>
+    </template>
 
-      <v-card>
-        <div class="menu-header">
-          <v-card-title class="body-1">
-            Products and Services
-          </v-card-title>
-          <v-divider></v-divider>
+    <v-card>
+      <div class="menu-header">
+        <v-card-title class="body-1"> Products and Services </v-card-title>
+        <v-divider></v-divider>
+      </div>
+      <v-list>
+        <v-list-item
+          v-for="(product, index) in products"
+          :key="index"
+          @click="goToProductPage(product)">
+          <v-list-item-title class="body-2">
+            {{ product.name }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-card>
+
+    <!-- Full Screen Product Selector -->
+    <v-card tile flat dark color="#003366" style="display: none">
+      <header class="app-header">
+        <div class="container">
+          <a class="brand">
+            <picture>
+              <source
+                media="(min-width: 601px)"
+                srcset="../../src/assets/img/gov_bc_logo_horiz.png"/>
+              <source
+                media="(max-width: 600px)"
+                srcset="../../src/assets/img/gov_bc_logo_vert.png"/>
+              <img
+                class="brand__image"
+                src="../../src/assets/img/gov_bc_logo_vert.png"
+                alt="Government of British Columbia Logo"
+                title="Government of British Columbia"/>
+            </picture>
+            <span class="brand__title">BC Registries
+              <span class="brand__title--wrap">and Online Services</span></span>
+          </a>
+          <div class="app-header__actions"></div>
         </div>
-        <v-list>
-          <v-list-item
-            v-for="(product, index) in products"
-            :key="index" @click="goToProductPage(product)"
-          >
-            <v-list-item-title class="body-2">
-              {{product.name}}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card>
-
-      <!-- Full Screen Product Selector -->
-      <v-card tile flat dark color="#003366" style="display: none;">
-        <header class="app-header">
-          <div class="container">
-            <a class="brand">
-              <picture>
-                <source media="(min-width: 601px)"
-                  srcset="../assets/img/gov_bc_logo_horiz.png">
-                <source media="(max-width: 600px)"
-                  srcset="../assets/img/gov_bc_logo_vert.png">
-                <img class="brand__image"
-                  src="../assets/img/gov_bc_logo_vert.png"
-                  alt="Government of British Columbia Logo"
-                  title="Government of British Columbia">
-              </picture>
-              <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
-            </a>
-            <div class="app-header__actions">
-            </div>
+      </header>
+      <v-container class="view-container">
+        <div class="view-header">
+          <v-btn large icon class="back-btn mr-3" @click="dialog = false">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <div>
+            <h1>BC Registries Products <span class="lb">and Services</span></h1>
+            <p class="view-header__desc">
+              Easy access to a wide range of information products and services,
+              including access
+              <span class="ls">to British Columbia Provincial and Municipal Government
+                information.</span>
+            </p>
           </div>
-        </header>
-        <v-container class="view-container">
-          <div class="view-header">
-            <v-btn large icon class="back-btn mr-3" @click="dialog = false">
-              <v-icon>mdi-arrow-left</v-icon>
+          <div>
+            <v-btn
+              text
+              large
+              class="close-btn pr-4 pl-3"
+              @click="dialog = false"
+              data-test="close-btn">
+              <span>Close</span>
             </v-btn>
-            <div>
-              <h1>BC Registries Products <span class="lb">and Services</span></h1>
-              <p class="view-header__desc">Easy access to a wide range of information products and services, including access <span class="ls">to British Columbia Provincial and Municipal Government information.</span></p>
-            </div>
-            <div>
-              <v-btn text large class="close-btn pr-4 pl-3" @click="dialog = false" data-test="close-btn">
-                <span>Close</span>
-              </v-btn>
-            </div>
           </div>
+        </div>
 
-          <!-- Products -->
-          <section class="section-container">
-            <v-row class="product-blocks justify-center">
-              <v-col cols="12" sm="6" md="4" v-for="(product, index) in products" :key="index">
-                <v-hover v-slot:default="{ hover }">
-                  <v-card dark outlined color="#26527d" class="product-block text-center" :class="{ 'on-hover': hover }" @click="goToProductPage(product)">
-                    <v-card-title class="flex-column justify-center">
-                      <v-icon class="product-block__icon mt-n2 mb-4">mdi-image-outline</v-icon>
-                      <h2>{{product.name}}</h2>
-                    </v-card-title>
-                    <v-card-text class="mb-0">
-                      {{product.description}}
-                    </v-card-text>
-                  </v-card>
-                </v-hover>
-              </v-col>
-            </v-row>
-          </section>
-        </v-container>
-      </v-card>
-
-    </v-menu>
+        <!-- Products -->
+        <section class="section-container">
+          <v-row class="product-blocks justify-center">
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+              v-for="(product, index) in products"
+              :key="index">
+              <v-hover v-slot:default="{ hover }">
+                <v-card
+                  dark
+                  outlined
+                  color="#26527d"
+                  class="product-block text-center"
+                  :class="{ 'on-hover': hover }"
+                  @click="goToProductPage(product)">
+                  <v-card-title class="flex-column justify-center">
+                    <v-icon class="product-block__icon mt-n2 mb-4">mdi-image-outline</v-icon>
+                    <h2>{{ product.name }}</h2>
+                  </v-card-title>
+                  <v-card-text class="mb-0">
+                    {{ product.description }}
+                  </v-card-text>
+                </v-card>
+              </v-hover>
+            </v-col>
+          </v-row>
+        </section>
+      </v-container>
+    </v-card>
+  </v-menu>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import ConfigHelper from '../util/config-helper'
-import { Product, Products } from '../models/product'
-import { mapState, mapActions } from 'vuex'
-import ProductModule from '../store/modules/product'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import { Product } from '../../src/models/product'
+import ProductModule from '../../src/store/modules/product'
 import { getModule } from 'vuex-module-decorators'
+import { useStore } from 'vuex'
 
-@Component({
+export default defineComponent({
   name: 'SbcProductSelector',
-  beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
+
+  setup() {
+    const dialog = ref(false)
+    const store = useStore()
+
+    // set modules
+    if (!store.hasModule('product')) {
+      store.registerModule('product', ProductModule)
     }
-    if (!this.$store.isModuleRegistered(['product'])) {
-      this.$store.registerModule('product', ProductModule)
+
+    onMounted(async () => {
+      getModule(ProductModule, store)
+      await syncProducts()
+    })
+
+    //state
+    const state = reactive({
+      products: computed(() => store.state.product.products as Product[]),
+      partners: computed(() => store.state.product.partners as Product[]),
+    })
+
+    //Actions
+    const syncProducts = async () => {
+      await store.dispatch('product/syncProducts')
     }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState('product', ['products', 'partners'])
+    
+    //Methods
+    const goToProductPage = (product: Product): void => {
+      window.open(product.url, '_blank')
     }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('product', ['syncProducts'])
+
+    return {
+      ...state,
+      dialog,
+      goToProductPage,
     }
   }
 })
-export default class SbcProductSelector extends Vue {
-  dialog = false
-  readonly products!: Products
-  readonly syncProducts!: () => Promise<void>
-
-  async mounted () {
-    getModule(ProductModule, this.$store)
-    await this.syncProducts()
-  }
-
-  goToProductPage (product: Product): void {
-    window.open(product.url, '_blank')
-  }
-}
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/scss/theme.scss";
+@import '../../src/assets/scss/theme.scss';
 
 $app-header-font-color: #ffffff;
 $dialog-font-color: #ffffff;
@@ -306,11 +323,12 @@ section + section {
 
 // Product Blocks
 .product-blocks {
-  [class^="col-"] {
+  [class^='col-'] {
     padding: 1rem;
   }
 
-  h2, h3 {
+  h2,
+  h3 {
     display: block;
     max-width: 100%;
     overflow: hidden;

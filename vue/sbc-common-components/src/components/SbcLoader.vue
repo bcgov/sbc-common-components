@@ -1,26 +1,39 @@
 <template>
-  <v-overlay :value="show">
-      <v-progress-circular size="50" width="5" :color="progressColor"
-        :indeterminate="indeterminate"
-        :z-index="zIndex"
-      ></v-progress-circular>
-      <span class="ml-3">{{message}}</span>
+  <v-overlay :v-model="show">
+    <v-progress-circular
+      size="50"
+      width="5"
+      :color="progressColor"
+      :indeterminate="indeterminate"
+      :z-index="zIndex"
+    />
+    <span class="ml-3">{{ message }}</span>
   </v-overlay>
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator'
-import Vue from 'vue'
+import { defineComponent, Prop } from 'vue'
 
-@Component({})
-export default class SbcLoader extends Vue {
-  @Prop({ default: false })
-  show!: boolean
-  @Prop({ default: 'Account Switching In Progress' })
-  message!: string
-  @Prop({ default: '' })
-  progressColor!: string
-  indeterminate = true
-  zIndex = 9
-}
+export default defineComponent({
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    },
+    message: {
+      type: String,
+      default: 'Account Switching In Progress'
+    },
+    progressColor: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      indeterminate: true,
+      zIndex: 9
+    }
+  }
+})
 </script>

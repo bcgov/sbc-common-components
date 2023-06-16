@@ -8,9 +8,6 @@ import NotificationModule from '@/store/modules/notification'
 import ProductModule from '@/store/modules/product'
 import UserModule from '@/store/modules/userStub'
 import Vue from 'vue'
-import { use } from 'vue/types/umd'
-
-Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 

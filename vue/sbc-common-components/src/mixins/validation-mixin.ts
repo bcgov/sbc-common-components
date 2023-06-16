@@ -1,17 +1,17 @@
 import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent, ref } from 'vue'
 
 /**
  * Mixin that provides some useful validation utilities.
  */
-@Component({})
-export default class ValidationMixin extends Vue {
+export default defineComponent({
   /**
    * Creates a Vuetify rules object from the Vuelidate state.
    * @param model The name of the model we are validating.
    * @returns A Vuetify rules object.
    */
-  public createVuetifyRulesObject (model: string): { [attr: string]: Array<Function> } {
-    let obj = {
+  createVuetifyRulesObject (model: string): { [attr: string]: Array<Function> } {
+    const obj = {
       streetAddress: [],
       streetAddressAdditional: [],
       addressCity: [],
@@ -56,7 +56,7 @@ export default class ValidationMixin extends Vue {
     // ...
 
     return obj
-  }
+  },
 
   /**
    * Misc Vuetify rules.
@@ -64,27 +64,27 @@ export default class ValidationMixin extends Vue {
    * @param key The name of the property key (field) to validate.
    * @returns True if the rule passes, otherwise an error string.
    */
-  protected requiredRule (prop: string, key: string): boolean | string {
+  requiredRule (prop: string, key: string): boolean | string {
     return Boolean(this.$v[prop] && this.$v[prop][key].required) || 'This field is required'
-  }
+  },
 
-  protected minLengthRule (prop: string, key: string): boolean | string {
+  minLengthRule (prop: string, key: string): boolean | string {
     const min = this.$v[prop][key].$params.minLength.min
     return Boolean(this.$v[prop] && this.$v[prop][key].minLength) || `Minimum length is ${min}`
-  }
+  },
 
-  protected maxLengthRule (prop: string, key: string): boolean | string {
+  maxLengthRule (prop: string, key: string): boolean | string {
     const max = this.$v[prop][key].$params.maxLength.max
     return Boolean(this.$v[prop] && this.$v[prop][key].maxLength) || `Maximum length is ${max}`
-  }
+  },
 
   // FUTURE: generalize this rule to take a validation parameter (ie, 'CA')
-  protected isCanadaRule (prop: string, key: string): boolean | string {
+  isCanadaRule (prop: string, key: string): boolean | string {
     return Boolean(this.$v[prop] && this.$v[prop][key].isCanada) || `Address must be in Canada`
-  }
+  },
 
   // FUTURE: generalize this rule to take a validation parameter (ie, 'BC')
-  protected isBCRule (prop: string, key: string): boolean | string {
+  isBCRule (prop: string, key: string): boolean | string {
     return Boolean(this.$v[prop] && this.$v[prop][key].isBC) || `Address must be in BC`
   }
-}
+})

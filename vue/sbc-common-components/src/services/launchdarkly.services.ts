@@ -17,7 +17,7 @@ class LaunchDarklyService {
     const ldFlags = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags) || '{}')
     let ldFlagsExists = false
     for (const key in ldFlags) {
-      if (ldFlags.hasOwnProperty(key)) {
+      if (ldFlags.hasOwnProperty.call(key)) {
         ldFlagsExists = true
         break
       }
@@ -26,7 +26,7 @@ class LaunchDarklyService {
   }
 
   init (ldEnvKey: string) {
-    var user = { key: 'anonymous' }
+    const user = { key: 'anonymous' }
 
     this.ldClient = initialize(ldEnvKey, user)
 

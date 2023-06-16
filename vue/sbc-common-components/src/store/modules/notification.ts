@@ -40,7 +40,7 @@ export default class NotificationModule extends VuexModule {
     const response = await NotificationService.getNotifications()
     if (response && response.data) {
       return response.data?.sort(function (a, b) {
-        var res = (+b.priority) - (+a.priority)
+        let res = (+b.priority) - (+a.priority)
         if (res === 0) {
           res = b.date.localeCompare(a.date)
         }
@@ -67,7 +67,7 @@ export default class NotificationModule extends VuexModule {
 
   @Action({ rawError: true, commit: 'setNotificationUnreadCount' })
   public async markAsRead (): Promise<Notifications> {
-    let nl = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.WhatsNew) || '{}')
+    const nl = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.WhatsNew) || '{}')
     nl.map(notification => { notification.read = true; return notification })
     this.context.commit('setNotifications', nl)
     return nl.filter(notification => !notification.read).length

@@ -1,7 +1,8 @@
+/* eslint-disable */
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
-import ConfigHelper from '../../util/config-helper'
+import ConfigHelper from '../../../src/util/config-helper'
+import { SessionStorageKeys } from '../../../src/util/constants'
 import KeycloakServices from '../../services/keycloak.services'
-import { SessionStorageKeys } from '../../util/constants'
 
 @Module({
   name: 'auth',

@@ -1,33 +1,35 @@
 <template>
   <v-app id="app">
-    <div class="header-group" ref="headerGroup">
+    <div
+      ref="headerGroup"
+      class="header-group"
+    >
       <sbc-loader :show="false" />
       <sbc-header
-        class="flex-column"
         :key="refreshKey"
+        ref="header"
+        class="flex-column"
         :in-auth="true"
         :show-product-selector="false"
         :show-login-menu="showLoginMenu"
+        :redirect-on-logout="logoutUrl"
         @account-switch-started="false"
         @account-switch-completed="false"
         @hook:mounted="setup"
-        ref="header"
-        :redirect-on-logout="logoutUrl"
       >
         <template #login-button-text>
           Log in with BC Services Card
         </template>
       </sbc-header>
       <v-snackbar
-        bottom
+        v-model="showNotification"
+        location="bottom"
         color="primary"
         class="mb-6"
-        v-model="showNotification"
         :timeout="6000"
       >
-        <span v-html="notificationText"></span>
+        <span v-html="notificationText" />
         <v-btn
-          dark
           icon
           color="default"
           aria-label="Close Notification"
@@ -39,80 +41,91 @@
       </v-snackbar>
       <!-- Alert banner -->
       <v-alert
-        tile
-        dense
+        v-if="bannerText"
+        rounded="0"
+        density="compact"
         type="warning"
         class="mb-0 text-center color-dk-text"
-        v-if="bannerText"
       />
     </div>
     <div class="app-body">
       <router-view />
     </div>
-    <sbc-footer :aboutText="aboutText"></sbc-footer>
+    <sbc-footer :aboutText="aboutText" />
   </v-app>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+<script>
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router' // Import useRouter from vue-router
 import SbcFooter from '/src/components/SbcFooter.vue'
 import SbcHeader from '/src/components/SbcHeader.vue'
 import SbcLoader from '/src/components/SbcLoader.vue'
-import KeyCloakService from '../src/services/keycloak.services'
 import { LDFlags, Pages, SessionStorageKeys } from '@/util/constants'
-import { appendAccountId } from '../src/util/common-util'
-import { getModule } from 'vuex-module-decorators'
-import AuthModule from '../src/store/modules/auth'
-import { KCUserProfile } from '../src/models/KCUserProfile'
 import LaunchDarklyService from '../src/services/launchdarkly.services'
 
-export default defineComponent({
+export default {
   components: {
     SbcHeader,
     SbcFooter,
     SbcLoader
   },
-  computed: {
-    ...mapState('org', [
-      'currentAccountSettings',
-      'permissions'
-    ]),
-    ...mapState('user', ['currentUser']),
-    ...mapGetters('auth', ['isAuthenticated']),
-    showNavigationBar () {
-      return this.$route.meta.showNavBar
-    },
-    showLoginMenu () {
-      return this.$route.path !== `/${Pages.LOGIN}`
-    },
-    bannerText () {
+  setup () {
+    const store = useStore()
+    const router = useRouter() // Access the router information using useRouter
+
+    const showNotification = ref(false)
+    const notificationText = ref('')
+    const showLoading = ref(true)
+    const toastType = 'primary'
+    const toastTimeout = 6000
+    const logoutUrl = ''
+
+    const currentAccountSettings = computed(() => store.state.org.currentAccountSettings)
+    const permissions = computed(() => store.state.org.permissions)
+    const currentUser = computed(() => store.state.user.currentUser)
+    const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
+
+    const showNavigationBar = computed(() => router.currentRoute.value.meta.showNavBar) // Use router instead of $route
+    const showLoginMenu = computed(() => router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
+
+    const bannerText = computed(() => {
       const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)
       return bannerText?.trim() || null
-    },
-    aboutText () {
-      return process.env.ABOUT_TEXT
-    }
-  },
-  methods: {
-    ...mapMutations('org', ['setCurrentOrganization']),
-    ...mapActions('user', ['loadUserInfo'])
-  },
-  data () {
+    })
+
+    const aboutText = process.env.ABOUT_TEXT
+
+    const setCurrentOrganization = (value) => store.commit('org/setCurrentOrganization', value)
+    const loadUserInfo = () => store.dispatch('user/loadUserInfo')
+
+    onMounted(() => {
+      sessionStorage.setItem(SessionStorageKeys.StatusApiUrl,
+        'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
+      showLoading.value = false
+    })
+
     return {
-      showNotification: false,
-      notificationText: '',
-      showLoading: true,
-      toastType: 'primary',
-      toastTimeout: 6000,
-      logoutUrl: ''
+      showNotification,
+      notificationText,
+      showLoading,
+      toastType,
+      toastTimeout,
+      logoutUrl,
+      currentAccountSettings,
+      permissions,
+      currentUser,
+      isAuthenticated,
+      showNavigationBar,
+      showLoginMenu,
+      bannerText,
+      aboutText,
+      setCurrentOrganization,
+      loadUserInfo
     }
-  },
-  mounted () {
-    sessionStorage.setItem(SessionStorageKeys.StatusApiUrl, 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
-    this.showLoading = false
   }
-})
+}
 </script>
 
 <style lang="scss">

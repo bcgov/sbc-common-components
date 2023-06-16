@@ -15,7 +15,7 @@ const API_URL = 'https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/'
 describe('with 1 fee in the list', () => {
   const results = []
   const mockAxiosSpreadResult = jest.fn()
-  var filingCodes = [{ filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', waiveFees: false, entityType: 'CP', priority: false, futureEffective: false }]
+  const filingCodes = [{ filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', waiveFees: false, entityType: 'CP', priority: false, futureEffective: false }]
   beforeAll(() => {
     // @ts-ignore
     Axios.get.mockClear()
@@ -34,7 +34,7 @@ describe('with 1 fee in the list', () => {
 describe('with 2 fee in the list', () => {
   const results = []
   const mockAxiosSpreadResult = jest.fn()
-  var filingCodes = [
+  const filingCodes = [
     { filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false },
     { filingDescription: 'Director Change', filingTypeCode: 'OTADD', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false }
   ]
@@ -57,7 +57,7 @@ describe('with 2 fee in the list', () => {
 describe('with 1 fee in the list with extra fees', () => {
   const results = []
   const mockAxiosSpreadResult = jest.fn()
-  var filingCodes = [{ filingTypeCode: 'BCRSF', waiveFees: false, entityType: 'BC', priority: true, futureEffective: true }]
+  const filingCodes = [{ filingTypeCode: 'BCRSF', waiveFees: false, entityType: 'BC', priority: true, futureEffective: true }]
   beforeAll(() => {
     // @ts-ignore
     Axios.get.mockClear()

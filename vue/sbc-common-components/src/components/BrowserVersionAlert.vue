@@ -1,6 +1,13 @@
 <template>
-  <v-overlay v-model="browserUnSupported" color="white">
-    <v-dialog v-model="browserUnSupported" max-width="720px" persistent>
+  <v-overlay
+    v-model="browserUnSupported"
+    scrim="white"
+  >
+    <v-dialog
+      v-model="browserUnSupported"
+      max-width="720px"
+      persistent
+    >
       <v-card>
         <v-card-title>
           <div>Unsupported Browser</div>
@@ -15,15 +22,20 @@
               target="_blank"
             >
               Learn more
-              <v-icon class="text-decoration: none" color="primary" x-small
-                >mdi-open-in-new</v-icon
-              >
+              <v-icon
+                class="text-decoration: none"
+                color="primary"
+                size="x-small"
+              >mdi-open-in-new</v-icon>
             </a>
           </p>
         </v-card-text>
-        <v-divider vertical></v-divider>
+        <v-divider vertical />
         <v-row justify="space-around">
-          <a href="https://www.microsoft.com/en-us/edge" target="_blank">
+          <a
+            href="https://www.microsoft.com/en-us/edge"
+            target="_blank"
+          >
             <v-col>
               <v-card class="elevation-0">
                 <v-card-title>
@@ -31,7 +43,7 @@
                     src="/src/assets/img/edge.png"
                     max-height="60"
                     max-width="60"
-                  ></v-img>
+                  />
                 </v-card-title>
                 <v-card-text> Microsoft Edge </v-card-text>
               </v-card>
@@ -48,13 +60,16 @@
                     src="/src/assets/img/chrome.png"
                     max-height="60"
                     max-width="60"
-                  ></v-img>
+                  />
                 </v-card-title>
                 <v-card-text> Google Chrome </v-card-text>
               </v-card>
             </v-col>
           </a>
-          <a href="https://www.mozilla.org/en-CA/firefox/new/" target="_blank">
+          <a
+            href="https://www.mozilla.org/en-CA/firefox/new/"
+            target="_blank"
+          >
             <v-col>
               <v-card class="elevation-0">
                 <v-card-title>
@@ -62,13 +77,16 @@
                     src="/src/assets/img/firefox.png"
                     max-height="60"
                     max-width="60"
-                  ></v-img>
+                  />
                 </v-card-title>
                 <v-card-text> Mozilla Firefox </v-card-text>
               </v-card>
             </v-col>
           </a>
-          <a href="https://support.apple.com/downloads/safari" target="_blank">
+          <a
+            href="https://support.apple.com/downloads/safari"
+            target="_blank"
+          >
             <v-col>
               <v-card class="elevation-0">
                 <v-card-title>
@@ -76,7 +94,7 @@
                     src="/src/assets/img/safari.png"
                     max-height="60"
                     max-width="60"
-                  ></v-img>
+                  />
                 </v-card-title>
                 <v-card-text> Apple Safari </v-card-text>
               </v-card>
