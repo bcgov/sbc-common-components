@@ -5,17 +5,7 @@
       class="header-group"
     >
       <sbc-loader :show="false" />
-      <sbc-header
-        :key="refreshKey"
-        ref="header"
-        class="flex-column"
-        :in-auth="true"
-        :show-product-selector="false"
-        :show-login-menu="showLoginMenu"
-        :redirect-on-logout="logoutUrl"
-        @account-switch-started="false"
-        @account-switch-completed="false"
-        @hook:mounted="setup"
+      <sbc-header class="sbc-header" :in-auth="false" :show-login-menu="false"
       >
         <template #login-button-text>
           Log in with BC Services Card
@@ -48,6 +38,42 @@
         class="mb-0 text-center color-dk-text"
       />
     </div>
+    <div id="nav">
+        <v-row justify="center">
+          <v-col cols="12" md="7">
+            <router-link to="/">Main</router-link> |
+            <router-link to="/AuthMenu">Auth Menu</router-link> |
+            <router-link to="/AuthenticationOptions">Authentication Options</router-link> |
+            <router-link to="/AuthenticationOptionsDialog">Authentication Options Dialog</router-link> |
+            <router-link to="/BaseAddress">Base Address</router-link> |
+            <router-link to="/BrowserVersionAlert">Browser Version Alert</router-link> |
+            <router-link to="/FeeSummary">Fee Summary</router-link> |
+            <router-link class="disabled" to="/LoadingScreen">Loading Screen</router-link> |
+            <router-link class="disabled" to="/Loader">Loader</router-link> |
+            <router-link to="/LoadingScreen">Loading Screen</router-link> |
+            <router-link to="/Loader">Loader</router-link> |
+            <router-link to="/Login">Login</router-link> |
+            <router-link class="disabled" to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
+            <router-link class="disabled" to="/NavigationBar">Navigation Bar</router-link> |
+            <router-link class="disabled" to="/NotificationPanel">Notification Panel</router-link> |
+            <router-link class="disabled" to="/PaySystemAlert">Pay System Alert</router-link> |
+            <router-link to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
+            <router-link to="/NavigationBar">Navigation Bar</router-link> |
+            <router-link to="/NotificationPanel">Notification Panel</router-link> |
+            <router-link to="/PaySystemAlert">Pay System Alert</router-link> |
+            <router-link to="/ProductSelector">Product Selector</router-link> |
+            <router-link to="/SignIn">Sign In</router-link> |
+            <router-link class="disabled" to="/SignOut">Sign Out</router-link> |
+            <router-link class="disabled" to="/SystemAlert">System Alert</router-link> |
+            <router-link to="/SystemAlert">System Alert</router-link> |
+            <router-link to="/SystemBanner">System Banner</router-link> |
+            <router-link class="disabled" to="/System Error">System Error</router-link> |
+            <router-link class="disabled" to="/SystemErrorModal">System Error Modal</router-link>
+            <router-link to="/SystemError">System Error</router-link> |
+            <router-link to="/SystemErrorModal">System Error Modal</router-link>
+          </v-col>
+        </v-row>
+      </div>
     <div class="app-body">
       <router-view />
     </div>
@@ -129,6 +155,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../src/assets/scss/base.scss";
+
 #nav {
   padding: 5px;
   text-align: justify;
@@ -177,7 +205,6 @@ export default {
   text-align-last: center;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  text-transform: uppercase;
   text-decoration: underline;
   text-decoration-color: #fcba19;
   justify-content: center;

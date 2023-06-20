@@ -1,51 +1,27 @@
 <template>
   <div>
-    <header
-      id="appHeader"
-      class="app-header"
-    >
+    <header class="app-header" id="appHeader">
       <v-container class="container">
-        <v-row
-          justify="end"
-          no-gutters
-          style="align-items: center"
-        >
+        <v-row justify="end" no-gutters style="align-items: center">
           <v-col>
-            <a
-              class="brand"
-              @click="goToHome()"
-            >
+            <a @click="goToHome()" class="brand">
               <picture>
-                <source
-                  media="(min-width: 601px)"
-                  srcset="~../../src/assets/img/gov_bc_logo_horiz.png"
-                >
-                <source
-                  media="(max-width: 600px)"
-                  srcset="~../../src/assets/img/gov_bc_logo_vert.png"
-                >
-                <img
-                  class="brand__image"
-                  src="~../../src/assets/img/gov_bc_logo_vert.png"
+                <source media="(min-width: 601px)"
+                  srcset="../../src/assets/img/gov_bc_logo_horiz.png">
+                <source media="(max-width: 600px)"
+                  srcset="../../src/assets/img/gov_bc_logo_vert.png">
+                <img class="brand__image"
+                  src="../../src/assets/img/gov_bc_logo_vert.png"
                   alt="Government of British Columbia Logo"
-                  title="Government of British Columbia"
-                >
+                  title="Government of British Columbia">
               </picture>
               <span class="brand__title">
                 BC Registries <span class="brand__title--wrap">and Online Services</span>
               </span>
             </a>
           </v-col>
-          <v-col
-            align-self="end"
-            cols="auto"
-          >
-            <v-row
-              v-if="showActions"
-              class="app-header__actions"
-              no-gutters
-              style="align-items: center"
-            >
+          <v-col align-self="end" cols="auto">
+            <v-row v-if="showActions" class="app-header__actions" no-gutters style="align-items: center">
               <v-col cols="auto">
                 <!-- Product Selector -->
                 <sbc-product-selector v-if="showProductSelector" />
@@ -53,64 +29,60 @@
               <v-col cols="auto">
                 <!-- What's New -->
                 <v-btn
-                  v-if="!isAuthenticated && notificationCount > 0 && isWhatsNewOpen"
-                  variant="text"
-                  theme="dark"
-                  size="large"
+                  text
+                  dark
+                  large
                   width="150"
                   aria-label="whatsnew"
                   attach="#appHeader"
+                  variant="text"
                   @click.stop="notificationPanel=true"
-                >
+                  v-if="!isAuthenticated && notificationCount > 0 && isWhatsNewOpen">
                   <v-badge
-                    v-if="notificationUnreadCount > 0"
                     dot
                     overlap
                     offset-y="-5"
                     offset-x="10"
                     :color="notificationUnreadPriorityCount > 0 ? 'error' : 'blue'"
-                  />
+                    v-if="notificationUnreadCount > 0">
+                  </v-badge>
                   What's New
                 </v-btn>
               </v-col>
               <v-col cols="auto">
                 <!-- Login Menu -->
                 <v-menu
-                  v-if="!isAuthenticated && showLoginMenu"
                   fixed
-                  location="bottom left"
+                  bottom
+                  left
                   width="330"
                   transition="slide-y-transition"
                   attach="#appHeader"
-                >
-                  <template #activator="{ props }">
+                  v-if="!isAuthenticated && showLoginMenu">
+                  <template v-slot:activator="{ props }">
                     <v-btn
-                      id="loginBtn"
-                      size="large"
-                      variant="text"
-                      theme="dark"
+                      large
+                      text
+                      dark
                       class="mx-1 pr-2 pl-3"
                       aria-label="log in"
-                      v-bind="props"
-                    >
+                      id="loginBtn"
+                      variant="text"
+                      v-bind="props">
                       <span>Log in</span>
-                      <v-icon class="ml-1">
-                        mdi-menu-down
-                      </v-icon>
+                      <v-icon class="ml-1">mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
                   <v-card>
                     <div>
-                      <v-card-title class="text-body-2 font-weight-bold">
-                        Select login method
-                      </v-card-title>
-                      <v-divider />
+                      <v-card-title class="body-2 font-weight-bold">Select login method</v-card-title>
+                      <v-divider></v-divider>
                     </div>
                     <v-list density="compact">
                       <v-list-item
                         v-for="loginOption in loginOptions"
-                        :key="loginOption.idpHint"
                         class="pr-6"
+                        :key="loginOption.idpHint"
                         :prepend-icon="loginOption.icon"
                         :title="loginOption.option"
                         @click="login(loginOption.idpHint)"
@@ -118,58 +90,44 @@
                     </v-list>
                   </v-card>
                 </v-menu>
-              </v-col>
+                </v-col>
               <!-- Notifications -->
               <v-col cols="auto">
                 <v-menu
+                  anchor="bottom"             
+                  transition="slide-y-transition"            
                   v-if="isAuthenticated"
-                  anchor="bottom"
-                  transition="slide-y-transition"
-                >
-                  <template #activator="{ props }">
-                    <v-btn
-                      variant="text"
-                      size="large"
-                      class="mobile-icon-only mx-1 px-2"
-                      aria-label="notifications"
-                      v-bind="props"
-                    >
+                  >
+                  <template v-slot:activator="{ props }">
+                    <v-btn variant="text"            
+                      size="large" class="mobile-icon-only mx-1 px-2"
+                      aria-label="notifications" v-bind="props">
                       <v-icon>mdi-bell-outline</v-icon>
                       <v-badge
-                        v-if="pendingApprovalCount > 0"
                         dot
                         overlap
                         offset-y="-5"
                         offset-x="10"
                         color="error"
-                      />
+                        v-if="pendingApprovalCount > 0">
+                      </v-badge>
                       <span>Notifications</span>
-                      <v-icon class="ml-1">
-                        mdi-menu-down
-                      </v-icon>
+                      <v-icon class="ml-1">mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
                   <v-card>
                     <div class="menu-header">
-                      <v-card-title class="text-body-1">
-                        Notifications
-                      </v-card-title>
-                      <v-divider />
+                      <v-card-title class="body-1">Notifications</v-card-title>
+                      <v-divider></v-divider>
                     </div>
-                    <v-list
-                      tile
-                      density="compact"
-                    >
-                      <v-list-item
-                        v-if="pendingApprovalCount === 0"
-                        :title="'No notifications'"
-                      />
+                    <v-list tile density="compact">
+                      <v-list-item v-if="pendingApprovalCount === 0" :title="'No notifications'" />
                       <v-list-item
                         v-else
                         :subtitle="`${pendingApprovalCount} ${pendingApprovalCount === 1 ?
                           'team member' : 'team members'} require approval to access this account`"
                         :title="`You have ${pendingApprovalCount} pending approvals`"
-                        lines="two"
+                        two-line
                         @click="goToTeamMembers()"
                       />
                     </v-list>
@@ -179,75 +137,46 @@
               <v-col cols="auto">
                 <!-- Account -->
                 <v-menu
-                  v-if="isAuthenticated"
-                  location="bottom left"
+                  bottom
+                  left
                   transition="slide-y-transition"
                   attach="#appHeader"
-                >
-                  <template #activator="{ props }">
-                    <v-btn
-                      variant="text"
-                      size="large"
-                      class="user-account-btn"
-                      aria-label="my account"
-                      v-bind="props"
-                    >
+                  v-if="isAuthenticated">
+                  <template v-slot:activator="{ props }">
+                    <v-btn variant="text" size="large" class="user-account-btn" aria-label="my account" v-bind="props">
                       <v-avatar
                         tile
-                        start
+                        left
                         color="#4d7094"
                         size="32"
-                        class="user-avatar white-text"
-                      >
+                        class="user-avatar white-text">
                         {{ username.slice(0,1) }}
                       </v-avatar>
                       <div class="user-info">
-                        <div
-                          class="user-name"
-                          data-test="user-name"
-                        >
-                          {{ username }}
-                        </div>
-                        <div
-                          class="account-name"
-                          data-test="account-name"
-                        >
-                          {{ accountName }}
-                        </div>
+                        <div class="user-name" data-test="user-name">{{ username }}</div>
+                        <div class="account-name" data-test="account-name">{{ accountName }}</div>
                       </div>
-                      <v-icon class="ml-1">
-                        mdi-menu-down
-                      </v-icon>
+                      <v-icon class="ml-1">mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
 
                   <v-card>
                     <!-- User Profile -->
-                    <v-list
-                      density="compact"
-                      lines="two"
-                    >
+                    <v-list density="compact" lines="two">
                       <v-list-item class="user-info">
-                        <template #prepend>
+                        <template v-slot:prepend>
                           <v-avatar
                             tile
                             color="#4d7094"
                             size="36"
-                            class="user-avatar white-text"
-                          >
+                            class="user-avatar white-text">
                             {{ username.slice(0,1) }}
                           </v-avatar>
                         </template>
-                        <v-list-item-title
-                          class="user-name"
-                          data-test="menu-user-name"
-                        >
+                        <v-list-item-title class="user-name" data-test="menu-user-name">
                           {{ username }}
                         </v-list-item-title>
-                        <v-list-item-subtitle
-                          class="account-name"
-                          data-test="menu-account-name"
-                        >
+                        <v-list-item-subtitle class="account-name" data-test="menu-account-name">
                           {{ accountName }}
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -268,13 +197,10 @@
                       />
                     </v-list>
 
-                    <v-divider />
+                    <v-divider></v-divider>
 
                     <!-- Account Settings -->
-                    <v-list
-                      v-if="currentAccount"
-                      density="compact"
-                    >
+                    <v-list v-if="currentAccount" density="compact">
                       <v-list-subheader>ACCOUNT SETTINGS</v-list-subheader>
                       <v-list-item
                         prepend-icon="mdi-information-outline"
@@ -294,7 +220,7 @@
                       />
                     </v-list>
 
-                    <v-divider />
+                    <v-divider></v-divider>
 
                     <!-- Switch Account -->
                     <div v-if="!isStaff ">
@@ -306,13 +232,13 @@
                         <v-list-subheader>SWITCH ACCOUNT</v-list-subheader>
                         <v-list-item
                           v-for="(settings, id) in switchableAccounts"
-                          :key="id"
                           :class="{ 'v-list-item--active': settings.id === currentAccount.id }"
                           color="primary"
+                          :key="id"
                           :title="settings.label"
                           @click="switchAccount(settings, inAuth)"
                         >
-                          <template #prepend>
+                          <template v-slot:prepend>
                             <v-icon
                               v-if="settings.id === currentAccount.id"
                               :class="settings.additionalLabel ? 'mt-n4' : ''"
@@ -331,13 +257,10 @@
                         </v-list-item>
                       </v-list>
 
-                      <v-divider />
+                      <v-divider></v-divider>
 
                       <!-- Create a New Account -->
-                      <v-list
-                        v-if="canCreateAccount"
-                        density="compact"
-                      >
+                      <v-list v-if="canCreateAccount" density="compact">
                         <v-list-item
                           prepend-icon="mdi-plus"
                           title="Create account"
@@ -349,11 +272,10 @@
                 </v-menu>
 
                 <v-btn
-                  v-if="!isAuthenticated"
-                  variant="text"
+                  variant="text"            
                   size="large"
                   @click="goToCreateAccount()"
-                >
+                  v-if="!isAuthenticated">
                   Create Account
                 </v-btn>
               </v-col>
@@ -371,8 +293,7 @@
     <div class="position: relative">
       <notification-panel
         :showNotifications="notificationPanel"
-        @closeNotifications="closeNotificationPanel()"
-      />
+        @closeNotifications="closeNotificationPanel()"/>
     </div>
   </div>
 </template>
@@ -401,11 +322,11 @@ import ConfigHelper from '../../src/util/config-helper'
 import {
   getAccountIdFromCurrentUrl, removeAccountIdFromUrl, appendAccountId
 } from '../../src/util/common-util'
-// Local Components
-import BrowserVersionAlert from './BrowserVersionAlert.vue'
-import MobileDeviceAlert from './MobileDeviceAlert.vue'
-import NotificationPanel from './NotificationPanel.vue'
-import SbcProductSelector from './SbcProductSelector.vue'
+// Local Components 
+import { default as BrowserVersionAlert } from './BrowserVersionAlert.vue'
+import { default as MobileDeviceAlert } from './MobileDeviceAlert.vue'
+import { default as NotificationPanel } from './NotificationPanel.vue'
+import { default as SbcProductSelector } from './SbcProductSelector.vue'
 import { useNavigation } from '../composables'
 
 export default defineComponent({
@@ -424,14 +345,14 @@ export default defineComponent({
     showActions: { default: true },
     showLoginMenu: { default: false },
     dashboardReturnUrl: { default: '' },
-    showProductSelector: { default: false }
+    showProductSelector: { default: false },    
   },
 
-  setup (props, { emit }) {
+  setup(props, { emit }) {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
-
+    
     // set modules
     if (!store.hasModule('account')) store.registerModule('account', AccountModule)
     if (!store.hasModule('auth')) store.registerModule('auth', AuthModule)
@@ -451,31 +372,29 @@ export default defineComponent({
     const markAsRead = async () => { await store.dispatch('notification/markAsRead') }
     const fetchNotificationCount = async () => { await store.dispatch('notification/fetchNotificationCount') }
     const fetchNotificationUnreadPriorityCount = async () => {
-      await store.dispatch('notification/fetchNotificationUnreadPriorityCount')
-    }
+      await store.dispatch('notification/fetchNotificationUnreadPriorityCount') }
     const fetchNotificationUnreadCount = async () => {
-      await store.dispatch('notification/fetchNotificationUnreadCount')
-    }
+      await store.dispatch('notification/fetchNotificationUnreadCount') }
     const syncNotifications = async () => { await store.dispatch('notification/syncNotifications') }
-
+    
     // navigation helpers
     const { getContextPath, redirectToPath } = useNavigation()
-
+    
     // constants
     const loginOptions = [
       { idpHint: IdpHint.BCSC, option: 'BC Services Card', icon: 'mdi-account-card-details-outline' },
-      { idpHint: IdpHint.BCEID, option: 'BCeID', icon: 'mdi-two-factor-authentication' },
-      { idpHint: IdpHint.IDIR, option: 'IDIR', icon: 'mdi-account-group-outline' }
+      { idpHint: IdpHint.BCEID, option: 'BCeID', icon: 'mdi-two-factor-authentication'},
+      { idpHint: IdpHint.IDIR, option: 'IDIR', icon: 'mdi-account-group-outline'}
     ]
     const notificationPanel = ref(false)
 
     // Calculated Value
     const isAuthenticated = computed(() => { return store.getters['auth/isAuthenticated'] as boolean })
-    const accountName = computed(() => store.getters['account/accountName'])
-    const switchableAccounts = computed(() => store.getters['account/switchableAccounts'])
-    const username = computed(() => store.getters['account/username'])
+    const accountName = computed(() => store.getters['account/accountName'] )
+    const switchableAccounts = computed(() => store.getters['account/switchableAccounts'] )
+    const username = computed(() => store.getters['account/username'] )
     const currentLoginSource = computed(() => store.getters['auth/currentLoginSource'] as string)
-    const currentAccount = computed(() => store.state.account.currentAccount as UserSettings)
+    const currentAccount =computed(() => store.state.account.currentAccount as UserSettings)
     const currentUser = computed(() => store.state.account.currentUser as any)
     const pendingApprovalCount = computed(() => store.state.account.pendingApprovalCount as number)
     const isBceid = computed(() => currentLoginSource.value === LoginSource.BCEID)
@@ -484,24 +403,24 @@ export default defineComponent({
     const notificationUnreadPriorityCount = computed(() =>
         store.state.notification.notificationUnreadPriorityCount as number)
     const disableBCEIDMultipleAccount = computed(() =>
-        LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) as boolean || false)
-    const isWhatsNewOpen = computed(() => LaunchDarklyService.getFlag(LDFlags.WhatsNew) as boolean || false)
+        LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) as boolean || false)      
+    const isWhatsNewOpen = computed(() => LaunchDarklyService.getFlag(LDFlags.WhatsNew) as boolean || false)       
     const showTransactions = computed(() => {
       return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF].includes(currentAccount?.value?.accountType as Account)
     })
-    const isStaff = computed(() => currentUser?.value?.roles?.includes(Role.Staff) as boolean || false)
+    const isStaff = computed(() => currentUser?.value?.roles?.includes(Role.Staff) as boolean || false)       
     const isGovmUser = computed(() => currentUser?.value?.roles?.includes(Role.GOVMAccountUser) as boolean ||
-     false)
+     false)      
     const isBcscOrBceid = computed(
-      () => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(currentLoginSource.value) >= 0)
+        () => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(currentLoginSource.value) >= 0)
     const canCreateAccount = computed(() => {
-      const disabledLogins:any = [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()]
+    const disabledLogins:any = [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()]
       if (disableBCEIDMultipleAccount.value) {
         disabledLogins.push(LoginSource.BCEID.valueOf())
       }
       return disabledLogins.indexOf(currentLoginSource.value) < 0
     })
-
+  
     // mounted lifecycle
     onMounted(async () => {
       getModule(AccountModule, store)
@@ -547,8 +466,8 @@ export default defineComponent({
       redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
     }
     const goToCreateBCSCAccount = () => {
-      const redirectUrl: string = props.dashboardReturnUrl
-        ? `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(props.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
+      const redirectUrl: string = props.dashboardReturnUrl ?
+        `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(props.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
       redirectToPath(props.inAuth, redirectUrl)
     }
     const goToAccountInfo = async (settings: UserSettings) => {
@@ -573,7 +492,7 @@ export default defineComponent({
     const checkAccountStatus = async () => {
       // redirect if accoutn status is suspended
       if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(
-        status => status === currentAccount?.value?.accountStatus)
+          status => status === currentAccount?.value?.accountStatus)
       ) {
         redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
       } else if (currentAccount?.value?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
@@ -632,7 +551,7 @@ export default defineComponent({
     })
 
     return {
-      ...props,
+      ...props,       
       closeNotificationPanel,
       goToAccountInfo,
       goToCreateAccount,
@@ -671,8 +590,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "~../../src/assets/scss/layout.scss";
-@import "~../../src/assets/scss/theme.scss";
+@import "../../src/assets/scss/layout.scss";
+@import "../../src/assets/scss/theme.scss";
+@import "../../src/assets/scss/base.scss";
 
 $app-header-font-color: #ffffff;
 
@@ -810,6 +730,8 @@ $app-header-font-color: #ffffff;
   .v-btn.user-account-btn {
     min-width: auto !important;
     font-size: 0.8rem;
+    text-transform: capitalize;
+
 
     .user-avatar {
       margin-right: 0;
@@ -822,9 +744,11 @@ $app-header-font-color: #ffffff;
   }
 
   .v-btn.login-btn {
+    text-transform: none;
     .v-icon + span,
     span + .v-icon {
       display: none;
+      
     }
   }
 

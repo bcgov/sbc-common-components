@@ -4,46 +4,16 @@
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
-          <li>
-            <a
-              href="https://www2.gov.bc.ca/gov/content/home/disclaimer"
-              target="_blank"
-            >Disclaimer</a>
-          </li>
-          <li>
-            <a
-              href="https://www2.gov.bc.ca/gov/content/home/privacy"
-              target="_blank"
-            >Privacy</a>
-          </li>
-          <li>
-            <a
-              href="https://www2.gov.bc.ca/gov/content/home/accessibility"
-              target="_blank"
-            >Accessibility</a>
-          </li>
-          <li>
-            <a
-              href="https://www2.gov.bc.ca/gov/content/home/copyright"
-              target="_blank"
-            >Copyright</a>
-          </li>
+          <li><a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
+          <li><a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
+          <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
+          <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
         </ul>
-        <v-tooltip
-          v-if="aboutText"
-          location="left"
-          content-class="tooltip__footer"
-        >
-          <template #activator="{ props }">
-            <v-icon
-              v-bind="props"
-              class="mr-3 mt-1"
-              color="#8099b3"
-            >
-              mdi-information-outline
-            </v-icon>
+        <v-tooltip v-if="aboutText" location="left" content-class="tooltip__footer">
+          <template v-slot:activator="{ props }">
+            <v-icon v-bind="props" class="mr-3 mt-1" color="#8099b3">mdi-information-outline</v-icon>
           </template>
-          <span v-html="aboutText" />
+          <span v-html="aboutText"></span>
         </v-tooltip>
       </nav>
     </div>
@@ -51,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-//  eslint-disable-next-line @typescript-eslint/no-unused-vars
-//  const props = defineProps<{ aboutText?: string }>()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = defineProps<{ aboutText?: string }>()
 </script>
 
 <style lang="scss" scoped>
