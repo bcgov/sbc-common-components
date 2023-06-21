@@ -1,24 +1,33 @@
 <template>
   <div>
     <h1 class="pageTitle">Loader</h1>
-    <sbc-loader :show="true" message="Display message here" progressColor="blue"></sbc-loader>
+    <div class="loader">
+      <sbc-loader :show="true" message="This is a test of the loader" progressColor="#FF0000"></sbc-loader>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent } from 'vue';
 // Components
 import SbcLoader from '../../src/components/SbcLoader.vue'
 
-@Component({
+export default defineComponent({
   components: {
     SbcLoader
+  },
+  computed: {
+    redirectUrl() {
+      return (this.$route.query.redirect as string);
+    }
   }
-})
-export default class LoaderView extends Vue {
-  get redirectUrl () {
-    return (this.$route.query.redirect as string)
-  }
-}
+});
 </script>
+<style lang="scss">
+.loader{
+  text-align: justify;
+  text-align-last: center;
+  justify-content: center;
+  align-items: center;
+  }
+</style>

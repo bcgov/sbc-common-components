@@ -130,10 +130,15 @@ import ProductModule from '../../src/store/modules/product'
 import { getModule } from 'vuex-module-decorators'
 import { useStore } from 'vuex'
 
+
+
 export default defineComponent({
   name: 'SbcProductSelector',
+  props: {
+    setStoreBypass: {default: false} //used for testing the component in isolation
+  },
 
-  setup() {
+  setup(props) {
     const dialog = ref(false)
     const store = useStore()
 
@@ -143,12 +148,15 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      if (!props.setStoreBypass){
       getModule(ProductModule, store)
       await syncProducts()
+      }
     })
 
     //state
     const state = reactive({
+      storeBypass: computed(() => { return props.setStoreBypass } ),
       products: computed(() => store.state.product.products as Product[]),
       partners: computed(() => store.state.product.partners as Product[]),
     })

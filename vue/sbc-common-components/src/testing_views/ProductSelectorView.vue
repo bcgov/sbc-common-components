@@ -1,32 +1,28 @@
 <template>
   <div>
-  <h1 class="pageTitle">Product Selector</h1>
-  <div class="prod">
-    <sbc-product-selector/>
+    <h1 class="pageTitle">Product Selector</h1>
+    <div class="prod">
+      <sbc-product-selector :setStoreBypass="true"/>
+    </div>
   </div>
-</div>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent } from 'vue'
 // Components
 import SbcProductSelector from '../components/SbcProductSelector.vue'
-  /**
-   * Operation:
-   * 1. When this component is first loaded (ie, we are not authenticated) then the
-   *    SbcLogin component will redirect us to log in.
-   */
-  @Component({
-    components: {
-      SbcProductSelector
+
+export default defineComponent({
+  components: {
+    SbcProductSelector
+  },
+  computed: {
+    redirectUrl() {
+      return (this.$route.query.redirect as string)
     }
-  })
-export default class ProductSelectorView extends Vue {
-  get redirectUrl () {
-    return (this.$route.query.redirect as string)
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -36,8 +32,10 @@ export default class ProductSelectorView extends Vue {
   width: 100%;
 }
 
-.prod{
-  background-color: #003366;
+.prod {
+  text-align: justify;
+  text-align-last: center;
   justify-content: center;
+  align-items: center;
 }
 </style>

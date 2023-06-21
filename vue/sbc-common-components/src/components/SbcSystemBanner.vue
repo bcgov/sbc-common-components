@@ -1,20 +1,9 @@
 <template>
   <!-- NB: set icon="null" to prevent v-alert default icon + vue complains if set to "" -->
-  <v-alert
-    v-model="show"
-    class="py-2"
-    :type="type"
-    :closable="dismissible"
-  >
+  <v-alert class="py-2" v-model="show" :type="type" icon="null" :dismissible="dismissible">
     <div class="px-3">
-      <v-icon
-        v-if="icon !== ''"
-        class="mr-2"
-        size="34"
-      >
-        {{ icon }}
-      </v-icon>
-      <span v-html="message" />
+      <v-icon v-if="icon !== ''" class="mr-2" size="34">{{ icon }}</v-icon>
+      <span v-html="message"></span>
     </div>
   </v-alert>
 </template>

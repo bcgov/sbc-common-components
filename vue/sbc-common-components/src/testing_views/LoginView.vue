@@ -1,30 +1,28 @@
 <template>
   <div>
     <h1 class="pageTitle">Login</h1>
-    <sbc-login :redirectUrl="redirectUrl" />
+    <SbcLogin :redirectUrl="redirectUrl" />
   </div>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent, ref } from 'vue'
 // Components
 import SbcLogin from '../../src/components/SbcLogin.vue'
-  /**
-   * Operation:
-   * 1. When this component is first loaded (ie, we are not authenticated) then the
-   *    SbcLogin component will redirect us to log in.
-   */
-  @Component({
-    components: {
-      SbcLogin
+
+export default defineComponent({
+  components: {
+    SbcLogin
+  },
+  setup() {
+    const redirectUrl = ref('')
+
+    return {
+      redirectUrl
     }
-  })
-export default class LoginView extends Vue {
-  get redirectUrl () {
-    return (this.$route.query.redirect as string)
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

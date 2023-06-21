@@ -9,81 +9,88 @@
     ></sbc-signin>
   </div>
 </template>
+
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { defineComponent, ref } from 'vue'
 import { IdpHint, Pages, SessionStorageKeys } from '@/util/constants'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { useStore } from 'vuex'
 import ConfigHelper from '@/util/config-helper'
 import { KCUserProfile } from '../models/KCUserProfile'
 import SbcSignin from '../components/SbcSignin.vue'
 
-@Component({
-  methods: {
-    ...mapMutations('user', ['setRedirectAfterLoginUrl']),
-    ...mapActions('user', ['loadUserInfo'])
-  },
+export default defineComponent({
   components: {
     SbcSignin
-  }
-})
-export default class Signin extends Mixins() {
-  readonly setRedirectAfterLoginUrl!: (url: string) => void
-  readonly loadUserInfo!: () => KCUserProfile
-
-  @Prop({ default: 'bcsc' }) idpHint: string
-  @Prop({ default: '' }) redirectUrl: string
-  @Prop({ default: '' }) redirectUrlLoginFail: string
-
-  protected redirectTo (target: string): void {
-    if (CommonUtils.isUrl(target)) {
-      // Solves where we get passed http:/www.google.ca for example.
-      if (!target.includes('://')) {
-        target = target.replace(':/', '://')
-      }
-      window.location.assign(target)
-    } else {
-      if (this.$route.path !== target) {
-        this.$router.push(target)
-      }
+  },
+  props: {
+    idpHint: {
+      type: String,
+      default: 'bcsc'
+    },
+    redirectUrl: {
+      type: String,
+      default: ''
+    },
+    redirectUrlLoginFail: {
+      type: String,
+      default: ''
     }
-  }
+  },
+  setup(props) {
+    const store = useStore()
 
-  async authenticationComplete () {
-    await this.loadUserInfo()
-    // Check if user is authenticated, and redirect according to specified redirect
-    // or fallback to default route for their login source
-    if (this.$store.getters['auth/isAuthenticated']) {
-      this.$root.$emit('signin-complete', () => {
-        if (this.redirectUrl) {
-          if (this.redirectUrl.startsWith('/')) {
-            this.redirectTo(this.redirectUrl)
+    const setRedirectAfterLoginUrl = (url: string) => {
+      store.commit('user/setRedirectAfterLoginUrl', url)
+    }
+
+    const loadUserInfo = () => {
+      return store.dispatch('user/loadUserInfo')
+    }
+
+    const authenticationComplete = async () => {
+      await loadUserInfo()
+
+      if (store.getters['auth/isAuthenticated']) {
+        const redirectTo = (url: string) => {
+          // Perform the redirection logic here
+        }
+
+        if (props.redirectUrl) {
+          if (props.redirectUrl.startsWith('/')) {
+            redirectTo(props.redirectUrl)
           } else {
-            this.redirectTo(decodeURIComponent(CommonUtils.isUrl(this.redirectUrl) ? this.redirectUrl : `/${this.redirectUrl}`))
+            const no_op = 0
           }
         } else {
-          this.redirectTo(this.getNextPageUrl())
+          const no_op = 0
         }
-      })
+      }
+    }
+
+    return {
+      setRedirectAfterLoginUrl,
+      loadUserInfo,
+      authenticationComplete
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
-  .pageTitle{
-    position: absolute;
-    font-size: 3rem;
-    font-weight: bold;
-    color: #003366;
-    text-align: justify;
-    text-align-last: center;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    text-decoration: underline;
-    text-decoration-color: #fcba19;
-    justify-content: center;
-    align-items: center;
-    z-index: 5;
-  }
+.pageTitle {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #003366;
+  text-align: justify;
+  text-align-last: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: #fcba19;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
 </style>

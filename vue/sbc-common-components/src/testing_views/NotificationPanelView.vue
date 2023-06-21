@@ -1,24 +1,23 @@
 <template>
   <div>
     <h1 class="pageTitle">Notification Panel</h1>
-    <notification-panel :showNotifications="true"></notification-panel>
+    <notification-panel :show-notifications="true"></notification-panel>
   </div>
 </template>
 
 <script lang="ts">
-
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent } from 'vue'
 // Components
 import NotificationPanel from '../../src/components/NotificationPanel.vue'
 
-@Component({
+export default defineComponent({
   components: {
     NotificationPanel
+  },
+  computed: {
+    redirectUrl() {
+      return (this.$route.query.redirect as string)
+    }
   }
 })
-export default class NotificationPanelView extends Vue {
-  get redirectUrl () {
-    return (this.$route.query.redirect as string)
-  }
-}
 </script>

@@ -1,64 +1,35 @@
 <template>
-  <div
-    v-if="showNotifications"
-    @clickout="emitClose()"
-  >
-    <v-overlay />
-    <v-navigation-drawer
-      location="right"
-      order="number"
-      :width="440"
-    >
-      <v-app-bar
-        box-shadow="none"
-        border
-      >
-        <v-toolbar-title class="toolbar-title">
-          What's New at BC Registries
-        </v-toolbar-title>
-        <v-spacer />
-        <v-btn
-          icon
-          size="large"
-          class="dialog-close"
-          @click="emitClose()"
-        >
+  <div v-if="showNotifications" v-on:clickout="emitClose()">
+    <v-overlay></v-overlay>
+    <v-navigation-drawer right app :width="440">
+      <v-app-bar flat outlined>
+        <v-toolbar-title class="toolbar-title">What's New at BC Registries</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon large class="dialog-close" @click="emitClose()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-app-bar>
-      <v-list box-shadow="none">
+      <v-list flat>
         <v-list-group color="primary">
-          <template>
-            <div
-              v-for="(item, i) in notifications"
-              :key="i"
-            >
-              <v-list-item>
-                <v-row dense>
-                  <v-col
-                    class="d-flex"
-                    cols="1"
-                  >
-                    <span :class="!item.read && (item.priority ? 'dot-red' : 'dot-blue')" />
-                  </v-col>
-                  <v-col>
-                    <v-list-item>
-                      <v-list-item-title class="font-weight-bold list-subtitle">
-                        {{ item.title }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle>
-                      <v-spacer />
-                      <!-- eslint-disable-next-line -->
-                      <v-list-item v-html="item.description" />
-                    </v-list-item>
-                  </v-col>
-                </v-row>
-              </v-list-item>
-              <v-divider
-                v-if="i < notifications.length - 1"
-                :key="`${i}-divider`"
-              />
-            </div>
+          <template v-for="(item, i) in notifications"  :key="i">
+            <v-list-item>
+              <v-row dense>
+                <v-col class="d-flex" cols="1">
+                  <span :class="!item.read && (item.priority ? 'dot-red' : 'dot-blue')">
+                  </span>
+                </v-col>
+                <v-col>
+                  <v-list-item>
+                    <v-list-item-title class="font-weight-bold list-subtitle">{{item.title}}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle>
+                    <v-spacer></v-spacer>
+                    <!-- eslint-disable-next-line -->
+                    <v-list-item v-html="item.description"></v-list-item>
+                  </v-list-item>
+                </v-col>
+              </v-row>
+            </v-list-item>
+            <v-divider v-if="i < notifications.length - 1" :key="`${i}-divider`"></v-divider>
           </template>
         </v-list-group>
       </v-list>
@@ -79,12 +50,13 @@ export default defineComponent({
   props: {
     showNotifications: { default: false }
   },
-  setup (props, { emit }) {
+  setup(props, { emit }) {
     const store = useStore()
     // set modules
-    if (!store.hasModule('notification')) { store.registerModule('notification', NotificationModule) }
+    if (!store.hasModule('notification'))
+      store.registerModule('notification', NotificationModule)
 
-    // state
+    //state
     const state = reactive({
       notifications: computed(() => store.state.notification.notifications as Notification[])
     })
@@ -94,10 +66,10 @@ export default defineComponent({
     })
 
     const emitClose = (): void => {
-      emit('closeNotifications')
+        emit('closeNotifications')
     }
     return {
-      ...props,
+      ...props,  
       ...state,
       emitClose
     }
