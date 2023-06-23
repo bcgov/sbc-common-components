@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 import App from './App.vue'
 import { createVueRouter } from './router'
 import store from './store'
+import KeycloakService from '../src/services/keycloak.services'
 
 declare const window: any
 
@@ -16,6 +17,16 @@ async function start () {
   // must come first as inits below depend on config
   const router = createVueRouter()
   const app = createApp(App)
+
+  // configure Keycloak Service
+  console.info('Starting Keycloak service...') // eslint-disable-line no-console
+  const keycloakConfig: any = {
+    url: `${window['keycloakAuthUrl']}`,
+    realm: `${window['keycloakRealm']}`,
+    clientId: `${window['keycloakClientId']}`
+  }
+
+  await KeycloakService.setKeycloakConfigUrl(keycloakConfig)
 
   // start Vue application
   console.info('Starting app...') // eslint-disable-line no-console

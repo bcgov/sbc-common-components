@@ -131,11 +131,6 @@ export function createVueRouter (): Router {
       //   name: 'System Error Modal',
       //   component: SystemErrorModalView
       // },
-      { path: '/signin/:idpHint', name: 'signin', component: SignIn, props: true, meta: { requiresAuth: false } },
-      { path: '/signin/:idpHint/:redirectUrl', name: 'signin-redirect', component: SignIn, props: true, meta: { requiresAuth: false } },
-      { path: '/signin/:idpHint/:redirectUrl/:redirectUrlLoginFail', name: 'signin-redirect-fail', component: SignIn, props: true, meta: { requiresAuth: false } },
-      { path: '/signout', name: 'signout', component: SignoutView, props: true, meta: { requiresAuth: true } },
-      { path: '/signout/:redirectUrl', name: 'signout-redirect', component: SignoutView, props: true, meta: { requiresAuth: true } }
     ]
   })
   return router
