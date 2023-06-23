@@ -4,8 +4,9 @@
       ref="headerGroup"
       class="header-group"
     >
+    <link rel="shortcut icon" href="#" />
       <sbc-loader :show="false" />
-      <sbc-header class="sbc-header" :in-auth="false" :show-login-menu="false"
+      <sbc-header class="sbc-header" :in-auth="false" :show-login-menu="true"
       >
         <template #login-button-text>
           Log in with BC Services Card
@@ -57,7 +58,7 @@
             <!-- <router-link class="disabled" to="/PaySystemAlert">Pay System Alert</router-link> | -->
             <router-link to="/ProductSelector">Product Selector</router-link> |
             <router-link to="/SignIn">Sign In</router-link> |
-            <router-link to="/SignOut">Sign Out</router-link> |
+            <router-link class = disabled to="/SignOut">Sign Out</router-link> |
             <!-- <router-link class="disabled" to="/SystemAlert">System Alert</router-link> | -->
             <router-link to="/SystemBanner">System Banner</router-link> |
             <!-- <router-link class="disabled" to="/System Error">System Error</router-link> |
@@ -66,7 +67,9 @@
         </v-row>
       </div>
     <div class="app-body">
-      <router-view />
+      <slot>
+       <router-view />
+      </slot>
     </div>
     <sbc-footer :aboutText="aboutText" />
   </v-app>

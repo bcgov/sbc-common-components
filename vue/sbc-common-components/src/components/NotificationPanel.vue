@@ -1,17 +1,16 @@
 <template>
   <div v-if="showNotifications" v-on:clickout="emitClose()">
     <v-overlay></v-overlay>
-    <v-navigation-drawer right app :width="440">
-      <v-app-bar flat outlined>
-        <v-toolbar-title class="toolbar-title">What's New at BC Registries</v-toolbar-title>
-        <v-spacer></v-spacer>
+    <v-navigation-drawer app location="right" :width="440">
+      <v-app-bar app flat>
+        <v-toolbar-title app class="toolbar-title">What's New at BC Registries</v-toolbar-title>
         <v-btn icon large class="dialog-close" @click="emitClose()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-app-bar>
       <v-list flat>
         <v-list-group color="primary">
-          <template v-for="(item, i) in notifications"  :key="i">
+          <template v-for="(item, i) in notifications" :key="i">
             <v-list-item>
               <v-row dense>
                 <v-col class="d-flex" cols="1">
@@ -20,7 +19,7 @@
                 </v-col>
                 <v-col>
                   <v-list-item>
-                    <v-list-item-title class="font-weight-bold list-subtitle">{{item.title}}</v-list-item-title>
+                    <v-list-item-title class="font-weight-bold list-subtitle">{{ item.title }}</v-list-item-title>
                     <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle>
                     <v-spacer></v-spacer>
                     <!-- eslint-disable-next-line -->

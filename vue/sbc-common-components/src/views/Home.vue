@@ -80,9 +80,6 @@
             name="slide-x-transition"
             mode="out-in"
           >
-            <router-view
-              @login="login()"
-            />
           </transition>
         </v-container>
       </div>

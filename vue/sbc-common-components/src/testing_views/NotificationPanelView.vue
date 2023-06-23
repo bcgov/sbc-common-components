@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="pageTitle">Notification Panel</h1>
-    <notification-panel :show-notifications="true"></notification-panel>
+    <notification-panel :showNotifications="true"></notification-panel>
   </div>
 </template>
 
