@@ -2,12 +2,10 @@
   <div v-if="showNotifications" v-on:clickout="emitClose()">
     <v-overlay></v-overlay>
     <v-navigation-drawer app location="right" :width="440">
-      <v-app-bar app flat>
-        <v-toolbar-title app class="toolbar-title">What's New at BC Registries</v-toolbar-title>
-        <v-btn icon large class="dialog-close" @click="emitClose()">
+        <v-toolbar-title app class="toolbar-title pl-4 pt-4">What's New at BC Registries</v-toolbar-title>
+        <v-btn icon large flat class="dialog-close" @click="emitClose()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-      </v-app-bar>
       <v-list flat>
         <v-list-group color="primary">
           <template v-for="(item, i) in notifications" :key="i">
