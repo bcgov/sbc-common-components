@@ -8,6 +8,7 @@
         </v-btn>
       <v-list flat>
         <v-list-group color="primary">
+          <!-- eslint-disable-next-line -->
           <template v-for="(item, i) in notifications" :key="i">
             <v-list-item>
               <v-row dense>

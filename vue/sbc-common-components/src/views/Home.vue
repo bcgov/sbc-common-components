@@ -6,10 +6,12 @@
         :class="{'auth': true}"
       >
         <v-container>
-          <h1>Start a B.C. based Business and <br>keep Business Records up to date</h1>
+          <h1>The pages in this app demonstrate <br>
+            the usage of the components in the <br>
+            SBC-Common-Components repository</h1>
           <p class="mt-7 mb-10">
-            The Business Registry manages the creation (incorporation and registration) <br> and listing of businesses
-            and organizations in British Columbia.
+            The main menu page is modeled off of the auth-web page implementation
+            to ensure correct Vutetify styling.
           </p>
           <div class="hero-banner__cta-btns mb-2">
             <!-- Authenticated -->
@@ -17,13 +19,13 @@
               v-if="true"
               class="cta-btns-authenticated"
             >
-              <v-btn
+              <!-- <v-btn
                 size="large"
                 color="bcgovblue"
                 class="cta-btn-auth font-weight-bold text-white mr-4"
               >
                 Manage my Business
-              </v-btn>
+              </v-btn> -->
             </div>
 
             <!-- Non-authenticated -->
@@ -70,7 +72,7 @@
           </v-dialog>
         </v-container>
       </header>
-      <div class="how-to-container py-6">
+      <!-- <div class="how-to-container py-6">
         <v-container class="py-10">
           <h2>How does it work?</h2>
           <h1 class="notAvailable">
@@ -90,7 +92,7 @@
         <h1 class="notAvailable">
           BCS PANEL GOES HERE
         </h1>
-      </div>
+      </div> -->
       <div class="contact-info-container">
         <v-container>
           <v-row>

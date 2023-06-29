@@ -60,7 +60,7 @@
             <router-link to="/SignIn">Sign In</router-link> |
             <router-link class = disabled to="/SignOut">Sign Out</router-link> |
             <!-- <router-link class="disabled" to="/SystemAlert">System Alert</router-link> | -->
-            <router-link to="/SystemBanner">System Banner</router-link> |
+            <router-link to="/SystemBanner">System Banner</router-link> 
             <!-- <router-link class="disabled" to="/System Error">System Error</router-link> |
             <router-link class="disabled" to="/SystemErrorModal">System Error Modal</router-link> -->
           </v-col>
