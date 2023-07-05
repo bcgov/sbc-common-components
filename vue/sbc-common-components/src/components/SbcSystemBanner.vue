@@ -1,8 +1,11 @@
 <template>
-  <!-- NB: set icon="null" to prevent v-alert default icon + vue complains if set to "" -->
-  <v-alert class="py-2" v-model="show" :type="type" icon="null" :dismissible="dismissible">
+  <v-alert class="py-2"
+  v-model="show"
+  :type="type"
+  close-icon="mdi-close-circle mdi-24px mt-3"
+  :closable="dismissible"
+  :prominent="true">
     <div class="px-3">
-      <v-icon v-if="icon !== ''" class="mr-2" size="34">{{ icon }}</v-icon>
       <span v-html="message"></span>
     </div>
   </v-alert>
@@ -39,15 +42,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-alert {
   border-radius: 0;
-  padding: 0;
-  max-height: 48px;
+  margin-top: 10px;
 }
-:deep(.v-alert__prepend) {
-  height: 0;
-  width: 0;
-  margin-inline-end: 0;
+.close-icon{
+  font-size: 30px;
 }
-
 .v-alert :deep(.v-alert__wrapper) {
   margin: 0;
   overflow: hidden;

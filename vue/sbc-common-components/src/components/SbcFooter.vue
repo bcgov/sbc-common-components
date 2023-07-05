@@ -9,12 +9,15 @@
           <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
         </ul>
+        <div class="d-flex align-center">
+          <span class="font-italic">A BC Online Application</span>
         <v-tooltip v-if="aboutText" location="left" content-class="tooltip__footer">
           <template v-slot:activator="{ props }">
             <v-icon v-bind="props" class="mr-3 mt-1" color="#8099b3">mdi-information-outline</v-icon>
           </template>
           <span v-html="aboutText"></span>
         </v-tooltip>
+        </div>
       </nav>
     </div>
   </footer>
@@ -44,7 +47,7 @@ const props = defineProps<{ aboutText?: string }>()
 
   nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 
     ul {
       padding: 0;
@@ -84,4 +87,7 @@ const props = defineProps<{ aboutText?: string }>()
       }
     }
   }
+  span {
+  color: #FCBA19; // same as $BCgovGold5
+}
 </style>

@@ -1,11 +1,13 @@
 <template>
   <div v-if="showNotifications" v-on:clickout="emitClose()">
-    <v-overlay></v-overlay>
+    <v-overlay model-value persistent :z-index="1" scroll-strategy="none">
+    </v-overlay>
     <v-navigation-drawer app location="right" :width="440">
+      <div class="app-bar">
         <v-toolbar-title app class="toolbar-title pl-4 pt-4">What's New at BC Registries</v-toolbar-title>
-        <v-btn icon large flat class="dialog-close" @click="emitClose()">
-          <v-icon>mdi-close</v-icon>
+        <v-btn icon="mdi-close" variant="text" flat class="dialog-close" @click="emitClose()">
         </v-btn>
+      </div>
       <v-list flat>
         <v-list-group color="primary">
           <!-- eslint-disable-next-line -->
@@ -95,18 +97,36 @@ export default defineComponent({
 .v-app-bar.v-toolbar.v-sheet {
   background-color: $app-notification-orange !important;
 }
+.app-bar {
+  background-color: $app-notification-orange !important;
+  height: 64px;
+  display:block;
+  border: thin solid rgba(0,0,0,.12);
+  border-radius: 0;
+}
 
 .dialog-close {
   position: absolute;
   top: 8px;
-  right: 15px;
-  margin-right: 70px;
+  right: 4px;
+  margin-right: 0px;
   z-index: 2;
   font-weight: bold;
 }
 
 :deep(.v-btn:not(.dialog-close) .v-icon.v-icon) {
   font-size: $px-18 !important;
+}
+ .v-btn {
+  font-size: 20px;
+  color: inherit;
+  background-color: $app-notification-orange !important;
+  opacity: 70%;
+ }
+.v-icon {
+  font-size: 28px !important;
+  height: 28px;
+  opacity : 10%;
 }
 
 :deep(.v-btn__content) {
