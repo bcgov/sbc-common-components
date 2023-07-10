@@ -7,13 +7,14 @@ module.exports = {
     'ts',
     'tsx'
   ],
+  testEnvironment: "jsdom",
   transform: {
-    '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.(js|jsx)?$': 'babel-jest'
+    '^.+\\.(js|jsx)?$': 'babel-jest',
+    '^.+\\.vue$': '@vue/vue3-jest'
   },
-  transformIgnorePatterns: [],
+  transformIgnorePatterns: ['/node_modules/(?!vuetify)'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },

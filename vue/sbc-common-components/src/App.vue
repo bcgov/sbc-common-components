@@ -106,7 +106,7 @@ export default {
       return bannerText?.trim() || null
     })
 
-    const aboutText = process.env.ABOUT_TEXT
+    const aboutText = "SBC Common Components being upgraded to Vue 3"
 
     const setCurrentOrganization = (value) => store.commit('org/setCurrentOrganization', value)
     const loadUserInfo = () => store.dispatch('user/loadUserInfo')

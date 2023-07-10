@@ -11,7 +11,7 @@
       <v-list-item
         v-for="loginOption in loginOptions"
         :key="loginOption.idpHint"
-        class="pr-6"
+        class="items pr-6"
         :prepend-icon="loginOption.icon"
         :title="loginOption.option"
         @click="login(loginOption.idpHint)"
