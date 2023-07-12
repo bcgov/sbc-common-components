@@ -1,5 +1,5 @@
-import '/src/assets/scss/test.scss'
-import '/src/assets/scss/theme.scss'
+import '../assets/scss/test.scss'
+import '../assets/scss/theme.scss'
 
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
@@ -10,7 +10,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 export default createVuetify({
-  theme: {
+theme: {
     defaultTheme: 'light',
     themes: {
       light: {
