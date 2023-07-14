@@ -9,7 +9,7 @@
     "url": "https://github.com/bcgov/sbc-common-components.git"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name sbc-common-lib src/components/global.js",
     "lint": "vue-cli-service lint",
     "lint:nofix": "vue-cli-service lint --no-fix",

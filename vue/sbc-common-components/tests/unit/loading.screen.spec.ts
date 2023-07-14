@@ -1,11 +1,23 @@
 import { mount } from '@vue/test-utils';
 import LoadingScreen from '../../src/components/LoadingScreen.vue';
+import vuetify from './setup'
+
+window.ResizeObserver =
+    window.ResizeObserver ||
+    jest.fn().mockImplementation(() => ({
+        disconnect: jest.fn(),
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+    }));
 
 describe('loading screen component', () => {
   it('renders v progress circular when isLoading is true', () => {
     const wrapper = mount(LoadingScreen, {
       props: {
         isLoading: true,
+      },
+      global: {
+        plugins: [vuetify],
       },
     });
 
@@ -17,6 +29,9 @@ describe('loading screen component', () => {
     const wrapper = mount(LoadingScreen, {
       props: {
         isLoading: false,
+      },
+      global: {
+        plugins: [vuetify],
       },
     });
 

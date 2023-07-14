@@ -1,12 +1,15 @@
 import { mount,VueWrapper } from '@vue/test-utils';
 import SbcAuthMenu from '@/components/SbcAuthMenu.vue';
 import { createStore } from 'vuex';
+import { createVueRouter } from './setup';
 import AccountModule from '@/store/modules/account';
 import AuthModule from '@/store/modules/auth';
+import vuetify from './setup';
 
 describe('SbcAuthMenu', () => {
     let wrapper: VueWrapper<any>;
     let store: any;
+    let router: any;
 
     beforeEach(() => {
         // Create a new Vuex store instance with the required modules
@@ -16,11 +19,11 @@ describe('SbcAuthMenu', () => {
             auth: AuthModule,
           },
         });
-    
+        router = createVueRouter();
         wrapper = mount(SbcAuthMenu, {
           global: {
-            plugins: [store],
-          },
+            plugins: [store, vuetify, router]
+          }
         });
       });
     

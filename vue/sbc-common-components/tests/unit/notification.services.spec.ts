@@ -6,7 +6,8 @@ import { SessionStorageKeys } from '@/util/constants'
 jest.mock('axios', () => ({
   get: jest.fn(),
   all: jest.fn(),
-  spread: jest.fn()
+  spread: jest.fn(),
+  create: jest.fn()
 }), {
   virtual: true
 })
