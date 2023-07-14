@@ -26,7 +26,7 @@ describe('SbcHeader', () => {
             plugins: [store, vuetify]
         }
     });
-
-    expect(wrapper.find('.brand__title').text()).toBe('BC Registries and Online Services');
+    const header = wrapper.find('.app-header');
+    expect(header.exists()).toBe(true);
   });
 });

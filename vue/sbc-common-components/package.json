@@ -81,9 +81,8 @@
     "vue-property-decorator": "^8.5.1",
     "vue-template-compiler": "2.6.12",
     "vuepress": "^0.14.11",
-    "vuex-module-decorators": "^2.0.0",
-    "webpack-plugin-vuetify": "^2.0.1"
-  },
+    "vuex-module-decorators": "^2.0.0"
+    },
   "files": [
     "dist/*",
     "src/*",
