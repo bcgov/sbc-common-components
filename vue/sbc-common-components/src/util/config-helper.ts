@@ -51,4 +51,15 @@ export default class ConfigHelper {
   static getKeycloakConfigUrl (): string {
     return this.keycloakConfigUrl
   }
+  
+static async fetchConfig(): Promise<any>{
+  const keycloakAuthUrl: string = process.env.VUE_APP_KEYCLOAK_AUTH_URL;
+  (<any>window).keycloakAuthUrl = keycloakAuthUrl
+
+  const keycloakRealm: string = process.env.VUE_APP_KEYCLOAK_REALM;
+  (<any>window).keycloakRealm = keycloakRealm
+
+  const keycloakClientId: string = process.env.VUE_APP_KEYCLOAK_CLIENTID;
+  (<any>window).keycloakClientId = keycloakClientId
+}
 }

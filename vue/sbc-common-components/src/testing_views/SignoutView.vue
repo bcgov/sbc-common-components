@@ -11,29 +11,21 @@ import ConfigHelper from '@/util/config-helper';
 import SbcSignout from '../../src/components/SbcSignout.vue';
 
 export default defineComponent({
-  name: 'SignoutView',
-  props: {
-    redirectUrl: {
-      type: String,
-      required: false,
-    },
-  },
   components: {
     SbcSignout,
   },
-  computed: {
-    redirectbackUrl(): string {
-      // redirect to dashboard on logout
-      // TODO need to fix for one URL
-      if (!this.redirectUrl) {
-        return `${ConfigHelper.getRegistryHomeURL()}/login`;
-      }
-      return this.redirectUrl;
+  props: {
+    Url: {
+      type: String,
+      default: 'home',
     },
   },
-  mounted() {
-    this.$store.replaceState({});
-  },
+  computed: {
+    redirectbackUrl(): string {
+      return this.$route.query.redirect as string
+    }
+  }
+
 });
 </script>
 

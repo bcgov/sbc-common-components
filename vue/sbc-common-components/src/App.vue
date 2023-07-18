@@ -52,7 +52,7 @@
             <router-link to="/NotificationPanel">Notification Panel</router-link> |
             <router-link to="/ProductSelector">Product Selector</router-link> |
             <router-link to="/SignIn">Sign In</router-link> |
-            <router-link class = disabled to="/SignOut">Sign Out</router-link> |
+            <router-link to="/SignOut">Sign Out</router-link> |
             <router-link to="/SystemBanner">System Banner</router-link> 
           </v-col>
         </v-row>

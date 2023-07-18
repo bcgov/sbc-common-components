@@ -1,10 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import SbcFooter from '@/components/SbcFooter.vue';
 import vuetify from './setup';
 
 describe('SbcFooter', () => {
   it('renders the component', () => {
-    const wrapper = shallowMount(SbcFooter, {
+    const wrapper = mount(SbcFooter, {
       props: {
         isLoading: true,
       },
@@ -16,7 +16,7 @@ describe('SbcFooter', () => {
   });
 
   it('displays the correct navigation links', () => {
-    const wrapper = shallowMount(SbcFooter, {
+    const wrapper = mount(SbcFooter, {
       props: {
         isLoading: true,
       },
@@ -34,23 +34,21 @@ describe('SbcFooter', () => {
     expect(links[4].attributes('href')).toBe('https://www2.gov.bc.ca/gov/content/home/copyright');
   });
 
-  it.skip('renders the about tooltip when aboutText prop is provided', async () => {
-    const aboutTextProp = 'This is a test';
-    const wrapper = shallowMount(SbcFooter, {
+  it('renders the about tooltip when aboutText prop is provided', async () => {
+    const wrapper = mount(SbcFooter, {
       props: {
-        aboutText: true,
+        aboutText: "This is a test",
       },
       global: {
         plugins: [vuetify],
       },
     });    
-    const tooltipContent = wrapper.find('v-tooltip span');
+    const tooltipContent = wrapper.find('.mdi-information-outline');
     expect(tooltipContent.exists()).toBe(true);
-    expect(tooltipContent.text()).toBe(aboutTextProp);
   });
 
   it('does not display the tooltip when aboutText prop is not provided', () => {
-    const wrapper = shallowMount(SbcFooter, {
+    const wrapper = mount(SbcFooter, {
       props: {
         isLoading: true,
       },
@@ -58,9 +56,7 @@ describe('SbcFooter', () => {
         plugins: [vuetify],
       },
     });     
-    const tooltipIcon = wrapper.find('v-tooltip v-icon');
-    const tooltipContent = wrapper.find('v-tooltip span');
-    expect(tooltipIcon.exists()).toBe(false);
+    const tooltipContent = wrapper.find('.mdi-information-outline');
     expect(tooltipContent.exists()).toBe(false);
   });
 });

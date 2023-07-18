@@ -3,7 +3,6 @@
     <h1 class="pageTitle">Sign in</h1>
     <suspense>
       <sbc-signin
-        @sync-user-profile-ready="onProfileReady()"
       ></sbc-signin>
     </suspense>
   </div>

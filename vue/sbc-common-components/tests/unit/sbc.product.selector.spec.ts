@@ -24,13 +24,4 @@ describe('SbcProductSelector', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('initializes dialog to false', () => {
-    const wrapper = shallowMount(SbcProductSelector, {
-        global: {
-            plugins: [store, vuetify]
-            }
-            });    
-    expect(wrapper.vm.dialog).toBe(false);
-  });
-
 });

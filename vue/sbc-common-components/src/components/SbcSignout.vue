@@ -2,20 +2,30 @@
   <loading-screen :is-loading="isLoading"></loading-screen>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import KeyCloakService from '../../src/services/keycloak.services'
-
-const isLoading = true
-const props = defineProps({
-  redirectUrl: {
-    type: String,
-    default: ''
+import LoadingScreen from './LoadingScreen.vue'
+export default {
+  components: {
+    LoadingScreen
+  },
+  props: {
+    redirectUrl: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      isLoading: true
+    }
+  },
+  async created() {
+    await KeyCloakService.logout(
+      this.redirectUrl ? decodeURIComponent(this.redirectUrl) : undefined
+    )
   }
-})
-
-await KeyCloakService.logout(
-  props.redirectUrl ? decodeURIComponent(props.redirectUrl) : undefined
-)
+}
 </script>
 
 <style lang="scss" scoped></style>
