@@ -13,46 +13,61 @@ jest.mock('axios', () => ({
 const API_URL = 'https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/'
 
 describe('with 1 fee in the list', () => {
-  const filingCodes = [{ filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', 
-    waiveFees: false, entityType: 'CP', priority: false, futureEffective: false }]
+  const filingCodes = [{ filingDescription: 'Annual Filing',
+    filingTypeCode: 'OTANN',
+    waiveFees: false,
+    entityType: 'CP',
+    priority: false,
+    futureEffective: false }]
   beforeAll(() => {
     FeeServices.getFee(filingCodes, API_URL)
   })
 
   it('should call Axios.get once for each Fee ', () => {
-    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTANN`, 
+    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTANN`,
       { 'headers': { 'Account-Id': 0, 'Authorization': 'Bearer null' } })
   })
 })
 
 describe('with 2 fee in the list', () => {
   const filingCodes = [
-    { filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', 
-      entityType: 'CP', waiveFees: false, priority: false, futureEffective: false },
-    { filingDescription: 'Director Change', filingTypeCode: 'OTADD', entityType: 'CP', 
-      waiveFees: false, priority: false, futureEffective: false }
+    { filingDescription: 'Annual Filing',
+      filingTypeCode: 'OTANN',
+      entityType: 'CP',
+      waiveFees: false,
+      priority: false,
+      futureEffective: false },
+    { filingDescription: 'Director Change',
+      filingTypeCode: 'OTADD',
+      entityType: 'CP',
+      waiveFees: false,
+      priority: false,
+      futureEffective: false }
   ]
   beforeAll(() => {
     FeeServices.getFee(filingCodes, API_URL)
   })
 
   it('should call Axios.get once for each filing code', () => {
-    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTANN`, 
+    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTANN`,
       { 'headers': { 'Account-Id': 0, 'Authorization': 'Bearer null' } })
-    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTADD`, 
+    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/CP/OTADD`,
       { 'headers': { 'Account-Id': 0, 'Authorization': 'Bearer null' } })
   })
 })
 
 describe('with 1 fee in the list with extra fees', () => {
-  const filingCodes = [{ filingTypeCode: 'BCRSF', waiveFees: false, 
-    entityType: 'BC', priority: true, futureEffective: true }]
+  const filingCodes = [{ filingTypeCode: 'BCRSF',
+    waiveFees: false,
+    entityType: 'BC',
+    priority: true,
+    futureEffective: true }]
   beforeAll(() => {
     FeeServices.getFee(filingCodes, API_URL)
   })
 
   it('should call Axios.get once with extra fee parameters ', () => {
-    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/BC/BCRSF?priority=true&futureEffective=true`, 
+    expect(Axios.get).toHaveBeenCalledWith(`${API_URL}fees/BC/BCRSF?priority=true&futureEffective=true`,
       { 'headers': { 'Account-Id': 0, 'Authorization': 'Bearer null' } })
   })
 })
