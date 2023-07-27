@@ -7,7 +7,7 @@ module.exports = {
     'ts',
     'tsx'
   ],
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
   transform: {
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.tsx?$': 'ts-jest',
@@ -15,11 +15,11 @@ module.exports = {
     '^.+\\.vue$': '@vue/vue3-jest'
   },
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
-    ".+\\.(css|styl|less|sass|scss|png|jpg|svg|ttf|woff|woff2)$":"<rootDir>/tests/jest_setup_css",
-    "^vuetify/components$": "<rootDir>/node_modules/vuetify/lib/components/index.mjs",
-    "^vuetify/directives$": "<rootDir>/node_modules/vuetify/lib/directives/index.mjs",
-    "^vuetify/styles$": "<rootDir>/node_modules/vuetify/lib/styles/main.css"
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '.+\\.(css|styl|less|sass|scss|png|jpg|svg|ttf|woff|woff2)$': '<rootDir>/tests/jest_setup_css',
+    '^vuetify/components$': '<rootDir>/node_modules/vuetify/lib/components/index.mjs',
+    '^vuetify/directives$': '<rootDir>/node_modules/vuetify/lib/directives/index.mjs',
+    '^vuetify/styles$': '<rootDir>/node_modules/vuetify/lib/styles/main.css'
   },
   transformIgnorePatterns: ['/node_modules/(?!(vuetify)/)'],
   snapshotSerializers: [
@@ -40,8 +40,8 @@ module.exports = {
     },
     'vue-jest': {
       compilerOptions: {
-        isCustomElement: (tag) => tag.startsWith('v-'),
-      },
+        isCustomElement: (tag) => tag.startsWith('v-')
+      }
     }
   }
 }

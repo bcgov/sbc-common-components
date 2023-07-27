@@ -1,32 +1,33 @@
 <template>
   <div>
-    <h1 class="pageTitle">Sign Out</h1>
+    <h1 class="pageTitle">
+      Sign Out
+    </h1>
     <SbcSignout :redirect-url="redirectbackUrl" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import ConfigHelper from '@/util/config-helper';
-import SbcSignout from '../../src/components/SbcSignout.vue';
+import { defineComponent } from 'vue'
+import SbcSignout from '../../src/components/SbcSignout.vue'
 
 export default defineComponent({
   components: {
-    SbcSignout,
+    SbcSignout
   },
   props: {
-    Url: {
+    url: {
       type: String,
-      default: 'home',
-    },
+      default: 'home'
+    }
   },
   computed: {
-    redirectbackUrl(): string {
+    redirectbackUrl (): string {
       return this.$route.query.redirect as string
     }
   }
 
-});
+})
 </script>
 
 <style lang="scss" scoped>

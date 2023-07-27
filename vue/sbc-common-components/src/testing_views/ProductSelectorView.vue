@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h1 class="pageTitle">Product Selector</h1>
+    <h1 class="pageTitle">
+      Product Selector
+    </h1>
     <div class="prod">
-      <sbc-product-selector :setStoreBypass="true"/>
+      <sbc-product-selector :setStoreBypass="true" />
     </div>
   </div>
 </template>
@@ -18,7 +20,7 @@ export default defineComponent({
     SbcProductSelector
   },
   computed: {
-    redirectUrl() {
+    redirectUrl () {
       return (this.$route.query.redirect as string)
     }
   }

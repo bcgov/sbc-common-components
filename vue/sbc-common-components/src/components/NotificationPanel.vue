@@ -1,35 +1,61 @@
 <template>
-  <div v-if="showNotifications" v-on:clickout="emitClose()">
-    <v-overlay model-value persistent :z-index="1" scroll-strategy="none">
-    </v-overlay>
-    <v-navigation-drawer app location="right" :width="440">
+  <div
+    v-if="showNotifications"
+    @clickout="emitClose()"
+  >
+    <v-overlay
+      model-value
+      persistent
+      :z-index="1"
+      scroll-strategy="none"
+    />
+    <v-navigation-drawer
+      location="right"
+      :width="440"
+    >
       <div class="app-bar">
-        <v-toolbar-title app class="toolbar-title pl-4 pt-4">What's New at BC Registries</v-toolbar-title>
-        <v-btn icon="mdi-close" variant="text" flat class="dialog-close" @click="emitClose()">
-        </v-btn>
+        <v-toolbar-title
+          app
+          class="toolbar-title pl-4 pt-4"
+        >
+          What's New at BC Registries
+        </v-toolbar-title>
+        <v-btn
+          icon="mdi-close"
+          variant="flat"
+          class="dialog-close"
+          @click="emitClose()"
+        />
       </div>
-      <v-list flat>
+      <v-list>
         <v-list-group color="primary">
           <!-- eslint-disable-next-line -->
           <template v-for="(item, i) in notifications" :key="i">
             <v-list-item>
               <v-row dense>
-                <v-col class="d-flex" cols="1">
-                  <span :class="!item.read && (item.priority ? 'dot-red' : 'dot-blue')">
-                  </span>
+                <v-col
+                  class="d-flex"
+                  cols="1"
+                >
+                  <span :class="!item.read && (item.priority ? 'dot-red' : 'dot-blue')" />
                 </v-col>
                 <v-col>
                   <v-list-item>
-                    <v-list-item-title class="font-weight-bold list-subtitle">{{ item.title }}</v-list-item-title>
+                    <v-list-item-title class="font-weight-bold list-subtitle">
+                      {{ item.title }}
+                    </v-list-item-title>
                     <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <!-- eslint-disable-next-line -->
                     <v-list-item v-html="item.description"></v-list-item>
                   </v-list-item>
                 </v-col>
               </v-row>
             </v-list-item>
-            <v-divider v-if="i < notifications.length - 1" :key="`${i}-divider`"></v-divider>
+            <v-divider
+              v-if="i < notifications.length - 1"
+              :key="`${i}-divider`"
+            />
           </template>
         </v-list-group>
       </v-list>
@@ -48,15 +74,15 @@ import 'clickout-event'
 export default defineComponent({
   name: 'NotificationPanel',
   props: {
-    showNotifications: { default: false }
+    showNotifications: { default: false, type: Boolean }
   },
-  setup(props, { emit }) {
+  emits: ['closeNotifications'],
+  setup (props, { emit }) {
     const store = useStore()
     // set modules
-    if (!store.hasModule('notification'))
-      store.registerModule('notification', NotificationModule)
+    if (!store.hasModule('notification')) { store.registerModule('notification', NotificationModule) }
 
-    //state
+    // state
     const state = reactive({
       notifications: computed(() => store.state.notification.notifications as Notification[])
     })
@@ -66,10 +92,10 @@ export default defineComponent({
     })
 
     const emitClose = (): void => {
-        emit('closeNotifications')
+      emit('closeNotifications')
     }
     return {
-      ...props,  
+      ...props,
       ...state,
       emitClose
     }

@@ -1,7 +1,9 @@
 <template>
   <div>
-    <h1 class="pageTitle">Notification Panel</h1>
-    <notification-panel :showNotifications="true"></notification-panel>
+    <h1 class="pageTitle">
+      Notification Panel
+    </h1>
+    <notification-panel :showNotifications="true" />
   </div>
 </template>
 
@@ -15,7 +17,7 @@ export default defineComponent({
     NotificationPanel
   },
   computed: {
-    redirectUrl() {
+    redirectUrl () {
       return (this.$route.query.redirect as string)
     }
   }

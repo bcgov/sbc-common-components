@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1 class="pageTitle">Login</h1>
+    <h1 class="pageTitle">
+      Login
+    </h1>
     <SbcLogin :redirectUrl="redirectUrl" />
   </div>
 </template>
@@ -15,7 +17,7 @@ export default defineComponent({
   components: {
     SbcLogin
   },
-  setup() {
+  setup () {
     const redirectUrl = ref('')
 
     return {

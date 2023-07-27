@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h1 class="pageTitle">Sign in</h1>
+    <h1 class="pageTitle">
+      Sign in
+    </h1>
     <suspense>
-      <sbc-signin
-      ></sbc-signin>
+      <sbc-signin />
     </suspense>
   </div>
 </template>
@@ -22,18 +23,6 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['profileReady'])
-
-/** Called when user profile is ready (ie, the user is authenticated). */
-function onProfileReady() {
-  // let App know that data can now be loaded
-  emit('profileReady', true)
-
-  if (route.query.redirect) navigate(route.query.redirect as string)
-  else {
-    console.error('Signin page missing redirect param')// eslint-disable-line no-console
-    navigate(props.registryUrl)
-  }
-}
 </script>
 
 <style lang="scss" scoped>

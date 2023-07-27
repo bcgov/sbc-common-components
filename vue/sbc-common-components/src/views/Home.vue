@@ -6,9 +6,11 @@
         :class="{'auth': true}"
       >
         <v-container>
-          <h1>The pages in this app demonstrate <br>
+          <h1>
+            The pages in this app demonstrate <br>
             the usage of the components in the <br>
-            SBC-Common-Components repository</h1>
+            SBC-Common-Components repository
+          </h1>
           <p class="mt-7 mb-10">
             The main menu page is modeled off of the auth-web page implementation
             to ensure correct Vutetify styling.
@@ -68,8 +70,7 @@
           </div>
           <v-dialog
             max-width="640"
-          >
-          </v-dialog>
+          />
         </v-container>
       </header>
       <!-- <div class="how-to-container py-6">
@@ -114,7 +115,7 @@
               </p>
               <a
                 class="link-w-icon"
-                href="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization/business-registry-faq"
+                href="https://www.google.ca"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -142,7 +143,7 @@
                 </li>
                 <li>
                   <span>{{ ('Email') }}</span>
-                  <a :href="'mailto:' + ('BCRegistries@gov.bc.ca') + '?subject=' + ('BC Registries - Business Registry Support Request')">{{ ('BCRegistries@gov.bc.ca') }}</a>
+                  <a :href="email" />
                 </li>
               </ul>
               <p class="mb-0">
@@ -163,7 +164,6 @@ import { Pages } from '@/util/constants'
 import { mapMutations, mapState } from 'vuex'
 import SbcAuthMenu from '/src/components/SbcFooter.vue'
 
-
 export default defineComponent({
   name: 'HomePage',
   components: {
@@ -171,7 +171,11 @@ export default defineComponent({
   },
   computed: {
     ...mapState('user', ['userProfile', 'currentUser']),
-    ...mapState('org', ['currentAccountSettings', 'currentMembership'])
+    ...mapState('org', ['currentAccountSettings', 'currentMembership']),
+
+    email () {
+      return 'mailto:BCRegistries@gov.bc.ca?subject=BC Registries - Business Registry Support Request'
+    }
   },
   methods: {
     ...mapMutations('org', ['resetCurrentOrganisation']),
@@ -182,9 +186,6 @@ export default defineComponent({
     login () {
       this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)
     }
-  },
-  mounted () {
-    // Logic for mounted hook
   }
 })
 </script>

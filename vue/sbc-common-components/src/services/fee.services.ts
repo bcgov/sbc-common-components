@@ -6,7 +6,6 @@ import { SessionStorageKeys } from '../util/constants'
 // sample Microcks URLs =
 //   https://mock-lear-tools.pathfinder.gov.bc.ca/rest/SBC+Pay+API+Reference/1.0.1/api/v1/fees/CP/OTANN
 //   https://mock-lear-tools.pathfinder.gov.bc.ca/rest/SBC+Pay+API+Reference/1.0.1/api/v1/fees/CP/OTADD
-const API_URL = 'https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/fees'
 
 export default {
   getFee (filingData: FilingData[], payApiUrl: string) : Promise<Fee[]> {
@@ -34,7 +33,8 @@ export default {
           .map(data => {
             const filingDatum = filingData.find(fd => fd.filingTypeCode === data.filingTypeCode)
             // default the title if client hasn't passed this on
-            const filingType = (filingDatum && filingDatum.filingDescription) ? filingDatum.filingDescription : data.filingType
+            const filingType = (filingDatum && filingDatum.filingDescription)
+              ? filingDatum.filingDescription : data.filingType
             const fee = data.filingFees
             const priorityFees = (data.priorityFees) || 0
             const futureEffectiveFees = (data.futureEffectiveFees) || 0

@@ -1,38 +1,42 @@
 <template>
   <v-menu
+    v-model="dialog"
     fixed
-    bottom
-    left
+    location="left"
     transition="slide-y-transition"
     attach="#appHeader"
-    v-model="dialog">
-    <template v-slot:activator="{ props }">
+  >
+    <template #activator="{ props }">
       <v-btn
-        large
-        text
-        dark
+        size="large"
+        variant="text"
         class="mobile-icon-only px-2"
         aria-label="products and services"
         v-bind="props"
-        variant="text"
-        data-test="product-selector-btn">
+        data-test="product-selector-btn"
+      >
         <v-icon>mdi-apps</v-icon>
         <span> Products and Services </span>
-        <v-icon class="ml-1"> mdi-menu-down </v-icon>
+        <v-icon class="ml-1">
+          mdi-menu-down
+        </v-icon>
       </v-btn>
     </template>
 
     <v-card>
       <div class="menu-header">
-        <v-card-title class="body-1"> Products and Services </v-card-title>
-        <v-divider></v-divider>
+        <v-card-title class="text-body-1">
+          Products and Services
+        </v-card-title>
+        <v-divider />
       </div>
       <v-list>
         <v-list-item
           v-for="(product, index) in products"
           :key="index"
-          @click="goToProductPage(product)">
-          <v-list-item-title class="body-2">
+          @click="goToProductPage(product)"
+        >
+          <v-list-item-title class="text-body-2">
             {{ product.name }}
           </v-list-item-title>
         </v-list-item>
@@ -40,32 +44,46 @@
     </v-card>
 
     <!-- Full Screen Product Selector -->
-    <v-card tile flat dark color="#003366" style="display: none">
+    <v-card
+      rounded="0"
+      flat
+      dark
+      color="#003366"
+      style="display: none"
+    >
       <header class="app-header">
         <div class="container">
           <a class="brand">
             <picture>
               <source
                 media="(min-width: 601px)"
-                srcset="../../src/assets/img/gov_bc_logo_horiz.png"/>
+                srcset="../../src/assets/img/gov_bc_logo_horiz.png"
+              >
               <source
                 media="(max-width: 600px)"
-                srcset="../../src/assets/img/gov_bc_logo_vert.png"/>
+                srcset="../../src/assets/img/gov_bc_logo_vert.png"
+              >
               <img
                 class="brand__image"
                 src="../../src/assets/img/gov_bc_logo_vert.png"
                 alt="Government of British Columbia Logo"
-                title="Government of British Columbia"/>
+                title="Government of British Columbia"
+              >
             </picture>
             <span class="brand__title">BC Registries
               <span class="brand__title--wrap">and Online Services</span></span>
           </a>
-          <div class="app-header__actions"></div>
+          <div class="app-header__actions" />
         </div>
       </header>
       <v-container class="view-container">
         <div class="view-header">
-          <v-btn large icon class="back-btn mr-3" @click="dialog = false">
+          <v-btn
+            size="large"
+            icon
+            class="back-btn mr-3"
+            @click="dialog = false"
+          >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <div>
@@ -79,11 +97,12 @@
           </div>
           <div>
             <v-btn
-              text
-              large
+              variant="text"
+              size="large"
               class="close-btn pr-4 pl-3"
+              data-test="close-btn"
               @click="dialog = false"
-              data-test="close-btn">
+            >
               <span>Close</span>
             </v-btn>
           </div>
@@ -93,21 +112,25 @@
         <section class="section-container">
           <v-row class="product-blocks justify-center">
             <v-col
+              v-for="(product, index) in products"
+              :key="index"
               cols="12"
               sm="6"
               md="4"
-              v-for="(product, index) in products"
-              :key="index">
-              <v-hover v-slot:default="{ hover }">
+            >
+              <v-hover v-slot="{ hover }">
                 <v-card
                   dark
-                  outlined
+                  variant="outlined"
                   color="#26527d"
                   class="product-block text-center"
                   :class="{ 'on-hover': hover }"
-                  @click="goToProductPage(product)">
+                  @click="goToProductPage(product)"
+                >
                   <v-card-title class="flex-column justify-center">
-                    <v-icon class="product-block__icon mt-n2 mb-4">mdi-image-outline</v-icon>
+                    <v-icon class="product-block__icon mt-n2 mb-4">
+                      mdi-image-outline
+                    </v-icon>
                     <h2>{{ product.name }}</h2>
                   </v-card-title>
                   <v-card-text class="mb-0">
@@ -130,15 +153,13 @@ import ProductModule from '../../src/store/modules/product'
 import { getModule } from 'vuex-module-decorators'
 import { useStore } from 'vuex'
 
-
-
 export default defineComponent({
   name: 'SbcProductSelector',
   props: {
-    setStoreBypass: {default: false} //used for testing the component in isolation
+    setStoreBypass: { default: false, type: Boolean } // used for testing the component in isolation
   },
 
-  setup(props) {
+  setup (props) {
     const dialog = ref(false)
     const store = useStore()
 
@@ -148,25 +169,25 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      if (!props.setStoreBypass){
-      getModule(ProductModule, store)
-      await syncProducts()
+      if (!props.setStoreBypass) {
+        getModule(ProductModule, store)
+        await syncProducts()
       }
     })
 
-    //state
+    // state
     const state = reactive({
-      storeBypass: computed(() => { return props.setStoreBypass } ),
+      storeBypass: computed(() => { return props.setStoreBypass }),
       products: computed(() => store.state.product.products as Product[]),
-      partners: computed(() => store.state.product.partners as Product[]),
+      partners: computed(() => store.state.product.partners as Product[])
     })
 
-    //Actions
+    // Actions
     const syncProducts = async () => {
       await store.dispatch('product/syncProducts')
     }
-    
-    //Methods
+
+    // Methods
     const goToProductPage = (product: Product): void => {
       window.open(product.url, '_blank')
     }
@@ -174,7 +195,7 @@ export default defineComponent({
     return {
       ...state,
       dialog,
-      goToProductPage,
+      goToProductPage
     }
   }
 })

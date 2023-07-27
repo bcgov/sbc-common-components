@@ -1,5 +1,5 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Products, ProductType } from '../../models/product'
+import { Products } from '../../models/product'
 import ProductService from '../../services/product.services'
 
 @Module({

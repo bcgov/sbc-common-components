@@ -1,5 +1,5 @@
 <template>
-  <loading-screen :is-loading="isLoading"></loading-screen>
+  <loading-screen :is-loading="isLoading" />
 </template>
 
 <script lang="ts">
@@ -15,12 +15,12 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     return {
       isLoading: true
     }
   },
-  async created() {
+  async created () {
     await KeyCloakService.logout(
       this.redirectUrl ? decodeURIComponent(this.redirectUrl) : undefined
     )

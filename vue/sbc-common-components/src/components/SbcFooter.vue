@@ -4,19 +4,49 @@
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a></li>
+          <li>
+            <a
+              href="https://www2.gov.bc.ca/gov/content/home/disclaimer"
+              target="_blank"
+            >Disclaimer</a>
+          </li>
+          <li>
+            <a
+              href="https://www2.gov.bc.ca/gov/content/home/privacy"
+              target="_blank"
+            >Privacy</a>
+          </li>
+          <li>
+            <a
+              href="https://www2.gov.bc.ca/gov/content/home/accessibility"
+              target="_blank"
+            >Accessibility</a>
+          </li>
+          <li>
+            <a
+              href="https://www2.gov.bc.ca/gov/content/home/copyright"
+              target="_blank"
+            >Copyright</a>
+          </li>
         </ul>
         <div class="d-flex align-center">
           <span class="font-italic">A BC Online Application</span>
-        <v-tooltip v-if="aboutText" location="left" content-class="tooltip__footer">
-          <template v-slot:activator="{ props }">
-            <v-icon v-bind="props" class="mr-3 mt-1" color="#8099b3">mdi-information-outline</v-icon>
-          </template>
-          <span v-html="aboutText"></span>
-        </v-tooltip>
+          <v-tooltip
+            v-if="aboutText"
+            location="left"
+            content-class="tooltip__footer"
+          >
+            <template #activator="{ activate }">
+              <v-icon
+                v-bind="activate"
+                class="mr-3 mt-1"
+                color="#8099b3"
+              >
+                mdi-information-outline
+              </v-icon>
+            </template>
+            <span v-html="aboutText" />
+          </v-tooltip>
         </div>
       </nav>
     </div>
@@ -24,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{ aboutText?: string }>()
 </script>
 

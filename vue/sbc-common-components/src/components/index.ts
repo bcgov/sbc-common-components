@@ -5,4 +5,3 @@ export { default as SbcFooter } from './SbcFooter.vue'
 export { default as SbcHeader } from './SbcHeader.vue'
 export { default as SbcSystemBanner } from './SbcSystemBanner.vue'
 export { default as SbcLogin } from './SbcLogin.vue'
-

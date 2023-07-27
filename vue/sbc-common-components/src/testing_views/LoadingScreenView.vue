@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h1 class="pageTitle" style="position: absolute;">Loading Screen</h1>
+    <h1
+      class="pageTitle"
+      style="position: absolute;"
+    >
+      Loading Screen
+    </h1>
     <div>
-      <LoadingScreen :isLoading="true"></LoadingScreen>
+      <LoadingScreen :isLoading="true" />
     </div>
   </div>
 </template>
@@ -17,7 +22,7 @@ export default defineComponent({
     LoadingScreen
   },
   computed: {
-    redirectUrl() {
+    redirectUrl () {
       return (this.$route.query.redirect as string)
     }
   }

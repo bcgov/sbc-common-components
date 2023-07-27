@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 /**
  * Mixin that provides some useful validation utilities.
@@ -9,7 +9,7 @@ export default defineComponent({
    * @param model The name of the model we are validating.
    * @returns A Vuetify rules object.
    */
-  createVuetifyRulesObject (model: string): { [attr: string]: Array<Function> } {
+  createVuetifyRulesObject (model: string): { [attr: string]: Array<any> } {
     const obj = {
       streetAddress: [],
       streetAddressAdditional: [],

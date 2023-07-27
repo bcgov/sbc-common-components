@@ -4,9 +4,15 @@
       ref="headerGroup"
       class="header-group"
     >
-    <link rel="shortcut icon" href="#" />
+      <link
+        rel="shortcut icon"
+        href="#"
+      >
       <sbc-loader :show="false" />
-      <sbc-header class="sbc-header" :in-auth="false" :show-login-menu="true"
+      <sbc-header
+        class="sbc-header"
+        :in-auth="false"
+        :show-login-menu="true"
       >
         <template #login-button-text>
           Log in with BC Services Card
@@ -40,33 +46,60 @@
       />
     </div>
     <div id="nav">
-        <v-row justify="center">
-          <v-col cols="12" md="7">
-            <router-link to="/">Main</router-link> |
-            <router-link to="/AuthMenu">Auth Menu</router-link> |
-            <router-link to="/BrowserVersionAlert">Browser Version Alert</router-link> |
-            <router-link to="/LoadingScreen">Loading Screen</router-link> |
-            <router-link to="/Loader">Loader</router-link> |
-            <router-link to="/Login">Login</router-link> |
-            <router-link to="/MobileDeviceAlert">Mobile Device Alert</router-link> |
-            <router-link to="/NotificationPanel">Notification Panel</router-link> |
-            <router-link to="/ProductSelector">Product Selector</router-link> |
-            <router-link to="/SignIn">Sign In</router-link> |
-            <router-link to="/SignOut">Sign Out</router-link> |
-            <router-link to="/SystemBanner">System Banner</router-link> 
-          </v-col>
-        </v-row>
-      </div>
+      <v-row justify="center">
+        <v-col
+          cols="12"
+          md="7"
+        >
+          <router-link to="/">
+            Main
+          </router-link> |
+          <router-link to="/AuthMenu">
+            Auth Menu
+          </router-link> |
+          <router-link to="/BrowserVersionAlert">
+            Browser Version Alert
+          </router-link> |
+          <router-link to="/LoadingScreen">
+            Loading Screen
+          </router-link> |
+          <router-link to="/Loader">
+            Loader
+          </router-link> |
+          <router-link to="/Login">
+            Login
+          </router-link> |
+          <router-link to="/MobileDeviceAlert">
+            Mobile Device Alert
+          </router-link> |
+          <router-link to="/NotificationPanel">
+            Notification Panel
+          </router-link> |
+          <router-link to="/ProductSelector">
+            Product Selector
+          </router-link> |
+          <router-link to="/SignIn">
+            Sign In
+          </router-link> |
+          <router-link to="/SignOut">
+            Sign Out
+          </router-link> |
+          <router-link to="/SystemBanner">
+            System Banner
+          </router-link>
+        </v-col>
+      </v-row>
+    </div>
     <div class="app-body">
       <slot>
-       <router-view />
+        <router-view />
       </slot>
     </div>
     <sbc-footer :aboutText="aboutText" />
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router' // Import useRouter from vue-router
@@ -99,14 +132,15 @@ export default {
     const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
 
     const showNavigationBar = computed(() => router.currentRoute.value.meta.showNavBar) // Use router instead of $route
-    const showLoginMenu = computed(() => router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
+    const showLoginMenu = computed(() =>
+      router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
 
     const bannerText = computed(() => {
       const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)
       return bannerText?.trim() || null
     })
 
-    const aboutText = "SBC Common Components being upgraded to Vue 3"
+    const aboutText = 'SBC Common Components being upgraded to Vue 3'
 
     const setCurrentOrganization = (value) => store.commit('org/setCurrentOrganization', value)
     const loadUserInfo = () => store.dispatch('user/loadUserInfo')

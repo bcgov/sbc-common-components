@@ -2,9 +2,8 @@ import ConfigHelper from '../util/config-helper'
 import Axios, { AxiosResponse } from 'axios'
 import { Accounts } from '../models/account'
 import { addAxiosInterceptors } from '../util/interceptors'
-import { Member, Count } from '../models/member'
+import { Count } from '../models/member'
 import { UserSettings } from '../models/userSettings'
-import { SessionStorageKeys } from '../util/constants'
 
 const axios = addAxiosInterceptors(Axios.create())
 

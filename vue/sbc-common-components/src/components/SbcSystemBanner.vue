@@ -1,12 +1,14 @@
 <template>
-  <v-alert class="py-2"
-  v-model="show"
-  :type="type"
-  close-icon="mdi-close-circle mdi-24px mt-3"
-  :closable="dismissible"
-  :prominent="true">
+  <v-alert
+    v-model="show"
+    class="py-2"
+    :type="type"
+    close-icon="mdi-close-circle mdi-24px mt-3"
+    :closable="dismissible"
+    :prominent="true"
+  >
     <div class="px-3">
-      <span v-html="message"></span>
+      <span v-html="message" />
     </div>
   </v-alert>
 </template>
@@ -18,11 +20,11 @@ import { computed, defineComponent, reactive } from 'vue'
 export default defineComponent({
   name: 'SbcSystemBanner',
   props: {
-    setDismissible: { default: false },
-    setIcon: { default: 'mdi-information' }, // See https://material.io/resources/icons/?style=baseline for accepted values
-    setMessage: { default: '' },
-    setShow: { default: false },
-    setType: { default: 'warning' }
+    setDismissible: { default: false, type: Boolean },
+    setIcon: { default: 'mdi-information', type: String }, // See https://material.io/resources/icons/?style=baseline
+    setMessage: { default: '', type: String },
+    setShow: { default: false, type: Boolean },
+    setType: { default: 'warning', type: String }
   },
   setup (props) {
     const state = reactive({

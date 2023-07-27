@@ -10,7 +10,6 @@ import ProductSelectorView from './testing_views/ProductSelectorView.vue'
 import SignIn from './testing_views/SigninView.vue'
 import SignoutView from './testing_views/SignoutView.vue'
 import SystemBannerView from './testing_views/SystemBannerView.vue'
-import Vue from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
 
 export function createVueRouter (): Router {
@@ -76,7 +75,7 @@ export function createVueRouter (): Router {
         path: '/SystemBanner',
         name: 'System Banner',
         component: SystemBannerView
-      },
+      }
     ]
   })
   return router

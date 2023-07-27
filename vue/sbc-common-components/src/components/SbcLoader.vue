@@ -1,4 +1,5 @@
 <template>
+  <div>
     <v-progress-circular
       v-if="show"
       size="50"
@@ -7,7 +8,11 @@
       :indeterminate="true"
       :z-index="9"
     />
-    <span v-if="show" class="ml-3">{{ message }}</span>
+    <span
+      v-if="show"
+      class="ml-3"
+    >{{ message }}</span>
+  </div>
 </template>
 
 <script setup lang="ts">

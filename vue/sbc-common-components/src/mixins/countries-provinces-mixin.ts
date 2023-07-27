@@ -1,5 +1,5 @@
 // Import the necessary modules from Vue 3
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 // global caching to improve performance when called multiple times
 const countryNameCache: Record<string, string> = {}

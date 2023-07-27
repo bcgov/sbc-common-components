@@ -10,7 +10,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 export default createVuetify({
-theme: {
+  theme: {
     defaultTheme: 'light',
     themes: {
       light: {

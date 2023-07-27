@@ -36,12 +36,11 @@ import KeyCloakService from '../services/keycloak.services'
 import store from '../store'
 
 const props = defineProps({
-  fromLogin: { default: false },
-  inAuth: { default: false },
-  redirectOnLoginSuccess: { default: '' },
-  redirectOnLoginFail: { default: '' }
+  fromLogin: { default: false, type: Boolean },
+  inAuth: { default: false, type: Boolean },
+  redirectOnLoginSuccess: { default: '', type: String },
+  redirectOnLoginFail: { default: '', type: String }
 })
-
 
 // set modules
 if (!store.hasModule('account')) store.registerModule('account', AccountModule)

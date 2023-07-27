@@ -1,6 +1,7 @@
-export interface NavigationBarConfig {
-  titleItem: NavigationMenuItem,
-  menuItems: NavigationMenuItem[]
+
+export interface NavigationMenuItemMetaConfig {
+  requiresAuth: boolean
+  requiresAccount: boolean
 }
 
 export interface NavigationMenuItem {
@@ -10,7 +11,7 @@ export interface NavigationMenuItem {
   meta: NavigationMenuItemMetaConfig
 }
 
-export interface NavigationMenuItemMetaConfig {
-  requiresAuth: boolean
-  requiresAccount: boolean
+export interface NavigationBarConfig {
+  titleItem: NavigationMenuItem,
+  menuItems: NavigationMenuItem[]
 }

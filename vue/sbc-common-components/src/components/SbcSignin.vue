@@ -1,10 +1,10 @@
 <template>
-  <loading-screen :is-loading="isLoading"></loading-screen>
+  <loading-screen :is-loading="isLoading" />
 </template>
 
 <script setup lang="ts">
 // external
-import {  useStore } from 'vuex'
+import { useStore } from 'vuex'
 import { ref } from 'vue'
 import { getModule } from 'vuex-module-decorators'
 import { Role, LoginSource, Pages } from '../../src/util/constants'
@@ -19,12 +19,12 @@ import { useNavigation } from '../../src/composables'
 const isLoading = ref(true)
 
 const props = defineProps({
-  idpHint: { type: String, default: 'bcsc'},
+  idpHint: { type: String, default: 'bcsc' },
   redirectUrlLoginFail: { type: String, default: '' },
   inAuth: { type: Boolean, default: false }
 })
 
-const store  = useStore()
+const store = useStore()
 // set modules
 if (!store.hasModule('account')) store.registerModule('account', AccountModule)
 if (!store.hasModule('auth')) store.registerModule('auth', AuthModule)
@@ -37,8 +37,9 @@ const { redirectToPath } = useNavigation()
 const loadUserInfo = async () => { await store.dispatch('account/loadUserInfo') }
 const updateUserProfile = async () => { await store.dispatch('account/updateUserProfile') }
 const syncAccount = async () => { await store.dispatch('account/syncAccount') }
-const getCurrentUserProfile = async (inAuth: boolean) => { 
-  await store.dispatch('account/getCurrentUserProfile', inAuth) }
+const getCurrentUserProfile = async (inAuth: boolean) => {
+  await store.dispatch('account/getCurrentUserProfile', inAuth)
+}
 
 const emit = defineEmits(['sync-user-profile-ready'])
 
@@ -67,13 +68,13 @@ kcInit
           userInfo.roles.includes(Role.PublicUser) &&
           !userInfo.roles.includes(Role.AccountHolder)
         await getCurrentUserProfile(props.inAuth)
-        const currentUser =  store.state.account.currentUser as any        
+        const currentUser = store.state.account.currentUser as any
         if (
           userInfo?.loginSource !== LoginSource.IDIR &&
           !currentUser?.userTerms?.isTermsOfUseAccepted
         ) {
           console.log('[SignIn.vue]Redirecting. TOS not accepted')
-          //redirectToPath(props.inAuth, Pages.USER_PROFILE_TERMS)
+          // redirectToPath(props.inAuth, Pages.USER_PROFILE_TERMS)
         } else if (isRedirectToCreateAccount) {
           console.log('[SignIn.vue]Redirecting. No Valid Role')
           switch (userInfo.loginSource) {

@@ -1,12 +1,16 @@
 <template>
   <div>
     <v-fade-transition>
-      <div class="loading-container" v-if="props.isLoading">
+      <div
+        v-if="props.isLoading"
+        class="loading-container"
+      >
         <v-progress-circular
           class="v-loader"
           size="50"
           width="5"
-          :indeterminate="props.isLoading"/>
+          :indeterminate="props.isLoading"
+        />
       </div>
     </v-fade-transition>
   </div>
@@ -15,7 +19,7 @@
 <script setup lang="ts">
 const props = defineProps({
   isLoading: {
-    type: Boolean,
+    type: Boolean
   }
 })
 </script>
