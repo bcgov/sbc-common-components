@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-template-shadow -->
 <template>
   <footer class="app-footer">
     <div class="app-footer__container container">
@@ -36,9 +37,9 @@
             location="left"
             content-class="tooltip__footer"
           >
-            <template #activator="{ activate }">
+            <template #activator="{ props }">
               <v-icon
-                v-bind="activate"
+                v-bind="props"
                 class="mr-3 mt-1"
                 color="#8099b3"
               >
