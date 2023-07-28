@@ -20,10 +20,10 @@ module.exports = {
     '@vue/typescript',
     '@vue/eslint-config-typescript'
   ],
-  parser: 'vue-eslint-parser',
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+    ecmaVersion: 2020,
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint']
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

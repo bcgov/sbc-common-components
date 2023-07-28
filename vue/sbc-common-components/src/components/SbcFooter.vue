@@ -37,7 +37,7 @@
             location="left"
             content-class="tooltip__footer"
           >
-            <template v-slot:activator="{ props }">
+            <template #activator="{ props }">
               <v-icon
                 v-bind="props"
                 class="mr-3 mt-1"

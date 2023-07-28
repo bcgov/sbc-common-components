@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import SbcHeader from '@/components/SbcHeader.vue'
-import vuetify, { createVueRouter } from './setup'
+import { createVueRouter } from './setup'
 import { createStore } from 'vuex'
 import AccountModule from '@/store/modules/account'
 import AuthModule from '@/store/modules/auth'
@@ -24,7 +24,7 @@ describe('SbcHeader', () => {
   it('renders the brand title correctly', () => {
     const wrapper = mount(SbcHeader, {
       global: {
-        plugins: [store, vuetify, router]
+        plugins: [store, router]
       }
     })
     const header = wrapper.find('.app-header')
