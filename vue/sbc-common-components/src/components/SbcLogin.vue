@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-template-shadow -->
 <template>
   <v-container class="view-container">
     <v-row justify="center">
@@ -18,14 +19,14 @@
           </v-card-title>
           <v-card-text>
             <v-menu anchor="center">
-              <template #activator="{ activate }">
+              <template #activator="{ props }">
                 <v-btn
                   id="loginBtn"
                   class="mt-2 mx-auto"
                   color="primary"
                   size="large"
                   aria-label="log in"
-                  v-bind="activate"
+                  v-bind="props"
                 >
                   <span>Log in to my BC Registries Account</span>
                   <v-icon class="mr-n1 ml-2">

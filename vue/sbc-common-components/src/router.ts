@@ -6,7 +6,6 @@ import LoadingScreenView from './testing_views/LoadingScreenView.vue'
 import LoginView from './testing_views/LoginView.vue'
 import MobileDeviceAlertView from './testing_views/MobileDeviceAlertView.vue'
 import NotificationPanelView from './testing_views/NotificationPanelView.vue'
-import ProductSelectorView from './testing_views/ProductSelectorView.vue'
 import SignIn from './testing_views/SigninView.vue'
 import SignoutView from './testing_views/SignoutView.vue'
 import SystemBannerView from './testing_views/SystemBannerView.vue'
@@ -55,11 +54,6 @@ export function createVueRouter (): Router {
         path: '/NotificationPanel',
         name: 'Notification Panel',
         component: NotificationPanelView
-      },
-      {
-        path: '/ProductSelector',
-        name: 'Product Selector',
-        component: ProductSelectorView
       },
       {
         path: '/SignIn',

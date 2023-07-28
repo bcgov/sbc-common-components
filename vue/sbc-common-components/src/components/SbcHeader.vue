@@ -47,10 +47,6 @@
               style="align-items: center"
             >
               <v-col cols="auto">
-                <!-- Product Selector -->
-                <sbc-product-selector v-if="showProductSelector" />
-              </v-col>
-              <v-col cols="auto">
                 <!-- What's New -->
                 <v-btn
                   v-if="!isAuthenticated && notificationCount > 0 && isWhatsNewOpen"
@@ -400,14 +396,12 @@ import {
 import BrowserVersionAlert from './BrowserVersionAlert.vue'
 import MobileDeviceAlert from './MobileDeviceAlert.vue'
 import NotificationPanel from './NotificationPanel.vue'
-import SbcProductSelector from './SbcProductSelector.vue'
 import { useNavigation } from '../composables'
 import store from '../store'
 
 export default defineComponent({
   name: 'SbcHeader',
   components: {
-    SbcProductSelector,
     BrowserVersionAlert,
     MobileDeviceAlert,
     NotificationPanel
@@ -419,8 +413,7 @@ export default defineComponent({
     inAuth: { default: false, type: Boolean },
     showActions: { default: true, type: Boolean },
     showLoginMenu: { default: false, type: Boolean },
-    dashboardReturnUrl: { default: '', type: String },
-    showProductSelector: { default: false, type: Boolean }
+    dashboardReturnUrl: { default: '', type: String }
   },
   emits: ['account-switch-started', 'account-switched', 'account-switch-failed', 'account-switch-cancelled',
     'account-switch-completed'],
