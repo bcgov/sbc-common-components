@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import SbcSystemBanner from '@/components/SbcSystemBanner.vue'
 import vuetify from './setup'
+import { it, describe, expect } from 'vitest'
 
 describe('SbcSystemBanner', () => {
   it('renders the message correctly', () => {
@@ -79,7 +80,7 @@ describe('SbcSystemBanner', () => {
       }
     })
 
-    expect(wrapper.find('.v-alert__content')).not.toContain('v-alert--hidden')
+    expect(wrapper.find('.v-alert__content')).not.toContain(['v-alert--hidden'])
   })
 
   it('hides the banner when show is false', () => {

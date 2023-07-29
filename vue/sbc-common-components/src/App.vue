@@ -75,9 +75,6 @@
           <router-link to="/NotificationPanel">
             Notification Panel
           </router-link> |
-          <router-link to="/ProductSelector">
-            Product Selector
-          </router-link> |
           <router-link to="/SignIn">
             Sign In
           </router-link> |

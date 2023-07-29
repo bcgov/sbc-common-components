@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import MobileDeviceAlert from '@/components/MobileDeviceAlert.vue'
 import vuetify from './setup'
+import { it, describe, expect } from 'vitest'
 
 describe('MobileDeviceAlert', () => {
   it('renders the component', () => {

@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 import vuetify, { createVueRouter } from './setup'
 import AccountModule from '@/store/modules/account'
 import AuthModule from '@/store/modules/auth'
+import { it, describe, expect, beforeEach } from 'vitest'
 
 describe('SbcAuthMenu', () => {
   let wrapper: VueWrapper<any>

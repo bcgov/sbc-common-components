@@ -4,13 +4,14 @@ import vuetify, { createVueRouter } from './setup'
 import { createStore } from 'vuex'
 import AccountModule from '@/store/modules/account'
 import AuthModule from '@/store/modules/auth'
+import { it, describe, expect, vi, beforeEach } from 'vitest'
 
 window.ResizeObserver =
     window.ResizeObserver ||
-    jest.fn().mockImplementation(() => ({
-      disconnect: jest.fn(),
-      observe: jest.fn(),
-      unobserve: jest.fn()
+    vi.fn().mockImplementation(() => ({
+      disconnect: vi.fn(),
+      observe: vi.fn(),
+      unobserve: vi.fn()
     }))
 
 describe('SbcSignout', () => {

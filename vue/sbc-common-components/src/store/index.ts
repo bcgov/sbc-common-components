@@ -7,7 +7,7 @@ import NotificationModule from './modules/notification'
 import ProductModule from './modules/product'
 import UserModule from './modules/userStub'
 
-const debug = process.env.NODE_ENV !== 'production'
+const debug = import.meta.env.MODE !== 'production'
 
 export default createStore({
   strict: debug,

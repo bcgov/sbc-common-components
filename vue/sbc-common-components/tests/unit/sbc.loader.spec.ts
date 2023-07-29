@@ -1,13 +1,14 @@
 import { mount } from '@vue/test-utils'
 import SbcLoader from '@/components/SbcLoader.vue'
 import vuetify from './setup'
+import { it, describe, expect, vi } from 'vitest'
 
 window.ResizeObserver =
     window.ResizeObserver ||
-    jest.fn().mockImplementation(() => ({
-      disconnect: jest.fn(),
-      observe: jest.fn(),
-      unobserve: jest.fn()
+    vi.fn().mockImplementation(() => ({
+      disconnect: vi.fn(),
+      observe: vi.fn(),
+      unobserve: vi.fn()
     }))
 
 describe('SbcLoader', () => {

@@ -12,7 +12,7 @@ declare const window: any
 
 // main code
 async function start () {
-  console.info('Version', process.env.VUE_APP_VERSION)
+  // console.info('Version', process.env.VUE_APP_VERSION) TODO: FIX
   // fetch config from environment and API
   // must come first as inits below depend on config
   const router = createVueRouter()
