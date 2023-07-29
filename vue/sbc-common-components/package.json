@@ -43,8 +43,6 @@
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^1.1.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "@vitejs/plugin-vue": "^4.2.3",
