@@ -12,7 +12,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { navigate } from '../util/navigate'
-// Components
 import SbcSignin from '../../src/components/SbcSignin.vue'
 
 const route = useRoute()

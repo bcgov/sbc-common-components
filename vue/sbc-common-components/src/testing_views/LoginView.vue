@@ -8,9 +8,7 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { defineComponent, ref } from 'vue'
-// Components
 import SbcLogin from '../../src/components/SbcLogin.vue'
 
 export default defineComponent({

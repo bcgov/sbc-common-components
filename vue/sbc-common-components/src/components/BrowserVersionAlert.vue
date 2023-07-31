@@ -111,16 +111,25 @@ import edgeUrl from '../assets/img/edge.png'
 import chromeUrl from '../assets/img/chrome.png'
 import firefoxUrl from '../assets/img/firefox.png'
 import safariUrl from '../assets/img/safari.png'
-import { onMounted, defineComponent, ref } from 'vue'
+import { onMounted, defineComponent, ref, watch } from 'vue'
 
 export default defineComponent({
   name: 'BrowserVersionAlert',
-  setup () {
+  props: {
+    triggerPopup: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup (props) {
     const browserUnSupported = ref(false)
     onMounted(() => {
       if (window.navigator.userAgent.match(/MSIE|Trident/) !== null) {
         browserUnSupported.value = true
       }
+    })
+    watch(() => props.triggerPopup, (val) => {
+      browserUnSupported.value = val
     })
     return {
       browserUnSupported,

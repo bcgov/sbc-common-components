@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// Components
 import SbcLoader from '../../src/components/SbcLoader.vue'
 
 export default defineComponent({

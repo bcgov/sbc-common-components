@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// Components
 import NotificationPanel from '../../src/components/NotificationPanel.vue'
 
 export default defineComponent({

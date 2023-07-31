@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// Components
 import LoadingScreen from '../../src/components/LoadingScreen.vue'
 
 export default defineComponent({
