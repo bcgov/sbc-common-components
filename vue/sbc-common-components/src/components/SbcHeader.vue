@@ -368,22 +368,12 @@
   </div>
 </template>
 
-<script lang="ts">
-// External
-import { computed, defineComponent, nextTick, onMounted, watch, ref } from 'vue'
+<script setup lang="ts">
+import { computed, nextTick, onMounted, watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { getModule } from 'vuex-module-decorators'
-// BC Registry
-// sbc modules
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import NotificationModule from '../../src/store/modules/notification'
-// sbc interfaces
-import { UserSettings } from '../../src/models/userSettings'
-// sbc services
+import { UserSettings } from '@/models/userSettings'
 import LaunchDarklyService from '../../src/services/launchdarkly.services'
-// sbc utils
 import {
   ALLOWED_URIS_FOR_PENDING_ORGS, Account, IdpHint, LoginSource, Pages, Role
 } from '../../src/util/constants'
@@ -392,269 +382,190 @@ import ConfigHelper from '../../src/util/config-helper'
 import {
   getAccountIdFromCurrentUrl, removeAccountIdFromUrl, appendAccountId
 } from '../../src/util/common-util'
-// Local Components
 import BrowserVersionAlert from './BrowserVersionAlert.vue'
 import MobileDeviceAlert from './MobileDeviceAlert.vue'
 import NotificationPanel from './NotificationPanel.vue'
-import { useNavigation } from '../composables'
-import store from '../store'
+import { useNavigation } from '@/composables'
+import { useAccountStore, useAuthStore, useNotificationStore } from '@/store'
 
-export default defineComponent({
-  name: 'SbcHeader',
-  components: {
-    BrowserVersionAlert,
-    MobileDeviceAlert,
-    NotificationPanel
-  },
-  props: {
-    redirectOnLoginSuccess: { default: '', type: String },
-    redirectOnLoginFail: { default: '', type: String },
-    redirectOnLogout: { default: '', type: String },
-    inAuth: { default: false, type: Boolean },
-    showActions: { default: true, type: Boolean },
-    showLoginMenu: { default: false, type: Boolean },
-    dashboardReturnUrl: { default: '', type: String }
-  },
-  emits: ['account-switch-started', 'account-switched', 'account-switch-failed', 'account-switch-cancelled',
-    'account-switch-completed'],
-  setup (props, { emit }) {
-    const route = useRoute()
-    const router = useRouter()
+const props = defineProps({
+  redirectOnLoginSuccess: { default: '', type: String },
+  redirectOnLoginFail: { default: '', type: String },
+  redirectOnLogout: { default: '', type: String },
+  inAuth: { default: false, type: Boolean },
+  showActions: { default: true, type: Boolean },
+  showLoginMenu: { default: false, type: Boolean },
+  dashboardReturnUrl: { default: '', type: String }
+})
 
-    // set modules
-    if (!store.hasModule('account')) store.registerModule('account', AccountModule)
-    if (!store.hasModule('auth')) store.registerModule('auth', AuthModule)
-    if (!store.hasModule('notification')) store.registerModule('notification', NotificationModule)
+const emit = defineEmits(['account-switch-started', 'account-switched', 'account-switch-failed', 
+  'account-switch-cancelled', 'account-switch-completed'])
+const route = useRoute()
+const router = useRouter()
 
-    // module actions
-    // account
-    const loadUserInfo = async () => { await store.dispatch('account/loadUserInfo') }
-    const syncAccount = async () => { await store.dispatch('account/syncAccount') }
-    const syncCurrentAccount = async (settings: UserSettings) => {
-      await store.dispatch('account/syncCurrentAccount', settings)
-    }
-    const syncUserProfile = async () => { await store.dispatch('account/syncUserProfile') }
-    // auth
-    const syncWithSessionStorage = () => { store.dispatch('auth/syncWithSessionStorage') }
-    // notification
-    const markAsRead = async () => { await store.dispatch('notification/markAsRead') }
-    const fetchNotificationCount = async () => { await store.dispatch('notification/fetchNotificationCount') }
-    const fetchNotificationUnreadPriorityCount = async () => {
-      await store.dispatch('notification/fetchNotificationUnreadPriorityCount')
-    }
-    const fetchNotificationUnreadCount = async () => {
-      await store.dispatch('notification/fetchNotificationUnreadCount')
-    }
-    const syncNotifications = async () => { await store.dispatch('notification/syncNotifications') }
+const accountStore = useAccountStore()
+const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
 
-    // navigation helpers
-    const { getContextPath, redirectToPath } = useNavigation()
+const { getContextPath, redirectToPath } = useNavigation()
 
-    // constants
-    const loginOptions = [
-      { idpHint: IdpHint.BCSC, option: 'BC Services Card', icon: 'mdi-account-card-details-outline' },
-      { idpHint: IdpHint.BCEID, option: 'BCeID', icon: 'mdi-two-factor-authentication' },
-      { idpHint: IdpHint.IDIR, option: 'IDIR', icon: 'mdi-account-group-outline' }
-    ]
-    const notificationPanel = ref(false)
+const loginOptions = [
+  { idpHint: IdpHint.BCSC, option: 'BC Services Card', icon: 'mdi-account-card-details-outline' },
+  { idpHint: IdpHint.BCEID, option: 'BCeID', icon: 'mdi-two-factor-authentication' },
+  { idpHint: IdpHint.IDIR, option: 'IDIR', icon: 'mdi-account-group-outline' }
+]
+const notificationPanel = ref(false)
 
-    // Calculated Value
-    const isAuthenticated = computed(() => { return store.getters['auth/isAuthenticated'] as boolean })
-    const accountName = computed(() => store.getters['account/accountName'])
-    const switchableAccounts = computed(() => store.getters['account/switchableAccounts'])
-    const username = computed(() => store.getters['account/username'])
-    const currentLoginSource = computed(() => store.getters['auth/currentLoginSource'] as string)
-    const currentAccount = computed(() => store.state.account.currentAccount as UserSettings)
-    const currentUser = computed(() => store.state.account.currentUser as any)
-    const pendingApprovalCount = computed(() => store.state.account.pendingApprovalCount as number)
-    const isBceid = computed(() => currentLoginSource.value === LoginSource.BCEID)
-    const notificationUnreadCount = computed(() => store.state.notification.notificationUnreadCount as number)
-    const notificationCount = computed(() => store.state.notification.notificationCount as number)
-    const notificationUnreadPriorityCount = computed(() =>
-        store.state.notification.notificationUnreadPriorityCount as number)
-    const disableBCEIDMultipleAccount = computed(() =>
-        LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) as boolean || false)
-    const isWhatsNewOpen = computed(() => LaunchDarklyService.getFlag(LDFlags.WhatsNew) as boolean || false)
-    const showTransactions = computed(() => {
-      return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF].includes(currentAccount?.value?.accountType as Account)
-    })
-    const isStaff = computed(() => currentUser?.value?.roles?.includes(Role.Staff) as boolean || false)
-    const isGovmUser = computed(() => currentUser?.value?.roles?.includes(Role.GOVMAccountUser) as boolean ||
-     false)
-    const isBcscOrBceid = computed(
-      () => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(currentLoginSource.value) >= 0)
-    const canCreateAccount = computed(() => {
-      const disabledLogins:any = [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()]
-      if (disableBCEIDMultipleAccount.value) {
-        disabledLogins.push(LoginSource.BCEID.valueOf())
-      }
-      return disabledLogins.indexOf(currentLoginSource.value) < 0
-    })
+const disableBCEIDMultipleAccount = computed(() =>
+    LaunchDarklyService.getFlag(LDFlags.DisableBCEIDMultipleAccount) as boolean || false)
+const isWhatsNewOpen = computed(() => LaunchDarklyService.getFlag(LDFlags.WhatsNew) as boolean || false)
+const showTransactions = computed(() => {
+  return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF]
+    .includes(accountStore.currentAccount?.accountType as Account)
+})
+const isStaff = computed(() => accountStore.currentUser?.roles?.includes(Role.Staff) as boolean || false)
+const isGovmUser = computed(() => accountStore.currentUser?.roles?.includes(Role.GOVMAccountUser) as boolean ||
+  false)
+const isBcscOrBceid = computed(
+  () => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(authStore.currentLoginSource) >= 0)
+const isBceid = computed(() => authStore.currentLoginSource === LoginSource.BCEID)
+const canCreateAccount = computed(() => {
+  const disabledLogins:any = [LoginSource.BCROS.valueOf(), LoginSource.IDIR.valueOf()]
+  if (disableBCEIDMultipleAccount.value) {
+    disabledLogins.push(LoginSource.BCEID.valueOf())
+  }
+  return disabledLogins.indexOf(authStore.currentLoginSource) < 0
+})
 
-    // mounted lifecycle
-    onMounted(async () => {
-      getModule(AccountModule, store)
-      getModule(AuthModule, store)
-      getModule(NotificationModule, store)
-      syncWithSessionStorage()
-      if (isAuthenticated?.value) {
-        await loadUserInfo()
-        await syncAccount()
-        await updateProfile()
-        // checking for account status
-        await checkAccountStatus()
-      }
+onMounted(async () => {
+  authStore.syncWithSessionStorage()
+  if (authStore.isAuthenticated) {
+    await accountStore.loadUserInfo()
+    await accountStore.syncAccount()
+    await updateProfile()
+    await checkAccountStatus()
+  }
 
-      // fetching what's new information, need to wait the notifications load and get the counts
-      await syncNotifications()
-      await fetchNotificationCount()
-      await fetchNotificationUnreadPriorityCount()
-      await fetchNotificationUnreadCount()
+  // fetching what's new information, need to wait the notifications load and get the counts
+  await notificationStore.syncNotifications()
+  await notificationStore.fetchNotificationCount()
+  await notificationStore.fetchNotificationUnreadPriorityCount()
+  await notificationStore.fetchNotificationUnreadCount()
 
-      // remove id from URLsince its already stored in session
-      if (getAccountIdFromCurrentUrl()) {
-        await nextTick()
-        window.history.replaceState({}, document.title, removeAccountIdFromUrl(window.location.href))
-      }
-    })
+  // remove id from URLsince its already stored in session
+  if (getAccountIdFromCurrentUrl()) {
+    await nextTick()
+    window.history.replaceState({}, document.title, removeAccountIdFromUrl(window.location.href))
+  }
+})
 
-    // component functions
-    const updateProfile = async (): Promise<void> => {
-      if (isBceid?.value) {
-        await syncUserProfile()
-      }
+const updateProfile = async (): Promise<void> => {
+  if (isBceid?.value) {
+    await accountStore.syncUserProfile()
+  }
+}
+const goToHome = () => {
+  const url = props.inAuth ? Pages.HOME : appendAccountId(Pages.HOME)
+  redirectToPath(props.inAuth, url)
+}
+const goToUserProfile = () => {
+  const url = props.inAuth ? Pages.USER_PROFILE : appendAccountId(Pages.USER_PROFILE)
+  redirectToPath(props.inAuth, url)
+}
+const goToCreateAccount = () => {
+  redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
+}
+const goToCreateBCSCAccount = () => {
+  const redirectUrl: string = props.dashboardReturnUrl
+    ? `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(props.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
+  redirectToPath(props.inAuth, redirectUrl)
+}
+const goToAccountInfo = async (settings: UserSettings) => {
+  if (!accountStore.currentAccount || !settings) {
+    return
+  }
+  await accountStore.syncCurrentAccount(settings)
+  redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${accountStore.currentAccount?.id}/${Pages.SETTINGS}/account-info`)
+}
+const goToTeamMembers = () => {
+  if (!accountStore.currentAccount) {
+    return
+  }
+  redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${accountStore.currentAccount?.id}/${Pages.SETTINGS}/team-members`)
+}
+const goToTransactions = () => {
+  if (!accountStore.currentAccount) {
+    return
+  }
+  redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${accountStore.currentAccount.id}/${Pages.SETTINGS}/transactions`)
+}
+const checkAccountStatus = async () => {
+  // redirect if accoutn status is suspended
+  if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(
+    status => status === accountStore.currentAccount?.accountStatus)
+  ) {
+    redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
+  } else if (accountStore.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
+    const targetPath = window.location.pathname
+    const substringCheck = (element:string) => targetPath.indexOf(element) > -1
+    // check if any of the url is the allowed uri
+    const isAllowedUrl = ALLOWED_URIS_FOR_PENDING_ORGS.findIndex(substringCheck) > -1
+    if (!isAllowedUrl) {
+      const accountNme = encodeURIComponent(btoa(accountStore.accountName))
+      redirectToPath(props.inAuth, `${Pages.PENDING_APPROVAL}/${accountNme}/true`)
     }
-    const goToHome = () => {
-      const url = props.inAuth ? Pages.HOME : appendAccountId(Pages.HOME)
-      redirectToPath(props.inAuth, url)
-    }
-    const goToUserProfile = () => {
-      const url = props.inAuth ? Pages.USER_PROFILE : appendAccountId(Pages.USER_PROFILE)
-      redirectToPath(props.inAuth, url)
-    }
-    const goToCreateAccount = () => {
-      redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
-    }
-    const goToCreateBCSCAccount = () => {
-      const redirectUrl: string = props.dashboardReturnUrl
-        ? `${Pages.CREATE_ACCOUNT}?redirectToUrl=${encodeURIComponent(props.dashboardReturnUrl)}` : Pages.CREATE_ACCOUNT
-      redirectToPath(props.inAuth, redirectUrl)
-    }
-    const goToAccountInfo = async (settings: UserSettings) => {
-      if (!currentAccount?.value || !settings) {
-        return
-      }
-      await syncCurrentAccount(settings)
-      redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${currentAccount?.value?.id}/${Pages.SETTINGS}/account-info`)
-    }
-    const goToTeamMembers = () => {
-      if (!currentAccount?.value) {
-        return
-      }
-      redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${currentAccount?.value.id}/${Pages.SETTINGS}/team-members`)
-    }
-    const goToTransactions = () => {
-      if (!currentAccount?.value) {
-        return
-      }
-      redirectToPath(props.inAuth, `${Pages.ACCOUNT}/${currentAccount?.value.id}/${Pages.SETTINGS}/transactions`)
-    }
-    const checkAccountStatus = async () => {
-      // redirect if accoutn status is suspended
-      if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(
-        status => status === currentAccount?.value?.accountStatus)
-      ) {
-        redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
-      } else if (currentAccount?.value?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
-        const targetPath = window.location.pathname
-        const substringCheck = (element:string) => targetPath.indexOf(element) > -1
-        // check if any of the url is the allowed uri
-        const isAllowedUrl = ALLOWED_URIS_FOR_PENDING_ORGS.findIndex(substringCheck) > -1
-        if (!isAllowedUrl) {
-          const accountNme = encodeURIComponent(btoa(accountName?.value))
-          redirectToPath(props.inAuth, `${Pages.PENDING_APPROVAL}/${accountNme}/true`)
-        }
-      }
-    }
-    const switchAccount = async (settings: UserSettings, inAuth?: boolean) => {
-      emit('account-switch-started')
-      if (route.params.orgId) {
-        // If route includes a URL param for account, we need to refresh with the new account id
-        router.push({ name: route.name, params: { orgId: settings.id } })
-      }
-      await syncCurrentAccount(settings)
-      emit('account-switch-completed')
+  }
+}
+const switchAccount = async (settings: UserSettings, inAuth?: boolean) => {
+  emit('account-switch-started')
+  if (route.params.orgId) {
+    // If route includes a URL param for account, we need to refresh with the new account id
+    router.push({ name: route.name, params: { orgId: settings.id } })
+  }
+  await accountStore.syncCurrentAccount(settings)
+  emit('account-switch-completed')
 
-      if (!inAuth) {
-        window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.HOME}`))
-      }
-    }
-    const logout = (): void => {
-      if (props.redirectOnLogout) {
-        const url = encodeURIComponent(props.redirectOnLogout)
-        window.location.assign(`${getContextPath()}signout/${url}`)
-      } else {
-        window.location.assign(`${getContextPath()}signout`)
-      }
-    }
-    const login = (idpHint: string): void => {
-      if (props.redirectOnLoginSuccess) {
-        let url = encodeURIComponent(props.redirectOnLoginSuccess)
-        url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
-        window.location.assign(`${getContextPath()}signin/${idpHint}/${url}`)
-      } else {
-        window.location.assign(`${getContextPath()}signin/${idpHint}`)
-      }
-    }
-    const closeNotificationPanel = async (): Promise<void> => {
-      notificationPanel.value = false
-      if (notificationUnreadCount.value > 0) {
-        await markAsRead()
-      }
-    }
+  if (!inAuth) {
+    window.location.assign(appendAccountId(`${ConfigHelper.getAuthContextPath()}/${Pages.HOME}`))
+  }
+}
+const logout = (): void => {
+  if (props.redirectOnLogout) {
+    const url = encodeURIComponent(props.redirectOnLogout)
+    window.location.assign(`${getContextPath()}signout/${url}`)
+  } else {
+    window.location.assign(`${getContextPath()}signout`)
+  }
+}
+const login = (idpHint: string): void => {
+  if (props.redirectOnLoginSuccess) {
+    let url = encodeURIComponent(props.redirectOnLoginSuccess)
+    url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
+    window.location.assign(`${getContextPath()}signin/${idpHint}/${url}`)
+  } else {
+    window.location.assign(`${getContextPath()}signin/${idpHint}`)
+  }
+}
+const closeNotificationPanel = async (): Promise<void> => {
+  notificationPanel.value = false
+  if (notificationStore.notificationUnreadCount > 0) {
+    await notificationStore.markAsRead()
+  }
+}
 
-    // component watchers
-    watch(isAuthenticated, async (val) => {
-      if (val) {
-        await updateProfile()
-      }
-    })
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const notificationCount = computed(() => notificationStore.notificationCount)
+const notificationUnreadCount = computed(() => notificationStore.notificationUnreadCount)
+const notificationUnreadPriorityCount = computed(() => notificationStore.notificationUnreadPriorityCount)
+const pendingApprovalCount = computed(() => accountStore.pendingApprovalCount)
+const username = computed(() => accountStore.username)
+const accountName = computed(() => accountStore.accountName)
+const currentAccount = computed(() => accountStore.currentAccount)
+const switchableAccounts = computed(() => accountStore.switchableAccounts)
 
-    return {
-      ...props,
-      closeNotificationPanel,
-      goToAccountInfo,
-      goToCreateAccount,
-      goToCreateBCSCAccount,
-      goToHome,
-      goToTeamMembers,
-      goToTransactions,
-      goToUserProfile,
-      login,
-      logout,
-      loginOptions,
-      store,
-      switchAccount,
-      syncWithSessionStorage,
-      isAuthenticated,
-      switchableAccounts,
-      accountName,
-      username,
-      currentAccount,
-      currentUser,
-      pendingApprovalCount,
-      notificationPanel,
-      isBceid,
-      notificationUnreadCount,
-      notificationCount,
-      notificationUnreadPriorityCount,
-      isWhatsNewOpen,
-      showTransactions,
-      isStaff,
-      isGovmUser,
-      isBcscOrBceid,
-      canCreateAccount
-    }
+watch(() => authStore.isAuthenticated, async (val) => {
+  if (val) {
+    await updateProfile()
   }
 })
 </script>

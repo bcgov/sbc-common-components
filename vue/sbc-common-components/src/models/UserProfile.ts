@@ -1,5 +1,10 @@
-// for now mapping only whats needed.Can use all values ideally
+
+export interface UserTerms {
+    isTermsOfUseAccepted: boolean
+}
+
 export interface UserProfile {
-    lastname: string;
-    firstname: string;
+    lastname: string
+    firstname: string
+    userTerms?: UserTerms
 }

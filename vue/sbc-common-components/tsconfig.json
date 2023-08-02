@@ -12,6 +12,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
+      "vite/client",
+      "vitest/globals",
       "vue",
       "vuetify",
       "webpack-env",

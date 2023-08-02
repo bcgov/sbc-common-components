@@ -96,78 +96,51 @@
   </v-app>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router' // Import useRouter from vue-router
 import SbcFooter from '/src/components/SbcFooter.vue'
 import SbcHeader from '/src/components/SbcHeader.vue'
 import SbcLoader from '/src/components/SbcLoader.vue'
 import { LDFlags, Pages, SessionStorageKeys } from '@/util/constants'
 import LaunchDarklyService from '../src/services/launchdarkly.services'
+import { useAccountStore, useAuthStore } from '@/store'
 
-export default {
-  components: {
-    SbcHeader,
-    SbcFooter,
-    SbcLoader
-  },
-  setup () {
-    const store = useStore()
-    const router = useRouter() // Access the router information using useRouter
+const accountStore = useAccountStore()
+const authStore = useAuthStore()
+const router = useRouter() // Access the router information using useRouter
 
-    const showNotification = ref(false)
-    const notificationText = ref('')
-    const showLoading = ref(true)
-    const toastType = 'primary'
-    const toastTimeout = 6000
-    const logoutUrl = ''
+const showNotification = ref(false)
+const notificationText = ref('')
+const showLoading = ref(true)
+const toastType = 'primary'
+const toastTimeout = 6000
+const logoutUrl = ''
 
-    const currentAccountSettings = computed(() => store.state.org.currentAccountSettings)
-    const permissions = computed(() => store.state.org.permissions)
-    const currentUser = computed(() => store.state.user.currentUser)
-    const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
+const currentAccountSettings = computed(() => null)
+const permissions = computed(() => null)
+const currentUser = computed(() => null)
+const isAuthenticated = computed(() => authStore.isAuthenticated)
 
-    const showNavigationBar = computed(() => router.currentRoute.value.meta.showNavBar) // Use router instead of $route
-    const showLoginMenu = computed(() =>
-      router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
+const showNavigationBar = computed(() => router.currentRoute.value.meta.showNavBar) // Use router instead of $route
+const showLoginMenu = computed(() =>
+  router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
 
-    const bannerText = computed(() => {
-      const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)
-      return bannerText?.trim() || null
-    })
+const bannerText = computed(() => {
+  const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)
+  return bannerText?.trim() || null
+})
 
-    const aboutText = 'SBC Common Components being upgraded to Vue 3'
+const aboutText = 'SBC Common Components being upgraded to Vue 3'
 
-    const setCurrentOrganization = (value) => store.commit('org/setCurrentOrganization', value)
-    const loadUserInfo = () => store.dispatch('user/loadUserInfo')
+const setCurrentOrganization = (value) => {}
+const loadUserInfo = () => {}
 
-    onMounted(() => {
-      sessionStorage.setItem(SessionStorageKeys.StatusApiUrl,
-        'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
-      showLoading.value = false
-    })
-
-    return {
-      showNotification,
-      notificationText,
-      showLoading,
-      toastType,
-      toastTimeout,
-      logoutUrl,
-      currentAccountSettings,
-      permissions,
-      currentUser,
-      isAuthenticated,
-      showNavigationBar,
-      showLoginMenu,
-      bannerText,
-      aboutText,
-      setCurrentOrganization,
-      loadUserInfo
-    }
-  }
-}
+onMounted(() => {
+  sessionStorage.setItem(SessionStorageKeys.StatusApiUrl,
+    'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1')
+  showLoading.value = false
+})
 </script>
 
 <style lang="scss">

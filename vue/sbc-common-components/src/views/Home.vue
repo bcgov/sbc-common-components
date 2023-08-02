@@ -73,27 +73,6 @@
           />
         </v-container>
       </header>
-      <!-- <div class="how-to-container py-6">
-        <v-container class="py-10">
-          <h2>How does it work?</h2>
-          <h1 class="notAvailable">
-            Info Stepper
-          </h1>
-          <transition
-            name="slide-x-transition"
-            mode="out-in"
-          >
-          </transition>
-        </v-container>
-      </div>
-      <h1 class="notAvailable">
-        Testimonial Quotes
-      </h1>
-      <div class="bcsc-container py-6">
-        <h1 class="notAvailable">
-          BCS PANEL GOES HERE
-        </h1>
-      </div> -->
       <div class="contact-info-container">
         <v-container>
           <v-row>
@@ -161,7 +140,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Pages } from '@/util/constants'
-import { mapMutations, mapState } from 'vuex'
 import SbcAuthMenu from '/src/components/SbcFooter.vue'
 
 export default defineComponent({
@@ -170,18 +148,31 @@ export default defineComponent({
     SbcAuthMenu
   },
   computed: {
-    ...mapState('user', ['userProfile', 'currentUser']),
-    ...mapState('org', ['currentAccountSettings', 'currentMembership']),
-
+    // These are intentionally stubbed out.
+    userProfile () {
+      return null
+    },
+    currentUser () {
+      return null
+    },
+    currentAccountSettings () {
+      return null
+    },
+    currentMembership () {
+      return null
+    },
     email () {
       return 'mailto:BCRegistries@gov.bc.ca?subject=BC Registries - Business Registry Support Request'
     }
   },
   methods: {
-    ...mapMutations('org', ['resetCurrentOrganisation']),
     createAccount (): void {
       this.resetCurrentOrganisation()
       this.$router.push(`/${Pages.CREATE_ACCOUNT}`)
+    },
+    // Do nothing this is implemented inside of the apps.
+    resetCurrentOrganisation (): void {
+
     },
     login () {
       this.$router.push(`/signin/bcsc/${Pages.CREATE_ACCOUNT}`)

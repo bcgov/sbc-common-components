@@ -1,43 +1,35 @@
 <template>
   <v-alert
-    v-model="show"
+    v-model="state.show"
     class="py-2"
-    :type="type"
+    :type="state.type"
     close-icon="mdi-close-circle mdi-24px mt-3"
-    :closable="dismissible"
+    :closable="state.dismissible"
     :prominent="true"
   >
     <div class="px-3">
-      <span v-html="message" />
+      <span v-html="state.message" />
     </div>
   </v-alert>
 </template>
 
-<script lang="ts">
-// External
-import { computed, defineComponent, reactive } from 'vue'
+<script setup lang="ts">
+import { computed, reactive } from 'vue'
 
-export default defineComponent({
-  name: 'SbcSystemBanner',
-  props: {
-    setDismissible: { default: false, type: Boolean },
-    setIcon: { default: 'mdi-information', type: String }, // See https://material.io/resources/icons/?style=baseline
-    setMessage: { default: '', type: String },
-    setShow: { default: false, type: Boolean },
-    setType: { default: 'warning', type: String }
-  },
-  setup (props) {
-    const state = reactive({
-      dismissible: computed(() => { return props.setDismissible }),
-      icon: computed(() => { return props.setIcon }),
-      message: computed(() => { return props.setMessage }),
-      show: computed(() => { return props.setShow }),
-      type: computed(() => { return props.setType as 'info' | 'warning' | 'error' | 'success' })
-    })
-    return {
-      ...state
-    }
-  }
+const props = defineProps({
+  setDismissible: { default: false, type: Boolean },
+  setIcon: { default: 'mdi-information', type: String }, // See https://material.io/resources/icons/?style=baseline
+  setMessage: { default: '', type: String },
+  setShow: { default: false, type: Boolean },
+  setType: { default: 'warning', type: String }
+})
+
+const state = reactive({
+  dismissible: computed(() => { return props.setDismissible }),
+  icon: computed(() => { return props.setIcon }),
+  message: computed(() => { return props.setMessage }),
+  show: computed(() => { return props.setShow }),
+  type: computed(() => { return props.setType as 'info' | 'warning' | 'error' | 'success' })
 })
 </script>
 

@@ -1,28 +1,20 @@
 import { mount, VueWrapper } from '@vue/test-utils'
 import SbcAuthMenu from '@/components/SbcAuthMenu.vue'
-import { createStore } from 'vuex'
 import vuetify, { createVueRouter } from './setup'
-import AccountModule from '@/store/modules/account'
-import AuthModule from '@/store/modules/auth'
+import { createPinia, setActivePinia } from 'pinia'
 import { it, describe, expect, beforeEach } from 'vitest'
+
+setActivePinia(createPinia())
 
 describe('SbcAuthMenu', () => {
   let wrapper: VueWrapper<any>
-  let store: any
   let router: any
 
   beforeEach(() => {
-    // Create a new Vuex store instance with the required modules
-    store = createStore({
-      modules: {
-        account: AccountModule,
-        auth: AuthModule
-      }
-    })
     router = createVueRouter()
     wrapper = mount(SbcAuthMenu, {
       global: {
-        plugins: [store, vuetify, router]
+        plugins: [vuetify, router]
       }
     })
   })

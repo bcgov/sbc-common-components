@@ -21,19 +21,14 @@
 </template>
 
 <script setup lang="ts">
-// External
 import { computed, onMounted, watch } from 'vue'
-import { getModule } from 'vuex-module-decorators'
-// BC Registries
-import { KCUserProfile } from '../../src/models/KCUserProfile'
-import { UserSettings } from '../../src/models/userSettings'
 import { Role, IdpHint, LoginSource, Pages } from '../../src/util/constants'
-// Local
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
 import { useNavigation } from '../composables'
 import KeyCloakService from '../services/keycloak.services'
-import store from '../store'
+import { useAccountStore, useAuthStore } from '../store'
+
+const accountStore = useAccountStore()
+const authStore = useAuthStore()
 
 const props = defineProps({
   fromLogin: { default: false, type: Boolean },
@@ -42,26 +37,10 @@ const props = defineProps({
   redirectOnLoginFail: { default: '', type: String }
 })
 
-// set modules
-if (!store.hasModule('account')) store.registerModule('account', AccountModule)
-if (!store.hasModule('auth')) store.registerModule('auth', AuthModule)
 // module getters
-const isAuthenticated = computed(() => { return store.getters['auth/isAuthenticated'] as boolean })
-const currentLoginSource = computed(() => { return store.getters['auth/currentLoginSource'] })
-const accountName = computed(() => { return store.getters['auth/accountName'] })
-// module actions
-// account
-const getCurrentUserProfile = async (inAuth: boolean): Promise<any> => {
-  return store.dispatch('account/getCurrentUserProfile', inAuth)
-}
-const loadUserInfo = async (): Promise<KCUserProfile> => {
-  return store.dispatch('account/loadUserInfo')
-}
-const syncAccount = async () => { await store.dispatch('account/syncAccount') }
-const syncUserProfile = async () => { await store.dispatch('account/syncUserProfile') }
-const updateUserProfile = async () => { await store.dispatch('account/updateUserProfile') }
+const isAuthenticated = computed(() => { return authStore.isAuthenticated })
+const currentLoginSource = computed(() => { return authStore.currentLoginSource })
 // auth
-const syncWithSessionStorage = () => { store.dispatch('auth/syncWithSessionStorage') }
 
 // composables
 const { getContextPath, redirectToPath } = useNavigation()
@@ -74,16 +53,14 @@ const loginOptions = [
 ]
 
 // local variables
-const currentAccount = computed(() => store.state.account.currentAccount as UserSettings)
+const currentAccount = computed(() => accountStore.currentAccount)
 const isBceid = computed(() => currentLoginSource?.value === LoginSource.BCEID)
 
 onMounted(async () => {
-  getModule(AccountModule, store)
-  getModule(AuthModule, store)
-  syncWithSessionStorage()
+  authStore.syncWithSessionStorage()
   if (isAuthenticated?.value) {
-    await loadUserInfo()
-    await syncAccount()
+    await accountStore.loadUserInfo()
+    await accountStore.syncAccount()
     await updateProfile()
     // checking for account status
     await checkAccountStatus()
@@ -93,7 +70,7 @@ onMounted(async () => {
 // component functions
 const updateProfile = async (): Promise<void> => {
   if (isBceid?.value) {
-    await syncUserProfile()
+    await accountStore.syncUserProfile()
   }
 }
 watch(isAuthenticated, async (val: boolean) => {
@@ -120,7 +97,7 @@ const login = (idpHint: string) => {
     }
   } else {
     // Initialize keycloak session
-    const kcInit = KeyCloakService.initializeKeyCloak(idpHint, store)
+    const kcInit = KeyCloakService.initializeKeyCloak(idpHint)
     kcInit.then(async (authenticated: boolean) => {
       if (authenticated) {
         // eslint-disable-next-line no-console
@@ -128,13 +105,13 @@ const login = (idpHint: string) => {
         // Set values to session storage
         await KeyCloakService.initSession()
         // tell KeycloakServices to load the user info
-        const userInfo = await loadUserInfo()
+        const userInfo = await accountStore.loadUserInfo()
 
         // update user profile
-        await updateUserProfile()
+        await accountStore.updateUserProfile()
 
         // sync the account if there is one
-        await syncAccount()
+        await accountStore.syncAccount()
 
         // if not from the sbc-auth, do the checks and redirect to sbc-auth
         if (!props.inAuth) {
@@ -143,7 +120,7 @@ const login = (idpHint: string) => {
           const isRedirectToCreateAccount = (
             userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
 
-          const currentUser = await getCurrentUserProfile(props.inAuth)
+          const currentUser = await accountStore.getCurrentUserProfile(props.inAuth)
 
           if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
             console.log('[SignIn.vue]Redirecting. TOS not accepted')

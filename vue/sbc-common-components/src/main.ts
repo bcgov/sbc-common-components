@@ -5,18 +5,18 @@ import { createApp } from 'vue'
 import vuetify from './plugins/vuetify'
 import App from './App.vue'
 import { createVueRouter } from './router'
-import store from './store'
 import KeycloakService from '../src/services/keycloak.services'
+import { createPinia } from 'pinia'
 
 declare const window: any
 
 // main code
 async function start () {
-  // console.info('Version', process.env.VUE_APP_VERSION) TODO: FIX
   // fetch config from environment and API
   // must come first as inits below depend on config
   const router = createVueRouter()
   const app = createApp(App)
+  const pinia = createPinia()
 
   // configure Keycloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
@@ -30,7 +30,7 @@ async function start () {
 
   // start Vue application
   console.info('Starting app...') // eslint-disable-line no-console
-  app.use(router).use(store).use(vuetify).mount('#app')
+  app.use(router).use(pinia).use(vuetify).mount('#app')
 }
 
 start().catch(error => {

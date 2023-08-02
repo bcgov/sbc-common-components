@@ -30,7 +30,7 @@
       <v-list>
         <v-list-group color="primary">
           <!-- eslint-disable-next-line -->
-          <template v-for="(item, i) in notifications" :key="i">
+          <template v-for="(item, i) in state.notifications" :key="i">
             <v-list-item>
               <v-row dense>
                 <v-col
@@ -53,7 +53,7 @@
               </v-row>
             </v-list-item>
             <v-divider
-              v-if="i < notifications.length - 1"
+              v-if="i < state.notifications.length - 1"
               :key="`${i}-divider`"
             />
           </template>
@@ -63,44 +63,27 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Notification } from '../../src/models/notification'
-import NotificationModule from '../../src/store/modules/notification'
-import { computed, defineComponent, onMounted, reactive } from 'vue'
-import { useStore } from 'vuex'
-import { getModule } from 'vuex-module-decorators'
+<script setup lang="ts">
+import { Notification } from '@/models/notification'
+import { computed, reactive } from 'vue'
 import 'clickout-event'
+import { useNotificationStore } from '@/store'
 
-export default defineComponent({
-  name: 'NotificationPanel',
-  props: {
-    showNotifications: { default: false, type: Boolean }
-  },
-  emits: ['closeNotifications'],
-  setup (props, { emit }) {
-    const store = useStore()
-    // set modules
-    if (!store.hasModule('notification')) { store.registerModule('notification', NotificationModule) }
-
-    // state
-    const state = reactive({
-      notifications: computed(() => store.state.notification.notifications as Notification[])
-    })
-
-    onMounted(async () => {
-      getModule(NotificationModule, store)
-    })
-
-    const emitClose = (): void => {
-      emit('closeNotifications')
-    }
-    return {
-      ...props,
-      ...state,
-      emitClose
-    }
-  }
+const props = defineProps({
+  showNotifications: { default: false, type: Boolean }
 })
+
+const emit = defineEmits(['closeNotifications'])
+
+const store = useNotificationStore()
+
+const state = reactive({
+  notifications: computed(() => store.notifications as Notification[])
+})
+
+const emitClose = (): void => {
+  emit('closeNotifications')
+}
 </script>
 
 <style lang="scss" scoped>

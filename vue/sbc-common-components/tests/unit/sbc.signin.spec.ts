@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils'
 import SbcSignin from '@/components/SbcSignin.vue'
 import vuetify, { createVueRouter } from './setup'
-import { createStore } from 'vuex'
-import AccountModule from '@/store/modules/account'
-import AuthModule from '@/store/modules/auth'
 import { it, describe, expect, beforeEach, vi } from 'vitest'
 import KeyCloakService from '@/services/keycloak.services'
+import { setActivePinia, createPinia } from 'pinia'
+
+setActivePinia(createPinia())
 
 window.ResizeObserver =
     window.ResizeObserver ||
@@ -23,13 +23,6 @@ describe('SbcSignin', () => {
   let router: any
   beforeEach(() => {
     initializeKeycloakMock.mockResolvedValue([])
-    // Create a new Vuex store instance with the required modules
-    store = createStore({
-      modules: {
-        aith: AuthModule,
-        account: AccountModule
-      }
-    })
     router = createVueRouter()
   })
 

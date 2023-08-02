@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils'
 import SbcLogin from '@/components/SbcLogin.vue'
 import vuetify, { createVueRouter } from './setup'
-import { createStore } from 'vuex'
-import AccountModule from '@/store/modules/account'
-import AuthModule from '@/store/modules/auth'
 import { it, describe, expect, vi, beforeEach } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+
+setActivePinia(createPinia())
 
 global.ResizeObserver =
 global.ResizeObserver ||
@@ -19,13 +19,6 @@ describe('SbcLogin', () => {
   let router: any
 
   beforeEach(() => {
-    // Create a new Vuex store instance with the required modules
-    store = createStore({
-      modules: {
-        account: AccountModule,
-        auth: AuthModule
-      }
-    })
     router = createVueRouter()
   })
 

@@ -1,6 +1,4 @@
-// External
 import { useRouter } from 'vue-router'
-// BC Registry
 import ConfigHelper from '../../src/util/config-helper'
 
 export const useNavigation = () => {

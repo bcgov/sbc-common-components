@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils'
 import SbcSignout from '@/components/SbcSignout.vue'
 import vuetify, { createVueRouter } from './setup'
-import { createStore } from 'vuex'
-import AccountModule from '@/store/modules/account'
-import AuthModule from '@/store/modules/auth'
 import { it, describe, expect, vi, beforeEach } from 'vitest'
+import { setActivePinia, createPinia } from 'pinia'
+
+setActivePinia(createPinia())
 
 window.ResizeObserver =
     window.ResizeObserver ||
@@ -15,23 +15,15 @@ window.ResizeObserver =
     }))
 
 describe('SbcSignout', () => {
-  let store: any
   let router: any
   beforeEach(() => {
-    // Create a new Vuex store instance with the required modules
-    store = createStore({
-      modules: {
-        aith: AuthModule,
-        account: AccountModule
-      }
-    })
     router = createVueRouter()
   })
 
   it('renders loading screen when SBC Signout is loaded', () => {
     const wrapper = mount(SbcSignout, {
       global: {
-        plugins: [store, vuetify, router]
+        plugins: [vuetify, router]
       }
     })
 

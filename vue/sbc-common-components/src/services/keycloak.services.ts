@@ -1,21 +1,15 @@
 /* eslint-disable */
-// External
 import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions } from 'keycloak-js'
-import { Store } from 'vuex'
-import { getModule } from 'vuex-module-decorators'
-// BC Registry
 import { KCUserProfile } from '../../src/models/KCUserProfile'
 import ConfigHelper from '../../src/util/config-helper'
 import { SessionStorageKeys } from '../../src/util/constants'
 import { decodeKCToken } from '../../src/util/common-util'
-// Local
-import AuthModule from '../store/modules/auth'
+import { useAuthStore } from '@/store'
 
 class KeyCloakService {
   private kc: KeycloakInstance | undefined
   private parsedToken: any
   private static instance: KeyCloakService
-  private store: Store<any> | null = null
   private counter = 0
   private REFRESH_ATTEMPT_INTERVAL = 10 // in seconds
   private timerId: any = 0
@@ -37,8 +31,7 @@ class KeyCloakService {
     return this.kc
   }
 
-  async initializeKeyCloak (idpHint: string, store: Store<any>) {
-    this.store = store
+  async initializeKeyCloak (idpHint: string) {
     this.clearSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
@@ -63,18 +56,14 @@ class KeyCloakService {
   }
 
   async initSession () {
-    if (!this.store) {
-      return
-    }
-
-    const authModule = getModule(AuthModule, this.store)
-    authModule.setKCToken(this.kc?.token || '')
-    authModule.setIDToken(this.kc?.idToken || '')
-    authModule.setRefreshToken(this.kc?.refreshToken || '')
+    const authStore = useAuthStore()
+    authStore.setKCToken(this.kc?.token || '')
+    authStore.setIDToken(this.kc?.idToken || '')
+    authStore.setRefreshToken(this.kc?.refreshToken || '')
 
     const userInfo = this.getUserInfo()
-    authModule.setKCGuid(userInfo?.keycloakGuid || '')
-    authModule.setLoginSource(userInfo?.loginSource || '')
+    authStore.setKCGuid(userInfo?.keycloakGuid || '')
+    authStore.setLoginSource(userInfo?.loginSource || '')
 
     await this.syncSessionAndScheduleTokenRefresh()
   }
@@ -265,10 +254,8 @@ class KeyCloakService {
   }
 
   private async clearSession () {
-    if (this.store) {
-      const authModule = getModule(AuthModule, this.store)
-      authModule.clearSession()
-    }
+    const authStore = useAuthStore()
+    authStore.clearSession()
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakToken)
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakIdToken)
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakRefreshToken)

@@ -11,7 +11,7 @@
         <v-btn
           icon
           color="primary"
-          :location="'top-left'"
+          :location="'top left'"
           :absolute="true"
           class="mt-1"
           @click="mobileDevice = false"
@@ -58,31 +58,26 @@
   </v-row>
 </template>
 
-<script lang="ts">
-import { onMounted, defineComponent, ref, watch } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
 
-export default defineComponent({
-  name: 'MobileDeviceAlert',
-  props: {
-    triggerPopup: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup (props) {
-    const mobileDevice = ref(false)
-    onMounted(() => {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        mobileDevice.value = true
-      }
-    })
-    watch(() => props.triggerPopup, (val) => {
-      mobileDevice.value = val
-    })
-    return {
-      mobileDevice
-    }
+const props = defineProps({
+  triggerPopup: {
+    type: Boolean,
+    default: false
   }
+})
+
+const mobileDevice = ref(false)
+
+onMounted(() => {
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    mobileDevice.value = true
+  }
+})
+
+watch(() => props.triggerPopup, (val) => {
+  mobileDevice.value = val
 })
 </script>
 

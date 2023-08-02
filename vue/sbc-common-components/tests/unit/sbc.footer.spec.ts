@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import SbcFooter from '@/components/SbcFooter.vue'
 import vuetify from './setup'
-import { it, describe, expect, beforeEach } from 'vitest'
+import { it, describe, expect } from 'vitest'
 
 describe('SbcFooter', () => {
   it('renders the component', () => {
