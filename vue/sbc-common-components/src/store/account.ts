@@ -87,10 +87,8 @@ export const useAccountStore = defineStore('account', {
       try {
         const response = await UserService.getUserProfile('@me')
         const userProfile = response?.data || {} as UserProfile
-        if (isAuth) {
-          // const userStore = useStore('user') TODO: Figure this out!!!
-          // this.context.commit('user/setUserProfile', userProfile, { root: true })
-        }
+        // This used to call the userStore setUserProfile if isAuth, we'll have to figure out a better way
+        // When we wire this up to auth later.
         return userProfile
       } catch (error) {
         // for handling the 404 while first time user login in dir search
