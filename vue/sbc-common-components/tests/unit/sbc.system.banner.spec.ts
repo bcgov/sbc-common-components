@@ -8,10 +8,10 @@ describe('SbcSystemBanner', () => {
     const message = 'This is a test message'
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: message,
-        setShow: true,
-        setDismissible: true,
-        setType: 'success'
+        message: message,
+        show: true,
+        dismissible: true,
+        type: 'success'
       },
       global: {
         plugins: [vuetify]
@@ -23,10 +23,10 @@ describe('SbcSystemBanner', () => {
   it('displays the close icon when dismissible is true', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: 'this is a test',
-        setShow: true,
-        setDismissible: true,
-        setType: 'success'
+        message: 'this is a test',
+        show: true,
+        dismissible: true,
+        type: 'success'
       },
       global: {
         plugins: [vuetify]
@@ -39,10 +39,10 @@ describe('SbcSystemBanner', () => {
   it('does not display the close icon when dismissible is false', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: 'this is a test',
-        setShow: true,
-        setDismissible: false,
-        setType: 'success'
+        message: 'this is a test',
+        show: true,
+        dismissible: false,
+        type: 'success'
       },
       global: {
         plugins: [vuetify]
@@ -56,10 +56,10 @@ describe('SbcSystemBanner', () => {
     const type = 'success'
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: 'this is a test',
-        setShow: true,
-        setDismissible: true,
-        setType: 'success' },
+        message: 'this is a test',
+        show: true,
+        dismissible: true,
+        type: 'success' },
       global: {
         plugins: [vuetify]
       }
@@ -71,10 +71,10 @@ describe('SbcSystemBanner', () => {
   it('shows the banner when show is true', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: 'this is a test',
-        setShow: true,
-        setDismissible: true,
-        setType: 'success' },
+        message: 'this is a test',
+        show: true,
+        dismissible: true,
+        type: 'success' },
       global: {
         plugins: [vuetify]
       }
@@ -86,10 +86,10 @@ describe('SbcSystemBanner', () => {
   it('hides the banner when show is false', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
-        setMessage: 'this is a test',
-        setShow: false,
-        setDismissible: true,
-        setType: 'success' },
+        message: 'this is a test',
+        show: false,
+        dismissible: true,
+        type: 'success' },
       global: {
         plugins: [vuetify]
       }

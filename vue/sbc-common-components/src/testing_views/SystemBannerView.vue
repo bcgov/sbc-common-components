@@ -4,31 +4,32 @@
       System Banners
     </h1>
     <SbcSystemBanner
-      :setDismissible="true"
-      setMessage="Success Banner"
-      :setShow="true"
-      setType="success"
-      setIcon="mdi-apple"
+      :dismissible="true"
+      message="Success Banner"
+      :show="true"
+      type="success"
+      icon="mdi-apple"
     />
     <SbcSystemBanner
-      :setDismissible="true"
-      setMessage="Info Banner"
-      :setShow="true"
-      setType="info"
-      setIcon="mdi-football-helmet"
+      :dismissible="true"
+      message="Info Banner"
+      :show="true"
+      type="info"
+      icon="mdi-football-helmet"
     />
     <SbcSystemBanner
-      :setDismissible="true"
-      setMessage="Warning Banner"
-      :setShow="true"
-      setType="warning"
-      setIcon="mdi-panda"
+      :dismissible="true"
+      message="Warning Banner"
+      :show="true"
+      type="warning"
+      icon="mdi-panda"
     />
     <SbcSystemBanner
-      :setDismissible="true"
-      setMessage="Error Banner"
-      :setShow="true"
-      setType="error"
+      :dismissible="true"
+      message="Error Banner"
+      :show="true"
+      type="error"
+      icon="mdi-information"
     />
   </div>
 </template>

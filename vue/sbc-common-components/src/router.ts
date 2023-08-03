@@ -1,6 +1,6 @@
 import AuthMenuView from './testing_views/AuthMenuView.vue'
 import BrowserVersionAlertView from './testing_views/BrowserVersionAlertView.vue'
-import Home from './views/Home.vue'
+import Home from './testing_views/Home.vue'
 import LoaderView from './testing_views/LoaderView.vue'
 import LoadingScreenView from './testing_views/LoadingScreenView.vue'
 import LoginView from './testing_views/LoginView.vue'

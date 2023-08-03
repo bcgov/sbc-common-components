@@ -398,7 +398,7 @@ const props = defineProps({
   dashboardReturnUrl: { default: '', type: String }
 })
 
-const emit = defineEmits(['account-switch-started', 'account-switched', 'account-switch-failed', 
+const emit = defineEmits(['account-switch-started', 'account-switched', 'account-switch-failed',
   'account-switch-cancelled', 'account-switch-completed'])
 const route = useRoute()
 const router = useRouter()

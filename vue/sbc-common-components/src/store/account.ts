@@ -9,112 +9,125 @@ import { AccountStateIF } from '@/interfaces'
 import { KCUserProfile } from '@/models/KCUserProfile'
 import { UserSettings } from '@/models/userSettings'
 import { UserProfile } from '@/models/UserProfile'
+import { computed, reactive } from 'vue'
 
-export const useAccountStore = defineStore('account', {
-  state: (): AccountStateIF => {
-    return {
-      userSettings: [],
-      currentAccount: null,
-      currentAccountMembership: null,
-      pendingApprovalCount: 0,
-      currentUser: null
-    }
-  },
-  getters: {
-    accountName (): string {
-      return this.currentAccount && this.currentAccount.label
-    },
-    switchableAccounts (): UserSettings[] {
-      return this.userSettings?.filter(setting => setting.type === 'ACCOUNT')
-    },
-    username (): string {
-      return `${this.currentUser?.firstName || '-'} ${this.currentUser?.lastName || ''}`
-    }
-  },
-  actions: {
-    loadUserInfo () : KCUserProfile {
-      this.currentUser = KeyCloakService.getUserInfo()
-      return this.currentUser
-    },
-    async syncUserSettings (currentAccountId: string): Promise<UserSettings[]> {
-      const response = await AccountService.getUserSettings(this.currentUser?.keycloakGuid)
-      if (response?.data) {
-        const userSettings = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
-        const currentAccount = userSettings.find(org => String(org.id) === currentAccountId)
-        // if passed account is not user account list setting first one as current account
-        this.context.commit('setCurrentAccount', currentAccount || userSettings[0])
-        if (this.currentUser?.loginSource === LoginSource.BCSC ||
-          this.currentUser.roles.includes(Role.GOVMAccountUser)) {
-          await this.context.dispatch('fetchPendingApprovalCount')
-        }
-        this.userSettings = userSettings
-      } else {
-        this.userSettings = []
+export const useAccountStore = defineStore('account', () => {
+  const state = reactive<AccountStateIF>({
+    userSettings: [],
+    currentAccount: null,
+    currentAccountMembership: null,
+    pendingApprovalCount: 0,
+    currentUser: null
+  })
+
+  const accountName = computed(() => state.currentAccount && state.currentAccount.label)
+  const switchableAccounts = computed(() => state.userSettings?.filter(setting => setting.type === 'ACCOUNT'))
+  const username = computed(() => `${state.currentUser?.firstName || '-'} ${state.currentUser?.lastName || ''}`)
+
+  function loadUserInfo () : KCUserProfile {
+    state.currentUser = KeyCloakService.getUserInfo()
+    return state.currentUser
+  }
+
+  async function syncUserSettings (currentAccountId: string): Promise<UserSettings[]> {
+    const response = await AccountService.getUserSettings(state.currentUser?.keycloakGuid)
+    if (response?.data) {
+      const userSettings = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
+      const currentAccount = userSettings.find(org => String(org.id) === currentAccountId)
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(currentAccount || userSettings[0]))
+      state.currentAccount = currentAccount || userSettings[0]
+      if (state.currentUser?.loginSource === LoginSource.BCSC ||
+        state.currentUser.roles.includes(Role.GOVMAccountUser)) {
+        await fetchPendingApprovalCount()
       }
-      return this.userSettings
-    },
-    async fetchPendingApprovalAccount (): Promise<number> {
-      if (this.context.rootState.account?.currentAccount?.id) {
-        const response = await AccountService.getPendingMemberCount(
-          this.context.rootState.account.currentAccount.id, this.currentUser?.keycloakGuid)
-        this.pendingApprovalCount = (response && response.data && response.data.count) || 0
-      } else {
-        this.pendingApprovalCount = 0
+      state.userSettings = userSettings
+    } else {
+      state.userSettings = []
+    }
+    return state.userSettings
+  }
+
+  async function fetchPendingApprovalCount (): Promise<number> {
+    if (state.currentAccount?.id) {
+      const response = await AccountService.getPendingMemberCount(
+        parseInt(state.currentAccount.id), state.currentUser?.keycloakGuid)
+      state.pendingApprovalCount = (response && response.data && response.data.count) || 0
+    } else {
+      state.pendingApprovalCount = 0
+    }
+    return state.pendingApprovalCount
+  }
+
+  async function syncCurrentAccount (userSetting: UserSettings): Promise<UserSettings> {
+    state.currentAccount = userSetting
+    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(state.currentAccount))
+    return state.currentAccount
+  }
+
+  async function syncUserProfile () : Promise<KCUserProfile> {
+    // TODO improve the logic of not fetching the first name last name every time of header mounted
+    const response = await UserService.getUserProfile('@me')
+    if (response && response.data) {
+      const userProfile = response.data
+      // update the first name and last name for the users
+      const updateProfile:KCUserProfile = {
+        ...state.currentUser,
+        lastName: response.data.lastname,
+        firstName: userProfile.firstname
       }
-      return this.pendingApprovalCount
-    },
-    async syncCurrentAccount (userSetting: UserSettings): Promise<UserSettings> {
-      this.currentAccount = userSetting
-      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(userSetting))
-      return this.currentAccount
-    },
-    async syncUserProfile () : Promise<KCUserProfile> {
-      // TODO improve the logic of not fetching the first name last name every time of header mounted
+      state.currentUser = updateProfile
+      return state.currentUser
+    }
+  }
+
+  async function getCurrentUserProfile (isAuth = false): Promise<UserProfile> {
+    try {
       const response = await UserService.getUserProfile('@me')
-      if (response && response.data) {
-        const userProfile = response.data
-        // update the first name and last name for the users
-        const updateProfile:KCUserProfile = {
-          ...this.currentUser,
-          lastName: response.data.lastname,
-          firstName: userProfile.firstname
-        }
-        this.currentUser = updateProfile
-        return this.currentUser
-      }
-    },
-    async getCurrentUserProfile (isAuth = false): Promise<UserProfile> {
-      try {
-        const response = await UserService.getUserProfile('@me')
-        const userProfile = response?.data || {} as UserProfile
-        // This used to call the userStore setUserProfile if isAuth, we'll have to figure out a better way
-        // When we wire this up to auth later.
-        return userProfile
-      } catch (error) {
-        // for handling the 404 while first time user login in dir search
-        // redirect to auth-web for first time logins from other apps, even if user is 404
-        console.error('Error: ', error?.response)
-      }
-    },
-    async syncAccount () {
-      function getLastAccountId (): string {
-        const currentAccount = getAccountIdFromCurrentUrl()
-        const pathList = window.location.pathname.split('/')
-        const indexOfAccount = pathList.indexOf('account')
-        const nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
-        const orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
-        const storageAccountId = currentAccount ||
-          JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
-        return orgIdFromUrl || String(storageAccountId || '') || ''
-      }
-      const lastUsedAccount = getLastAccountId()
-      if (this.currentUser?.keycloakGuid) {
-        await this.syncUserSettings(lastUsedAccount)
-        ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
-      }
-    },
-    async updateUserProfile () : Promise<void> {
-      await UserService.updateUserProfile()
+      const userProfile = response?.data || {} as UserProfile
+      // This used to call the userStore setUserProfile if isAuth, we'll have to figure out a better way
+      // When we wire this up to auth later.
+      return userProfile
+    } catch (error) {
+      // for handling the 404 while first time user login in dir search
+      // redirect to auth-web for first time logins from other apps, even if user is 404
+      console.error('Error: ', error?.response)
     }
+  }
+
+  async function syncAccount () {
+    function getLastAccountId (): string {
+      const currentAccount = getAccountIdFromCurrentUrl()
+      const pathList = window.location.pathname.split('/')
+      const indexOfAccount = pathList.indexOf('account')
+      const nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
+      const orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
+      const storageAccountId = currentAccount ||
+        JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
+      return orgIdFromUrl || String(storageAccountId || '') || ''
+    }
+    const lastUsedAccount = getLastAccountId()
+    if (state.currentUser?.keycloakGuid) {
+      await syncUserSettings(lastUsedAccount)
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(state.currentAccount || ''))
+    }
+  }
+
+  async function updateUserProfile () : Promise<void> {
+    await UserService.updateUserProfile()
+  }
+
+  return {
+    state,
+    accountName,
+    switchableAccounts,
+    username,
+    loadUserInfo,
+    syncUserSettings,
+    syncCurrentAccount,
+    syncUserProfile,
+    getCurrentUserProfile,
+    syncAccount,
+    updateUserProfile,
+    fetchPendingApprovalCount
   }
 })
