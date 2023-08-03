@@ -4,7 +4,7 @@ import { SessionStorageKeys } from '@/util/constants'
 import KeycloakServices from '@/services/keycloak.services'
 import { defineStore } from 'pinia'
 import { AuthStateIF } from '@/interfaces'
-import { computed, reactive, toRefs } from 'vue'
+import { computed, reactive } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const state = reactive<AuthStateIF>({
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    ...toRefs(state),
+    state,
     isAuthenticated,
     keycloakGuid,
     currentLoginSource,

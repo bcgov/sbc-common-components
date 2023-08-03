@@ -2,7 +2,7 @@ import { Products } from '@/models/product'
 import ProductService from '@/services/product.services'
 import { ProductsStateIF } from '@/interfaces/product-state-interface'
 import { defineStore } from 'pinia'
-import { reactive, toRefs } from 'vue'
+import { reactive } from 'vue'
 
 export const useProductsStore = defineStore('product', () => {
   const state = reactive<ProductsStateIF>({
@@ -16,7 +16,7 @@ export const useProductsStore = defineStore('product', () => {
     }
   }
   return {
-    ...toRefs(state),
+    state,
     syncProducts
   }
 })

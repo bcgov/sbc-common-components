@@ -9,7 +9,7 @@ import { AccountStateIF } from '@/interfaces'
 import { KCUserProfile } from '@/models/KCUserProfile'
 import { UserSettings } from '@/models/userSettings'
 import { UserProfile } from '@/models/UserProfile'
-import { computed, reactive, toRefs } from 'vue'
+import { computed, reactive } from 'vue'
 
 export const useAccountStore = defineStore('account', () => {
   const state = reactive<AccountStateIF>({
@@ -117,7 +117,7 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   return {
-    ...toRefs(state),
+    state,
     accountName,
     switchableAccounts,
     username,
