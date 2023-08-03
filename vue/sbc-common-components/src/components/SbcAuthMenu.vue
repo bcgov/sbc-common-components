@@ -53,7 +53,7 @@ const loginOptions = [
 ]
 
 // local variables
-const currentAccount = computed(() => accountStore.state.currentAccount)
+const currentAccount = computed(() => accountStore.currentAccount)
 const isBceid = computed(() => currentLoginSource?.value === LoginSource.BCEID)
 
 onMounted(async () => {

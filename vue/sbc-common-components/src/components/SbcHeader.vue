@@ -421,10 +421,10 @@ const disableBCEIDMultipleAccount = computed(() =>
 const isWhatsNewOpen = computed(() => LaunchDarklyService.getFlag(LDFlags.WhatsNew) as boolean || false)
 const showTransactions = computed(() => {
   return [Account.PREMIUM, Account.SBC_STAFF, Account.STAFF]
-    .includes(accountStore.state.currentAccount?.accountType as Account)
+    .includes(accountStore.currentAccount?.accountType as Account)
 })
-const isStaff = computed(() => accountStore.state.currentUser?.roles?.includes(Role.Staff) as boolean || false)
-const isGovmUser = computed(() => accountStore.state.currentUser?.roles?.includes(Role.GOVMAccountUser) as boolean ||
+const isStaff = computed(() => accountStore.currentUser?.roles?.includes(Role.Staff) as boolean || false)
+const isGovmUser = computed(() => accountStore.currentUser?.roles?.includes(Role.GOVMAccountUser) as boolean ||
   false)
 const isBcscOrBceid = computed(
   () => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(authStore.currentLoginSource) >= 0)
@@ -481,34 +481,34 @@ const goToCreateBCSCAccount = () => {
   redirectToPath(props.inAuth, redirectUrl)
 }
 const goToAccountInfo = async (settings: UserSettings) => {
-  if (!accountStore.state.currentAccount || !settings) {
+  if (!accountStore.currentAccount || !settings) {
     return
   }
   await accountStore.syncCurrentAccount(settings)
   redirectToPath(props.inAuth,
-    `${Pages.ACCOUNT}/${accountStore.state.currentAccount?.id}/${Pages.SETTINGS}/account-info`)
+    `${Pages.ACCOUNT}/${accountStore.currentAccount?.id}/${Pages.SETTINGS}/account-info`)
 }
 const goToTeamMembers = () => {
-  if (!accountStore.state.currentAccount) {
+  if (!accountStore.currentAccount) {
     return
   }
   redirectToPath(props.inAuth,
-    `${Pages.ACCOUNT}/${accountStore.state.currentAccount?.id}/${Pages.SETTINGS}/team-members`)
+    `${Pages.ACCOUNT}/${accountStore.currentAccount?.id}/${Pages.SETTINGS}/team-members`)
 }
 const goToTransactions = () => {
-  if (!accountStore.state.currentAccount) {
+  if (!accountStore.currentAccount) {
     return
   }
   redirectToPath(props.inAuth,
-    `${Pages.ACCOUNT}/${accountStore.state.currentAccount.id}/${Pages.SETTINGS}/transactions`)
+    `${Pages.ACCOUNT}/${accountStore.currentAccount.id}/${Pages.SETTINGS}/transactions`)
 }
 const checkAccountStatus = async () => {
   // redirect if accoutn status is suspended
   if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(
-    status => status === accountStore.state.currentAccount?.accountStatus)
+    status => status === accountStore.currentAccount?.accountStatus)
   ) {
     redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
-  } else if (accountStore.state.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
+  } else if (accountStore.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
     const targetPath = window.location.pathname
     const substringCheck = (element:string) => targetPath.indexOf(element) > -1
     // check if any of the url is the allowed uri
@@ -551,19 +551,19 @@ const login = (idpHint: string): void => {
 }
 const closeNotificationPanel = async (): Promise<void> => {
   notificationPanel.value = false
-  if (notificationStore.state.notificationUnreadCount > 0) {
+  if (notificationStore.notificationUnreadCount > 0) {
     await notificationStore.markAsRead()
   }
 }
 
 const isAuthenticated = computed(() => authStore.isAuthenticated)
-const notificationCount = computed(() => notificationStore.state.notificationCount)
-const notificationUnreadCount = computed(() => notificationStore.state.notificationUnreadCount)
-const notificationUnreadPriorityCount = computed(() => notificationStore.state.notificationUnreadPriorityCount)
-const pendingApprovalCount = computed(() => accountStore.state.pendingApprovalCount)
+const notificationCount = computed(() => notificationStore.notificationCount)
+const notificationUnreadCount = computed(() => notificationStore.notificationUnreadCount)
+const notificationUnreadPriorityCount = computed(() => notificationStore.notificationUnreadPriorityCount)
+const pendingApprovalCount = computed(() => accountStore.pendingApprovalCount)
 const username = computed(() => accountStore.username)
 const accountName = computed(() => accountStore.accountName)
-const currentAccount = computed(() => accountStore.state.currentAccount)
+const currentAccount = computed(() => accountStore.currentAccount)
 const switchableAccounts = computed(() => accountStore.switchableAccounts)
 
 watch(() => authStore.isAuthenticated, async (val) => {

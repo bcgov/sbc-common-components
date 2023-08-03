@@ -4,7 +4,7 @@ import ConfigHelper from '@/util/config-helper'
 import { SessionStorageKeys } from '@/util/constants'
 import { defineStore } from 'pinia'
 import { NotificationStateIF } from '@/interfaces/notification-state-interface'
-import { reactive } from 'vue'
+import { reactive, toRefs } from 'vue'
 
 export const useNotificationStore = defineStore('notification', () => {
   const state = reactive<NotificationStateIF>({
@@ -55,7 +55,7 @@ export const useNotificationStore = defineStore('notification', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     syncNotifications,
     fetchNotificationCount,
     fetchNotificationUnreadPriorityCount,
