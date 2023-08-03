@@ -8,6 +8,7 @@ describe('SbcSystemBanner', () => {
     const message = 'This is a test message'
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: message,
         show: true,
         dismissible: true,
@@ -23,6 +24,7 @@ describe('SbcSystemBanner', () => {
   it('displays the close icon when dismissible is true', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: 'this is a test',
         show: true,
         dismissible: true,
@@ -39,6 +41,7 @@ describe('SbcSystemBanner', () => {
   it('does not display the close icon when dismissible is false', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: 'this is a test',
         show: true,
         dismissible: false,
@@ -56,6 +59,7 @@ describe('SbcSystemBanner', () => {
     const type = 'success'
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: 'this is a test',
         show: true,
         dismissible: true,
@@ -71,6 +75,7 @@ describe('SbcSystemBanner', () => {
   it('shows the banner when show is true', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: 'this is a test',
         show: true,
         dismissible: true,
@@ -86,6 +91,7 @@ describe('SbcSystemBanner', () => {
   it('hides the banner when show is false', () => {
     const wrapper = mount(SbcSystemBanner, {
       props: {
+        icon: 'mdi-information',
         message: 'this is a test',
         show: false,
         dismissible: true,
