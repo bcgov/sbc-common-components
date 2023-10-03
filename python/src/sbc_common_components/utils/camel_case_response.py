@@ -42,6 +42,12 @@ def camelcase(string):
 def camelcase_dict(data: Dict[str, any], camel_dict: Dict[str, any]):
     """Iterate through the dict and convert to camel case."""
     if data:
+        # Handle the scenario where we aren't a dict
+        if isinstance(data, list):
+            list_result = []
+            for item in data:
+                list_result.append(camelcase_dict(item, {}))
+            return list_result
         for key, value in data.items():
             key = camelcase(key)
             if isinstance(value, dict):
