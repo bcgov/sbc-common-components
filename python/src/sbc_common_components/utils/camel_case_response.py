@@ -39,7 +39,7 @@ def camelcase(string):
     ])
 
 
-def camelcase_dict(data: Dict[str, any], camel_dict: Dict[str, any]):
+def camelcase_dict(data, camel_dict: Dict[str, any]):
     """Iterate through the dict and convert to camel case."""
     if data:
         # Handle the scenario where we aren't a dict
