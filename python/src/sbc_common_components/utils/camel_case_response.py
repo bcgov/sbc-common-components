@@ -44,10 +44,7 @@ def camelcase_dict(data, camel_dict: Dict[str, any]):
     if data:
         # Handle the scenario where we aren't a dict
         if isinstance(data, list):
-            list_result = []
-            for item in data:
-                list_result.append(camelcase_dict(item, {}))
-            return list_result
+            return [camelcase_dict(item, {}) for item in data]
         for key, value in data.items():
             key = camelcase(key)
             if isinstance(value, dict):
