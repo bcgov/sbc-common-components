@@ -411,7 +411,7 @@ export default defineComponent({
       list-style-type: none;
     }
 
-    ::v-deep .v-btn__content {
+    :deep(.v-btn__content) {
       align-items: flex-start;
     }
 
