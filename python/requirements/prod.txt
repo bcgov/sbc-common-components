@@ -1,5 +1,5 @@
 flask
 Flask-SQLAlchemy
 flask-jwt-oidc>=0.1.5
-Flask-OpenTracing
+Flask-OpenTracing==1.1.0
 jaeger-client
