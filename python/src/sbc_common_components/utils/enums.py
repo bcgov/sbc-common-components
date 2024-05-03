@@ -19,7 +19,6 @@ class QueueMessageTypes(Enum):
     CGI_FEEDBACK_MESSAGE_TYPE = 'bc.registry.payment.cgi.FEEDBACKReceived'
     DIRSEARCH_BUSINESS_INVITATION = 'bc.registry.auth.dirsearchBusinessInvitation'
     EFT_AVAILABLE_NOTIFICATION = 'bc.registry.payment.eftAvailableNotification'
-    EFT_AVAILABLE_NOTIFICATION = 'bc.registry.payment.eftAvailableNotification'
     EFT_FILE_UPLOADED = 'bc.registry.payment.eft.fileUploaded'
     EJV_FAILED = 'bc.registry.payment.ejvFailed'
     GOVM_APPROVED_NOTIFICATION = 'bc.registry.auth.govmApprovedNotification'
