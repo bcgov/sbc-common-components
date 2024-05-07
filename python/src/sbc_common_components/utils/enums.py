@@ -32,6 +32,7 @@ class QueueMessageTypes(Enum):
     MEMBERSHIP_APPROVED_NOTIFICATION = 'bc.registry.auth.membershipApprovedNotification'
     MEMBERSHIP_APPROVED_NOTIFICATION_FOR_BCEID = 'bc.registry.auth.membershipApprovedNotificationForBceid'
     NAMES_EVENT = 'bc.registry.names.events'
+    NAMES_MESSAGE_TYPE = 'bc.registry.names.request'
     NON_BCSC_ORG_APPROVED = 'bc.registry.auth.nonbcscOrgApprovedNotification'
     NON_BCSC_ORG_REJECTED = 'bc.registry.auth.nonbcscOrgRejectedNotification'
     NSF_LOCK_ACCOUNT = 'bc.registry.payment.lockAccount'
@@ -63,4 +64,3 @@ class QueueMessageTypes(Enum):
     STATEMENT_NOTIFICATION = 'bc.registry.payment.statementNotification'
     TEAM_MEMBER_INVITED = 'bc.registry.auth.teamMemberInvited'
     TEAM_MODIFIED = 'bc.registry.auth.teamModified'
-
