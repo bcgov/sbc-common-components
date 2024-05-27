@@ -464,8 +464,9 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
 
   @Watch
   get alertColor(): string {
-    switch (this.environment) {
+    switch (this.environment.toUpperCase()) {
       case 'DEV':
+      case 'DEVELOPMENT':
         return 'success';
       case 'TEST':
         return 'error';
