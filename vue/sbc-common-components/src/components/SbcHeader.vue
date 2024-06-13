@@ -1,20 +1,23 @@
 <template>
   <div class="d-flex">
     <header class="app-header" id="appHeader">
-      <v-container class="justify-space-between">
-        <a @click="goToHome()" class="brand">
-          <picture>
-            <source media="(min-width: 601px)"
-              srcset="../assets/img/gov_bc_logo_horiz.png">
-            <source media="(max-width: 600px)"
-              srcset="../assets/img/gov_bc_logo_vert.png">
-            <img class="brand__image"
-              src="../assets/img/gov_bc_logo_vert.png"
-              alt="Government of British Columbia Logo"
-              title="Government of British Columbia">
-          </picture>
-          <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
-        </a>
+      <v-container class="justify-space-between"> 
+        <!-- Group for logo and alert -->
+        <div class="header-group d-flex align-center"> 
+          <!-- Brand/logo link -->
+          <a @click="goToHome()" class="brand d-flex align-center">
+            <picture>
+              <source media="(min-width: 601px)" srcset="../assets/img/gov_bc_logo_horiz.png">
+              <source media="(max-width: 600px)" srcset="../assets/img/gov_bc_logo_vert.png">
+              <img class="brand__image" src="../assets/img/gov_bc_logo_vert.png" alt="Government of British Columbia Logo" title="Government of British Columbia">
+            </picture>
+            <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
+          </a>
+          <!-- Environment Alert -->
+          <v-alert v-if="environment" :color="alertColor" dense class="env-distinction"> 
+            {{environment}} Environment
+          </v-alert>
+        </div>
         <div v-if="showActions" class="app-header__actions">
 
           <!-- Product Selector -->
@@ -439,6 +442,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: true }) showActions!: boolean;
   @Prop({ default: true }) showLoginMenu!: boolean;
   @Prop({ default: '' }) dashboardReturnUrl !: string;
+  @Prop({ default: '' }) environment!: string;
 
   private readonly loginOptions = [
     {
@@ -457,6 +461,22 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       icon: 'mdi-account-group-outline'
     }
   ]
+
+  @Watch
+  get alertColor(): string {
+    switch (this.environment.toUpperCase()) {
+      case 'DEV':
+      case 'DEVELOPMENT':
+        return 'success';
+      case 'TEST':
+        return 'error';
+      case 'SANDBOX':
+        return 'warning';
+      default:
+        this.environment = ''
+        return '';
+    }
+  }
 
   // only for internal staff who belongs to bcreg
   get isStaff (): boolean {
@@ -667,6 +687,12 @@ $app-header-font-color: #ffffff;
     padding-top: 0;
     padding-bottom: 0;
   }
+}
+
+.env-distinction {
+  padding: 0px 10px; 
+  font-size: 0.875rem; 
+  margin: 0;
 }
 
 .brand {

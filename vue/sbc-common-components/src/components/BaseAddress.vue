@@ -199,7 +199,7 @@ export default class BaseAddress extends Mixins(ValidationMixin, CountriesProvin
   @Prop({ default: false })
   readonly noPoBox: boolean
 
-  resetRegion() {
+  resetRegion () {
     this.addressLocal['addressRegion'] = ''
   }
 
