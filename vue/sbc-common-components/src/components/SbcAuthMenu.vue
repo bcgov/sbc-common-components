@@ -47,7 +47,7 @@ const { getContextPath, redirectToPath } = useNavigation()
 
 // constants
 const loginOptions = [
-  { idpHint: IdpHint.BCSC, option: 'BC Services Card', icon: 'mdi-account-card-details-outline' },
+  { idpHint: IdpHint.BCSC, option: 'BC Services Card', icon: 'mdi-card-account-details-outline' },
   { idpHint: IdpHint.BCEID, option: 'BCeID', icon: 'mdi-two-factor-authentication' },
   { idpHint: IdpHint.IDIR, option: 'IDIR', icon: 'mdi-account-group-outline' }
 ]
