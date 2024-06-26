@@ -15,7 +15,7 @@
           >
             <v-img
               max-height="260"
-              src="../../src/assets/img/BCReg_Generic_Login_image.jpg"
+              src="@sbc/assets/img/BCReg_Generic_Login_image.jpg"
               alt="Generic Login Image"
             />
           </v-card-title>

@@ -167,7 +167,7 @@ const login = (idpHint: string) => {
   margin:8px 32px 8px 0px;
 }
 
-.v-card-title.body-2 {
+.v-card-title.text-body-2 {
   font-size: 0.875rem !important;
   font-family: "BCSans"!important;
   font-size: .875rem!important;
