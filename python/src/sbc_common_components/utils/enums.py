@@ -22,6 +22,7 @@ class QueueMessageTypes(Enum):
     EFT_FILE_UPLOADED = 'bc.registry.payment.eft.fileUploaded'
     EFT_INVOICE_CREATED = 'bc.registry.payment.eft.invoiceCreated'
     EJV_FAILED = 'bc.registry.payment.ejvFailed'
+    CSV_FAILED = 'bc.registry.payment.csvFailed'
     GOVM_APPROVED_NOTIFICATION = 'bc.registry.auth.govmApprovedNotification'
     GOVM_BUSINESS_INVITATION = 'bc.registry.auth.govmBusinessInvitation'
     GOVM_MEMBER_INVITATION = 'bc.registry.auth.govmMemberInvitation'
