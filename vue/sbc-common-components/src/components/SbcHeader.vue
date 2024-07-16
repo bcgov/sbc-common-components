@@ -77,14 +77,14 @@
                   transition="slide-y-transition"
                   attach="#appHeader"
                 >
-                  <template #activator="{ props }">
+                  <template #activator="{ props: loginMenuProps }">
                     <v-btn
                       id="loginBtn"
                       size="large"
                       variant="text"
                       class="mx-1 pr-2 pl-3"
                       aria-label="log in"
-                      v-bind="props"
+                      v-bind="loginMenuProps"
                     >
                       <span>Log in</span>
                       <v-icon class="ml-1">
@@ -119,13 +119,13 @@
                   anchor="bottom"
                   transition="slide-y-transition"
                 >
-                  <template #activator="{ props }">
+                  <template #activator="{ props: authMenuProps }">
                     <v-btn
                       variant="text"
                       size="large"
                       class="mobile-icon-only mx-1 px-2"
                       aria-label="notifications"
-                      v-bind="props"
+                      v-bind="authMenuProps"
                     >
                       <v-icon>mdi-bell-outline</v-icon>
                       <v-badge
@@ -175,13 +175,13 @@
                   transition="slide-y-transition"
                   attach="#appHeader"
                 >
-                  <template #activator="{ props }">
+                  <template #activator="{ props: accountMenuProps }">
                     <v-btn
                       variant="text"
                       size="large"
                       class="user-account-btn"
                       aria-label="my account"
-                      v-bind="props"
+                      v-bind="accountMenuProps"
                     >
                       <v-avatar
                         tile
@@ -216,9 +216,8 @@
                     <!-- User Profile -->
                     <v-list
                       density="compact"
-                      lines="two"
                     >
-                      <v-list-item class="user-info">
+                      <v-list-item class="user-info mb-4 py-2">
                         <template #prepend>
                           <v-avatar
                             tile
@@ -242,8 +241,7 @@
                           {{ accountName }}
                         </v-list-item-subtitle>
                       </v-list-item>
-                    </v-list>
-                    <v-list density="compact">
+
                       <!-- BEGIN: Hide if authentication is IDIR -->
                       <v-list-item
                         v-if="isBcscOrBceid"
@@ -255,87 +253,91 @@
                       <v-list-item
                         prepend-icon="mdi-logout-variant"
                         title="Log out"
+                        tabindex="0"
                         @click="logout()"
                       />
-                    </v-list>
 
-                    <v-divider />
+                      <v-divider class="my-2" />
 
-                    <!-- Account Settings -->
-                    <v-list
-                      v-if="currentAccount"
-                      density="compact"
-                    >
-                      <v-list-subheader>ACCOUNT SETTINGS</v-list-subheader>
-                      <v-list-item
-                        prepend-icon="mdi-information-outline"
-                        title="Account Info"
-                        @click="goToAccountInfo(currentAccount)"
-                      />
-                      <v-list-item
-                        prepend-icon="mdi-account-group-outline"
-                        title="Team Members"
-                        @click="goToTeamMembers()"
-                      />
-                      <v-list-item
-                        v-if="showTransactions"
-                        prepend-icon="mdi-file-document-outline"
-                        title="Transactions"
-                        @click="goToTransactions()"
-                      />
-                    </v-list>
-
-                    <v-divider />
-
-                    <!-- Switch Account -->
-                    <div v-if="!isStaff ">
-                      <v-list
-                        v-if="switchableAccounts.length > 1"
-                        class="switch-account"
-                        density="compact"
-                      >
-                        <v-list-subheader>SWITCH ACCOUNT</v-list-subheader>
-                        <v-list-item
-                          v-for="(settings, id) in switchableAccounts"
-                          :key="id"
-                          :class="{ 'v-list-item--active': settings.id === currentAccount.id }"
-                          color="primary"
-                          :title="settings.label"
-                          @click="switchAccount(settings, inAuth)"
+                      <!-- Account Settings -->
+                      <template v-if="currentAccount">
+                        <v-list-subheader
+                          class="mt-2"
                         >
-                          <template #prepend>
-                            <v-icon
-                              v-if="settings.id === currentAccount.id"
-                              :class="settings.additionalLabel ? 'mt-n4' : ''"
-                              color="primary"
-                            >
-                              mdi-check
-                            </v-icon>
-                          </template>
-                          <v-list-item-subtitle
-                            v-if="settings.additionalLabel"
-                            class="font-italic"
-                            :class="{'primary--text' : settings.id === currentAccount.id}"
-                          >
-                            {{ `- ${settings.additionalLabel}` }}
-                          </v-list-item-subtitle>
-                        </v-list-item>
-                      </v-list>
-
-                      <v-divider />
-
-                      <!-- Create a New Account -->
-                      <v-list
-                        v-if="canCreateAccount"
-                        density="compact"
-                      >
+                          ACCOUNT SETTINGS
+                        </v-list-subheader>
                         <v-list-item
-                          prepend-icon="mdi-plus"
-                          title="Create account"
-                          @click="goToCreateBCSCAccount()"
+                          prepend-icon="mdi-information-outline"
+                          title="Account Info"
+                          tabindex="0"
+                          @click="goToAccountInfo(currentAccount)"
                         />
-                      </v-list>
-                    </div>
+                        <v-list-item
+                          prepend-icon="mdi-account-group-outline"
+                          title="Team Members"
+                          tabindex="0"
+                          @click="goToTeamMembers()"
+                        />
+                        <v-list-item
+                          v-if="showTransactions"
+                          prepend-icon="mdi-file-document-outline"
+                          title="Transactions"
+                          tabindex="0"
+                          @click="goToTransactions()"
+                        />
+                      </template>
+
+                      <!-- Switch Account -->
+                      <template v-if="!isStaff">
+                        <v-divider class="mt-2" />
+                        <span
+                          v-if="switchableAccounts.length > 1"
+                          class="switch-account d-block pt-3"
+                        >
+                          <v-list-subheader>SWITCH ACCOUNT</v-list-subheader>
+                          <v-list-item
+                            v-for="(settings, id) in switchableAccounts"
+                            :key="id"
+                            :class="{ 'v-list-item--active': settings.id === currentAccount.id }"
+                            color="primary"
+                            :title="settings.label"
+                            tabindex="0"
+                            @click="switchAccount(settings, inAuth)"
+                          >
+                            <template #prepend>
+                              <v-icon
+                                v-if="settings.id === currentAccount.id"
+                                :class="settings.additionalLabel ? 'mt-n4' : ''"
+                                color="primary"
+                              >
+                                mdi-check
+                              </v-icon>
+                            </template>
+                            <v-list-item-subtitle
+                              v-if="settings.additionalLabel"
+                              class="font-italic"
+                              :class="{'primary--text' : settings.id === currentAccount.id}"
+                            >
+                              {{ `- ${settings.additionalLabel}` }}
+                            </v-list-item-subtitle>
+                          </v-list-item>
+                        </span>
+
+                        <v-divider class="mb-2" />
+
+                        <!-- Create a New Account -->
+                        <template
+                          v-if="canCreateAccount"
+                        >
+                          <v-list-item
+                            prepend-icon="mdi-plus"
+                            title="Create account"
+                            tabindex="0"
+                            @click="goToCreateBCSCAccount()"
+                          />
+                        </template>
+                      </template>
+                    </v-list>
                   </v-card>
                 </v-menu>
 
@@ -343,6 +345,7 @@
                   v-if="!isAuthenticated"
                   variant="text"
                   size="large"
+                  tabindex="0"
                   @click="goToCreateAccount()"
                 >
                   Create Account
@@ -625,8 +628,8 @@ $app-header-font-color: #ffffff;
 .white-text {
   color: white;
 }
-.switch-account{
-  height:42vh;
+.switch-account {
+  height: 42vh;
   overflow-y: scroll;
 
 }
@@ -751,4 +754,26 @@ $app-header-font-color: #ffffff;
     max-width: 22rem;
   }
 }
+
+@mixin focus-visible-style($outline-offset: 2px, $border-radius: null) {
+  outline: 2px solid #003366;
+  box-shadow: 0 0 0 2px #fff;
+  outline-offset: $outline-offset;
+  transition: none;
+
+  // Only apply border-radius if a value is provided
+  @if $border-radius != null {
+    border-radius: $border-radius;
+  }
+}
+
+.v-btn:focus-visible {
+  @include focus-visible-style(2px);
+  z-index: 1;
+}
+
+.v-list-item:focus-visible {
+  @include focus-visible-style(-2px, 4px);
+}
+
 </style>
