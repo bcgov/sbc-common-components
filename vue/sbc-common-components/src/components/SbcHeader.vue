@@ -10,9 +10,10 @@
           no-gutters
           style="align-items: center"
         >
-          <v-col>
+          <v-col class="d-flex">
             <a
               class="brand"
+              href="#"
               @click="goToHome()"
             >
               <picture>
