@@ -688,6 +688,10 @@ $app-header-font-color: #ffffff;
     padding-top: 0;
     padding-bottom: 0;
   }
+
+  .app-header__actions {
+    display: flex;
+  }
 }
 
 .env-distinction {
