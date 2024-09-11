@@ -582,11 +582,12 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/transactions`)
   }
 
-  private checkAccountStatus () {
+  async checkAccountStatus () {
     // redirect if accoutn status is suspended
     if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(status => status === this.currentAccount?.accountStatus)) {
       // Avoid redirecting when navigating back from PAYBC for NSF.
-      if (window.location.pathname.indexOf('return-cc-payment') === -1) {
+      if (window.location.pathname.indexOf('return-cc-payment') === -1 &&
+          window.location.pathname.indexOf('signout') === -1) {
         this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
       }
     } else if (this.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
