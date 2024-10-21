@@ -2,7 +2,8 @@ import { SessionStorageKeys } from './constants'
 import { trimTrailingSlashURL } from './common-util'
 
 export default class ConfigHelper {
-  static keycloakConfigUrl: string = ''
+  static keycloakConfigUrl = ''
+
   static addToSession (key: string, value: any): void {
     sessionStorage.setItem(key, value)
   }
