@@ -35,7 +35,7 @@ class KeyCloakService {
     this.clearSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
-    this.kc = Keycloak(keycloakConfig)
+    this.kc = new Keycloak(keycloakConfig)
     const kcLogin = this.kc.login
     this.kc.login = (options?: KeycloakLoginOptions) => {
       if (options) {
