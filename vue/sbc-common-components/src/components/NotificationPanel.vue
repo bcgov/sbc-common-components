@@ -13,7 +13,7 @@
         flat
         outlined
       >
-        <v-toolbar-title class="toolbar-title">What's New at BC Registries</v-toolbar-title>
+        <v-toolbar-title class="toolbar-title">What's New at Service BC Connect</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
           icon
