@@ -192,6 +192,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
 
           // if not from the sbc-auth, do the checks and redirect to sbc-auth
           if (!this.inAuth) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Not from sbc-auth. Checking account status')
             // redirect to create account page if the user has no 'account holder' role
             const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
@@ -199,9 +200,11 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
             const currentUser = await this.getCurrentUserProfile(this.inAuth)
 
             if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
+              // eslint-disable-next-line no-console
               console.log('[SignIn.vue]Redirecting. TOS not accepted')
               this.redirectToPath(this.inAuth, Pages.USER_PROFILE_TERMS)
             } else if (isRedirectToCreateAccount) {
+              // eslint-disable-next-line no-console
               console.log('[SignIn.vue]Redirecting. No Valid Role')
               switch (userInfo.loginSource) {
                 case LoginSource.BCSC:
