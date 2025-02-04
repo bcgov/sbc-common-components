@@ -80,9 +80,11 @@ export default class SbcSignin extends NavigationMixin {
           const currentUser = await this.getCurrentUserProfile(this.inAuth)
 
           if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Redirecting. TOS not accepted')
             this.redirectToPath(this.inAuth, Pages.USER_PROFILE_TERMS)
           } else if (isRedirectToCreateAccount) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Redirecting. No Valid Role')
             switch (userInfo.loginSource) {
               case LoginSource.BCSC:
