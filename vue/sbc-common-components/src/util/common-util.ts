@@ -5,7 +5,7 @@ import { SessionStorageKeys, ACCOUNT_ID } from './constants'
  * Place to put all the custom utility methods
  */
 export function getBoolean (value: boolean | string | number): boolean {
-  var resultVal = value
+  let resultVal = value
   if (typeof value === 'string') {
     resultVal = value.toLowerCase()
   }
