@@ -1,25 +1,33 @@
-import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Products, ProductType } from '../../models/product'
 import ProductService from '../../services/product.services'
 
-@Module({
-  name: 'product',
-  namespaced: true
-})
-export default class ProductModule extends VuexModule {
-  products: Products = []
-  partners: Products = []
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-  @Mutation
-  public setProducts (products: Products) {
-    this.products = products
-  }
+Vue.use(Vuex)
 
-  @Action({ rawError: true, commit: 'setProducts' })
-  public async syncProducts () {
-    const response = await ProductService.getAllProducts()
-    if (response && response.data) {
-      return response.data?.sort((a, b) => a.name.localeCompare(b.name))
+const productModule = {
+  namespaced: true,
+  state: {
+    products: [],
+    partners: []
+  },
+  mutations: {
+    setProducts(state, products) {
+      state.products = products
+    }
+  },
+  actions: {
+    async syncProducts({ commit }) {
+      try {
+        const response = await ProductService.getAllProducts()
+        if (response && response.data) {
+          commit('setProducts', response.data.sort((a, b) => a.name.localeCompare(b.name)))
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error)
+      }
     }
   }
 }
+
+export default productModule

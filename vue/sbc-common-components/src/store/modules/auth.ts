@@ -1,72 +1,59 @@
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import ConfigHelper from '../../util/config-helper'
 import KeycloakServices from '../../services/keycloak.services'
 import { SessionStorageKeys } from '../../util/constants'
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-@Module({
-  name: 'auth',
-  namespaced: true
-})
-export default class AuthModule extends VuexModule {
-  token: string = ''
-  idToken: string = ''
-  refreshToken: string = ''
-  kcGuid: string = ''
-  loginSource: string = ''
+Vue.use(Vuex)
 
-  get isAuthenticated (): boolean {
-    return !!this.token
-  }
-
-  get keycloakGuid (): string {
-    return this.kcGuid || KeycloakServices.getUserInfo().keycloakGuid
-  }
-
-  get currentLoginSource (): string {
-    return this.loginSource || KeycloakServices.getUserInfo().loginSource
-  }
-
-  @Mutation
-  public setKCToken (token: string): void {
-    this.token = token
-    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakToken, token)
-  }
-
-  @Mutation
-  public setIDToken (idToken: string): void {
-    this.idToken = idToken
-    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakIdToken, idToken)
-  }
-
-  @Mutation
-  public setRefreshToken (refreshToken: string): void {
-    this.refreshToken = refreshToken
-    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakRefreshToken, refreshToken)
-  }
-
-  @Mutation
-  public setKCGuid (kcGuid: string): void {
-    this.kcGuid = kcGuid
-  }
-
-  @Mutation
-  public setLoginSource (loginSource: string): void {
-    this.loginSource = loginSource
-  }
-
-  @Action({ rawError: true })
-  public clearSession (): void {
-    this.context.commit('setKCToken', '')
-    this.context.commit('setIDToken', '')
-    this.context.commit('setRefreshToken', '')
-    this.context.commit('setKCGuid', '')
-    this.context.commit('setLoginSource', '')
-  }
-
-  @Action({ rawError: true })
-  public syncWithSessionStorage (): void {
-    this.context.commit('setKCToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || '')
-    this.context.commit('setIDToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || '')
-    this.context.commit('setRefreshToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || '')
+const authModule = {
+  namespaced: true,
+  state: {
+    token: '',
+    idToken: '',
+    refreshToken: '',
+    kcGuid: '',
+    loginSource: ''
+  },
+  getters: {
+    isAuthenticated: state => !!state.token,
+    keycloakGuid: state => state.kcGuid || KeycloakServices.getUserInfo().keycloakGuid,
+    currentLoginSource: state => state.loginSource || KeycloakServices.getUserInfo().loginSource
+  },
+  mutations: {
+    setKCToken(state, token) {
+      state.token = token
+      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakToken, token)
+    },
+    setIDToken(state, idToken) {
+      state.idToken = idToken
+      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakIdToken, idToken)
+    },
+    setRefreshToken(state, refreshToken) {
+      state.refreshToken = refreshToken
+      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakRefreshToken, refreshToken)
+    },
+    setKCGuid(state, kcGuid) {
+      state.kcGuid = kcGuid
+    },
+    setLoginSource(state, loginSource) {
+      state.loginSource = loginSource
+    }
+  },
+  actions: {
+    clearSession({ commit }) {
+      commit('setKCToken', '')
+      commit('setIDToken', '')
+      commit('setRefreshToken', '')
+      commit('setKCGuid', '')
+      commit('setLoginSource', '')
+    },
+    syncWithSessionStorage({ commit }) {
+      commit('setKCToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || '')
+      commit('setIDToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || '')
+      commit('setRefreshToken', ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || '')
+    }
   }
 }
+
+export default authModule

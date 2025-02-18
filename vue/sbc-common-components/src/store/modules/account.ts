@@ -8,148 +8,90 @@ import ConfigHelper from '../../util/config-helper'
 import { SessionStorageKeys, LoginSource, Role } from '../../util/constants'
 import UserService from '../../services/user.services'
 import { getAccountIdFromCurrentUrl } from '../../util/common-util'
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-@Module({
-  name: 'account',
-  namespaced: true
-})
-export default class AccountModule extends VuexModule {
-  userSettings: UserSettings[] = []
-  currentAccount: UserSettings | null = null
-  currentAccountMembership: Member | null = null
-  pendingApprovalCount = 0
-  currentUser: KCUserProfile | null = null
+Vue.use(Vuex)
 
-  get accountName () {
-    return this.currentAccount && this.currentAccount.label
-  }
-
-  get switchableAccounts () {
-    return this.userSettings && this.userSettings.filter(setting => setting.type === 'ACCOUNT')
-  }
-
-  get username (): string {
-    return `${this.currentUser?.firstName || '-'} ${this.currentUser?.lastName || ''}`
-  }
-
-  @Mutation
-  public setCurrentUser (currentUser: KCUserProfile) {
-    this.currentUser = currentUser
-  }
-
-  @Mutation
-  public setUserSettings (userSetting: UserSettings[]): void {
-    this.userSettings = userSetting
-  }
-
-  @Mutation
-  public setCurrentAccount (userSetting: UserSettings): void {
-    ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(userSetting))
-    this.currentAccount = userSetting
-  }
-
-  @Mutation
-  public setPendingApprovalCount (count: number): void {
-    this.pendingApprovalCount = count
-  }
-
-  @Mutation
-  public setCurrentAccountMembership (membership: Member): void {
-    this.currentAccountMembership = membership
-  }
-
-  @Action({ rawError: true, commit: 'setCurrentUser' })
-  public loadUserInfo () {
-    // Load User Info
-    return KeyCloakService.getUserInfo()
-  }
-
-  @Action({ rawError: true, commit: 'setUserSettings' })
-  public async syncUserSettings (currentAccountId: string): Promise<UserSettings[]> {
-    const response = await AccountService.getUserSettings(this.currentUser?.keycloakGuid)
-    if (response?.data) {
-      const orgs = response.data.filter(userSettings => (userSettings.type === 'ACCOUNT'))
-      const currentAccount = orgs.find(org => String(org.id) === currentAccountId)
-      // if passed account is not user account list setting first one as current account
-      this.context.commit('setCurrentAccount', currentAccount || orgs[0])
-      if (this.currentUser?.loginSource === LoginSource.BCSC || this.currentUser.roles.includes(Role.GOVMAccountUser)) {
-        await this.context.dispatch('fetchPendingApprovalCount')
+const accountModule = {
+  namespaced: true,
+  state: {
+    userSettings: [],
+    currentAccount: null,
+    currentAccountMembership: null,
+    pendingApprovalCount: 0,
+    currentUser: null
+  },
+  getters: {
+    accountName: state => state.currentAccount && state.currentAccount.label,
+    switchableAccounts: state => state.userSettings.filter(setting => setting.type === 'ACCOUNT'),
+    username: state => `${state.currentUser?.firstName || '-'} ${state.currentUser?.lastName || ''}`
+  },
+  mutations: {
+    setCurrentUser(state, currentUser) {
+      state.currentUser = currentUser
+    },
+    setUserSettings(state, userSettings) {
+      state.userSettings = userSettings
+    },
+    setCurrentAccount(state, userSetting) {
+      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(userSetting))
+      state.currentAccount = userSetting
+    },
+    setPendingApprovalCount(state, count) {
+      state.pendingApprovalCount = count
+    },
+    setCurrentAccountMembership(state, membership) {
+      state.currentAccountMembership = membership
+    }
+  },
+  actions: {
+    async loadUserInfo({ commit }) {
+      const userInfo = await KeyCloakService.getUserInfo()
+      commit('setCurrentUser', userInfo)
+    },
+    async syncUserSettings({ commit, dispatch, state }, currentAccountId) {
+      const response = await AccountService.getUserSettings(state.currentUser?.keycloakGuid)
+      if (response?.data) {
+        const orgs = response.data.filter(userSettings => userSettings.type === 'ACCOUNT')
+        const currentAccount = orgs.find(org => String(org.id) === currentAccountId) || orgs[0]
+        commit('setCurrentAccount', currentAccount)
+        if (state.currentUser?.loginSource === LoginSource.BCSC || state.currentUser.roles.includes(Role.GOVMAccountUser)) {
+          await dispatch('fetchPendingApprovalCount')
+        }
+        commit('setUserSettings', orgs)
       }
-      return orgs
-    }
-    return []
-  }
-
-  @Action({ rawError: true, commit: 'setPendingApprovalCount' })
-  public async fetchPendingApprovalCount (): Promise<number> {
-    if (this.context.rootState.account?.currentAccount?.id) {
-      const response = await AccountService.getPendingMemberCount(this.context.rootState.account.currentAccount.id, this.currentUser?.keycloakGuid)
-      return (response && response.data && response.data.count) || 0
-    } else {
-      return 0
-    }
-  }
-
-  @Action({ rawError: true, commit: 'setCurrentAccount' })
-  public async syncCurrentAccount (userSetting: UserSettings): Promise<UserSettings> {
-    return userSetting
-  }
-
-  @Action({ rawError: true, commit: 'setCurrentUser' })
-  public async syncUserProfile () {
-    // TODO improve the logic of not fetching the first name last name every time of header mounted
-    const response = await UserService.getUserProfile('@me')
-    if (response && response.data) {
-      const userProfile = response.data
-      // update the first name and last name for the users
-      const updateProfile:KCUserProfile = {
-        ...this.currentUser,
-        lastName: response.data.lastname,
-        firstName: userProfile.firstname
+    },
+    async fetchPendingApprovalCount({ commit, rootState, state }) {
+      if (rootState.account?.currentAccount?.id) {
+        const response = await AccountService.getPendingMemberCount(rootState.account.currentAccount.id, state.currentUser?.keycloakGuid)
+        commit('setPendingApprovalCount', response?.data?.count || 0)
+      } else {
+        commit('setPendingApprovalCount', 0)
       }
-      return updateProfile
-    }
-  }
-
-  @Action({ rawError: true })
-  public async getCurrentUserProfile (isAuth: boolean = false) {
-    try {
+    },
+    async syncUserProfile({ commit, state }) {
       const response = await UserService.getUserProfile('@me')
-      const userProfile = response?.data || {}
-      if (isAuth) {
-        this.context.commit('user/setUserProfile', userProfile, { root: true })
+      if (response?.data) {
+        commit('setCurrentUser', {
+          ...state.currentUser,
+          lastName: response.data.lastname,
+          firstName: response.data.firstname
+        })
       }
-      return userProfile
-    } catch (error) {
-      // for handling the 404 while first time user login in dir search
-      // redirect to auth-web for first time logins from other apps, even if user is 404
-      // @ts-ignore - allow response of error
-      console.error('Error: ', error?.response)
+    },
+    async syncAccount({ dispatch, state }) {
+      const lastUsedAccount = getAccountIdFromCurrentUrl() || JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id || ''
+      if (state.currentUser?.keycloakGuid) {
+        await dispatch('syncUserSettings', lastUsedAccount)
+        ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(state.currentAccount || ''))
+      }
+    },
+    async updateUserProfile() {
+      await UserService.updateUserProfile()
     }
-  }
-
-  @Action({ rawError: true })
-  public async syncAccount () {
-    function getLastAccountId (): string {
-      const currentAccount = getAccountIdFromCurrentUrl()
-      let pathList = window.location.pathname.split('/')
-      let indexOfAccount = pathList.indexOf('account')
-      let nextValAfterAccount = indexOfAccount > 0 ? pathList[indexOfAccount + 1] : ''
-      let orgIdFromUrl = isNaN(+nextValAfterAccount) ? '' : nextValAfterAccount
-      const storageAccountId = currentAccount || JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.CurrentAccount) || '{}').id
-      return orgIdFromUrl || String(storageAccountId || '') || ''
-    }
-
-    const lastUsedAccount = getLastAccountId()
-    if (this.currentUser?.keycloakGuid) {
-      await this.syncUserSettings(lastUsedAccount)
-
-      ConfigHelper.addToSession(SessionStorageKeys.CurrentAccount, JSON.stringify(this.currentAccount || ''))
-    }
-  }
-
-  @Action({ rawError: true })
-  public async updateUserProfile () {
-    await UserService.updateUserProfile()
   }
 }
+
+export default accountModule
+

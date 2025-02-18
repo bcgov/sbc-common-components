@@ -1,75 +1,68 @@
-import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Notifications } from '../../models/notification'
 import NotificationService from '../../services/notification.services'
 import ConfigHelper from '../../util/config-helper'
 import { SessionStorageKeys } from '../../util/constants'
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-@Module({
-  name: 'notification',
-  namespaced: true
-})
-export default class NotificationModule extends VuexModule {
-  notifications: Notifications = []
-  notificationCount = 0
-  notificationUnreadPriorityCount = 0
-  notificationUnreadCount = 0
+Vue.use(Vuex)
 
-  @Mutation
-  public setNotifications (notifications: Notifications): void {
-    ConfigHelper.addToSession(SessionStorageKeys.WhatsNew, JSON.stringify(notifications || ''))
-    this.notifications = notifications
-  }
-
-  @Mutation
-  public setNotificationCount (count: number): void {
-    this.notificationCount = count
-  }
-
-  @Mutation
-  public setNotificationUnreadPriorityCount (count: number): void {
-    this.notificationUnreadPriorityCount = count
-  }
-
-  @Mutation
-  public setNotificationUnreadCount (count: number): void {
-    this.notificationUnreadCount = count
-  }
-
-  @Action({ rawError: true, commit: 'setNotifications' })
-  public async syncNotifications (): Promise<Notifications> {
-    const response = await NotificationService.getNotifications()
-    if (response && response.data) {
-      return response.data?.sort(function (a, b) {
-        var res = (+b.priority) - (+a.priority)
-        if (res === 0) {
-          res = b.date.localeCompare(a.date)
-        }
-        return res
-      })
+const notificationModule = {
+  namespaced: true,
+  state: {
+    notifications: [],
+    notificationCount: 0,
+    notificationUnreadPriorityCount: 0,
+    notificationUnreadCount: 0
+  },
+  mutations: {
+    setNotifications(state, notifications) {
+      ConfigHelper.addToSession(SessionStorageKeys.WhatsNew, JSON.stringify(notifications || ''))
+      state.notifications = notifications
+    },
+    setNotificationCount(state, count) {
+      state.notificationCount = count
+    },
+    setNotificationUnreadPriorityCount(state, count) {
+      state.notificationUnreadPriorityCount = count
+    },
+    setNotificationUnreadCount(state, count) {
+      state.notificationUnreadCount = count
     }
-    return []
-  }
-
-  @Action({ rawError: true, commit: 'setNotificationCount' })
-  public async fetchNotificationCount (): Promise<number> {
-    return this.notifications.length
-  }
-
-  @Action({ rawError: true, commit: 'setNotificationUnreadPriorityCount' })
-  public async fetchNotificationUnreadPriorityCount (): Promise<number> {
-    return this.notifications.filter(notification => notification.priority && !notification.read).length
-  }
-
-  @Action({ rawError: true, commit: 'setNotificationUnreadCount' })
-  public async fetchNotificationUnreadCount (): Promise<number> {
-    return this.notifications.filter(notification => !notification.read).length
-  }
-
-  @Action({ rawError: true, commit: 'setNotificationUnreadCount' })
-  public async markAsRead (): Promise<Notifications> {
-    let nl = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.WhatsNew) || '{}')
-    nl.map(notification => { notification.read = true; return notification })
-    this.context.commit('setNotifications', nl)
-    return nl.filter(notification => !notification.read).length
+  },
+  actions: {
+    async syncNotifications({ commit }) {
+      try {
+        const response = await NotificationService.getNotifications()
+        if (response && response.data) {
+          const sortedNotifications = response.data.sort((a, b) => {
+            let res = (+b.priority) - (+a.priority)
+            if (res === 0) {
+              res = b.date.localeCompare(a.date)
+            }
+            return res
+          })
+          commit('setNotifications', sortedNotifications)
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error)
+      }
+    },
+    fetchNotificationCount({ state, commit }) {
+      commit('setNotificationCount', state.notifications.length)
+    },
+    fetchNotificationUnreadPriorityCount({ state, commit }) {
+      commit('setNotificationUnreadPriorityCount', state.notifications.filter(n => n.priority && !n.read).length)
+    },
+    fetchNotificationUnreadCount({ state, commit }) {
+      commit('setNotificationUnreadCount', state.notifications.filter(n => !n.read).length)
+    },
+    markAsRead({ commit }) {
+      let notifications = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.WhatsNew) || '[]')
+      notifications = notifications.map(n => ({ ...n, read: true }))
+      commit('setNotifications', notifications)
+      commit('setNotificationUnreadCount', notifications.filter(n => !n.read).length)
+    }
   }
 }
+
+export default notificationModule
