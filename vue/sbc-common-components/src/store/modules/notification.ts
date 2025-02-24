@@ -38,7 +38,7 @@ export default class NotificationModule extends VuexModule {
   @Action({ rawError: true, commit: 'setNotifications' })
   public async syncNotifications (): Promise<Notifications> {
     const response = await NotificationService.getNotifications()
-    if (response && response.data) {
+    if (response && Array.isArray(response.data)) {
       return response.data?.sort(function (a, b) {
         var res = (+b.priority) - (+a.priority)
         if (res === 0) {
