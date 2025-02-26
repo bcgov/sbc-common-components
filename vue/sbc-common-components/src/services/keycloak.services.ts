@@ -38,7 +38,7 @@ class KeyCloakService {
     this.clearSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
-    this.kc = Keycloak(keycloakConfig)
+    this.kc = new Keycloak(keycloakConfig)
     const kcLogin = this.kc.login
     this.kc.login = (options?: KeycloakLoginOptions) => {
       if (options) {
@@ -95,7 +95,7 @@ class KeyCloakService {
   async logout (redirectUrl?: string) {
     let token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     if (token) {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       let kcOptions :KeycloakInitOptions = {
         onLoad: 'login-required',
         checkLoginIframe: false,
@@ -182,7 +182,7 @@ class KeyCloakService {
     }
 
     return new Promise((resolve, reject) => {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, false)
       this.kc.init(kcOptions)
         .then(authenticated => {
