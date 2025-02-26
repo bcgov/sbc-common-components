@@ -462,7 +462,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     }
   ]
 
-  @Watch
+  @Watch('environment')
   get alertColor (): string {
     switch (this.environment.toUpperCase()) {
       case 'DEV':

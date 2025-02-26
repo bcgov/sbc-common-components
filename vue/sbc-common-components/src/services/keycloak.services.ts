@@ -1,4 +1,4 @@
-import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions, KeycloakTokenParsed } from 'keycloak-js'
+import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions } from 'keycloak-js/lib/keycloak'
 import { KCUserProfile } from '../models/KCUserProfile'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
