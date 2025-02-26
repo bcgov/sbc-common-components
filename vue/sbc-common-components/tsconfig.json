@@ -15,7 +15,8 @@
       "vue",
       "vuetify",
       "webpack-env",
-      "jest"
+      "vite/client",
+      "vitest/globals"
     ],
     "paths": {
       "@/*": [

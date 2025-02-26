@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex">
     <header class="app-header" id="appHeader">
-      <v-container class="justify-space-between"> 
+      <v-container class="justify-space-between">
         <!-- Group for logo and alert -->
-        <div class="header-group d-flex align-center"> 
+        <div class="header-group d-flex align-center">
           <!-- Brand/logo link -->
           <a @click="goToHome()" class="brand d-flex align-center">
             <picture>
@@ -14,7 +14,7 @@
             <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
           </a>
           <!-- Environment Alert -->
-          <v-alert v-if="environment" :color="alertColor" dense class="env-distinction"> 
+          <v-alert v-if="environment" :color="alertColor" dense class="env-distinction">
             {{environment}} Environment
           </v-alert>
         </div>
@@ -463,18 +463,18 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   ]
 
   @Watch
-  get alertColor(): string {
+  get alertColor (): string {
     switch (this.environment.toUpperCase()) {
       case 'DEV':
       case 'DEVELOPMENT':
-        return 'success';
+        return 'success'
       case 'TEST':
-        return 'error';
+        return 'error'
       case 'SANDBOX':
-        return 'warning';
+        return 'warning'
       default:
         this.environment = ''
-        return '';
+        return ''
     }
   }
 
@@ -695,8 +695,8 @@ $app-header-font-color: #ffffff;
 }
 
 .env-distinction {
-  padding: 0px 10px; 
-  font-size: 0.875rem; 
+  padding: 0px 10px;
+  font-size: 0.875rem;
   margin: 0;
 }
 

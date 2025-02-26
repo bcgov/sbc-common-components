@@ -14,7 +14,7 @@ Vue.config.silent = true
 
 let vuetify = new Vuetify({})
 
-jest.mock('../../src/services/status.services')
+vitest.mock('../../src/services/status.services')
 
 describe('SbcSystemAlert.vue', () => {
   const $t = () => 'Payment service unavailable'
@@ -24,8 +24,8 @@ describe('SbcSystemAlert.vue', () => {
   }]
 
   it('Check service call with true', done => {
-    let mockDetails = { 'currentStatus': 'True', 'nextUpTime': 0 }
-    StatusService.getServiceStatus = jest.fn().mockResolvedValue(mockDetails)
+    let mockDetails = { data: { 'currentStatus': 'True', 'nextUpTime': 0 } }
+    StatusService.getServiceStatus = vitest.fn().mockResolvedValue(mockDetails)
 
     const wrapper = shallowMount(SbcSystemAlert, {
       propsData: { serviceData, statusURL: 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1/' },
@@ -39,8 +39,8 @@ describe('SbcSystemAlert.vue', () => {
     expect(wrapper.props().statusURL).toBe('https://status-api-dev.pathfinder.gov.bc.ca/api/v1/')
 
     Vue.nextTick(async () => {
-      expect(wrapper.vm.$data.isSbcSystemDown).toBeTruthy()
-      expect(wrapper.vm.$data.alertMessage).toBe('Payment service unavailable')
+      expect(wrapper.vm.isSbcSystemDown).toBeTruthy()
+      expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
 
       wrapper.destroy()
       done()
@@ -48,8 +48,8 @@ describe('SbcSystemAlert.vue', () => {
   })
 
   it('Check service call with false', done => {
-    let mockDetails = { 'currentStatus': 'False', 'nextUpTime': 0 }
-    StatusService.getServiceStatus = jest.fn().mockResolvedValue(mockDetails)
+    let mockDetails = { data: { 'currentStatus': 'False', 'nextUpTime': 0 } }
+    StatusService.getServiceStatus = vitest.fn().mockResolvedValue(mockDetails)
 
     const wrapper = shallowMount(SbcSystemAlert, {
       propsData: { serviceData, statusURL: 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1/' },
@@ -58,8 +58,9 @@ describe('SbcSystemAlert.vue', () => {
 
     expect(StatusService.getServiceStatus).toBeCalled()
     Vue.nextTick(async () => {
-      expect(wrapper.vm.$data.isSbcSystemDown).toBeTruthy()
-      expect(wrapper.vm.$data.alertMessage).toBe('Payment service unavailable')
+      console.log('sbcsystemdown: ', wrapper.vm.$data.isSbcSystemDown)
+      expect(wrapper.vm.isSbcSystemDown).toBeFalsy()
+      expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
 
       wrapper.destroy()
       done()
