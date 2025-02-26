@@ -171,7 +171,7 @@ class KeyCloakService {
     }
 
     return new Promise((resolve, reject) => {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, false)
       this.kc.init(kcOptions)
         .then(authenticated => {
