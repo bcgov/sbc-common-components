@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col class="text-center">
         <div class="mt-5 mb-10 font-weight-bold">
-          <h1>BC Registries Account Login</h1>
+          <h1>Service BC Connect Account Login</h1>
         </div>
         <v-card
           class="mx-auto"
@@ -25,7 +25,7 @@
                   aria-label="log in"
                   id="loginBtn"
                   v-on="on">
-                  <span>Log in to my BC Registries Account</span>
+                  <span>Log in to my Service BC Connect Account</span>
                   <v-icon class="mr-n1 ml-2">mdi-menu-down</v-icon>
                 </v-btn>
               </template>

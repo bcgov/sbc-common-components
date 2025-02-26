@@ -38,7 +38,7 @@ class KeyCloakService {
     this.clearSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
-    this.kc = Keycloak(keycloakConfig)
+    this.kc = new Keycloak(keycloakConfig)
     const kcLogin = this.kc.login
     this.kc.login = (options?: KeycloakLoginOptions) => {
       if (options) {
@@ -95,7 +95,7 @@ class KeyCloakService {
   async logout (redirectUrl?: string) {
     let token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     if (token) {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       let kcOptions :KeycloakInitOptions = {
         onLoad: 'login-required',
         checkLoginIframe: false,
@@ -182,10 +182,11 @@ class KeyCloakService {
     }
 
     return new Promise((resolve, reject) => {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, false)
       this.kc.init(kcOptions)
         .then(authenticated => {
+          // eslint-disable-next-line no-console
           console.info('[TokenServices] is User Authenticated?: Syncing ' + authenticated)
           resolve(this.syncSessionAndScheduleTokenRefresh(isScheduleRefresh))
         })
@@ -230,12 +231,15 @@ class KeyCloakService {
       throw new Error('Refresh Token Expired. No more token refreshes')
     }
     let refreshInMilliSeconds = (expiresIn * 1000) - refreshEarlyTimeinMilliseconds // in milliseconds
+    // eslint-disable-next-line no-console
     console.info('[TokenServices] Token Refresh Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
     this.timerId = setTimeout(() => {
+      // eslint-disable-next-line no-console
       console.log('[TokenServices] Refreshing Token Attempt: %s ', ++this.counter)
       this.kc!.updateToken(-1)
         .then(refreshed => {
           if (refreshed) {
+            // eslint-disable-next-line no-console
             console.log('Token successfully refreshed')
             this.syncSessionStorage()
             this.scheduleRefreshToken(refreshEarlyTimeinMilliseconds)

@@ -3,14 +3,16 @@ import KeycloakService from '../../src/services/keycloak.services'
 import ConfigHelper from '../../src/util/config-helper'
 import { SessionStorageKeys } from '@/util/constants'
 
-jest.mock('axios', () => ({
-  get: jest.fn(),
-  all: jest.fn(),
-  post: jest.fn(),
-  put: jest.fn(),
-  patch: jest.fn()
-}), {
-  virtual: true
+vitest.mock('axios', async () => {
+  const actual = await vi.importActual('axios')
+  return {
+    ...actual,
+    get: vitest.fn(),
+    all: vitest.fn(),
+    post: vitest.fn(),
+    put: vitest.fn(),
+    patch: vitest.fn()
+  }
 })
 var mockKcJosn = {
   'realm': 'test',
