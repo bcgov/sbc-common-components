@@ -3,7 +3,7 @@ import Axios from 'axios'
 import FeeServices from '../../src/services/fee.services'
 
 vitest.mock('axios', async () => {
-  const actual = await vi.importActual("axios")
+  const actual = await vi.importActual('axios')
   return {
     ...actual,
     get: vitest.fn(),

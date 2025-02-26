@@ -24,7 +24,7 @@ describe('SbcSystemAlert.vue', () => {
   }]
 
   it('Check service call with true', done => {
-    let mockDetails = { data: { 'currentStatus': 'True', 'nextUpTime': 0 }}
+    let mockDetails = { data: { 'currentStatus': 'True', 'nextUpTime': 0 } }
     StatusService.getServiceStatus = vitest.fn().mockResolvedValue(mockDetails)
 
     const wrapper = shallowMount(SbcSystemAlert, {
@@ -37,7 +37,7 @@ describe('SbcSystemAlert.vue', () => {
 
     expect(wrapper.props().serviceData).toBe(serviceData)
     expect(wrapper.props().statusURL).toBe('https://status-api-dev.pathfinder.gov.bc.ca/api/v1/')
-    
+
     Vue.nextTick(async () => {
       expect(wrapper.vm.isSbcSystemDown).toBeTruthy()
       expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
@@ -48,7 +48,7 @@ describe('SbcSystemAlert.vue', () => {
   })
 
   it('Check service call with false', done => {
-    let mockDetails = {data: { 'currentStatus': 'False', 'nextUpTime': 0 }}
+    let mockDetails = { data: { 'currentStatus': 'False', 'nextUpTime': 0 } }
     StatusService.getServiceStatus = vitest.fn().mockResolvedValue(mockDetails)
 
     const wrapper = shallowMount(SbcSystemAlert, {

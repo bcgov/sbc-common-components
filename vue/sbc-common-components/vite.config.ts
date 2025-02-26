@@ -4,7 +4,6 @@ import path from 'path'
 import postcssNesting from 'postcss-nesting'
 import { createVuePlugin as vue } from 'vite-plugin-vue2'
 
-
 export default defineConfig({
   esbuild: {
     minifySyntax: false,

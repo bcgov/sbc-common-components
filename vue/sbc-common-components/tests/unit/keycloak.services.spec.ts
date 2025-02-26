@@ -4,7 +4,7 @@ import ConfigHelper from '../../src/util/config-helper'
 import { SessionStorageKeys } from '@/util/constants'
 
 vitest.mock('axios', async () => {
-  const actual = await vi.importActual("axios")
+  const actual = await vi.importActual('axios')
   return {
     ...actual,
     get: vitest.fn(),

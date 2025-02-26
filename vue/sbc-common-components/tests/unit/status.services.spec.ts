@@ -4,7 +4,7 @@ import StatusServices from '../../src/services/status.services'
 import { SessionStorageKeys } from '@/util/constants'
 
 vitest.mock('axios', async () => {
-  const actual = await vi.importActual("axios")
+  const actual = await vi.importActual('axios')
   return {
     ...actual,
     get: vitest.fn(),
@@ -21,12 +21,12 @@ describe('get status for payment service', () => {
   var serviceName = 'PAYBC'
   beforeAll(() => {
     // @ts-ignore
-    Axios.get?.mockClear()
+    Axios.get.mockClear()
     // @ts-ignore
     Axios.all.mockResolvedValue(results)
     // @ts-ignore
     Axios.spread.mockReturnValue(mockAxiosSpreadResult)
-    sessionStorage.setItem(SessionStorageKeys.ApiConfigKey,JSON.stringify({ VUE_APP_STATUS_ROOT_API: API_URL }))
+    sessionStorage.setItem(SessionStorageKeys.ApiConfigKey, JSON.stringify({ VUE_APP_STATUS_ROOT_API: API_URL }))
     StatusServices.getServiceStatus(serviceName)
   })
 
