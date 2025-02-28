@@ -7,10 +7,9 @@ import { Role, LoginSource, Pages } from '../util/constants'
 import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
 import TokenService from '../services/token.services'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { mapActions, mapState } from 'vuex'
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { mapActions, mapState } from 'pinia'
 import { KCUserProfile } from '../models/KCUserProfile'
 import NavigationMixin from '../mixins/navigation-mixin'
 
@@ -19,26 +18,16 @@ import NavigationMixin from '../mixins/navigation-mixin'
     LoadingScreen
   },
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
     this.$options.methods = {
       ...(this.$options.methods || {}),
-      ...mapActions('account', [
+      ...mapActions(useAccountStore, [
         'loadUserInfo',
         'syncAccount',
         'getCurrentUserProfile',
         'updateUserProfile'
+      ]),
+      ...mapActions(useAuthStore, [
+        'syncWithSessionStorage'
       ])
     }
   }
@@ -54,7 +43,6 @@ export default class SbcSignin extends NavigationMixin {
   private readonly updateUserProfile!: () => Promise<void>
 
   private async mounted () {
-    getModule(AccountModule, this.$store)
     // Initialize keycloak session
     const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint, this.$store)
     kcInit.then(async (authenticated: boolean) => {

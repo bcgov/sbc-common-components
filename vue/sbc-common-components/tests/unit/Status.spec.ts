@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import StatusService from '../../src/services/status.services'
 import SbcSystemAlert from '@/components/SbcSystemAlert.vue'
-import Vuex from 'vuex'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -17,6 +17,11 @@ let vuetify = new Vuetify({})
 vitest.mock('../../src/services/status.services')
 
 describe('SbcSystemAlert.vue', () => {
+  const localVue = createLocalVue()
+  const pinia = createPinia()
+  setActivePinia(pinia)
+  localVue.use(pinia)
+
   const $t = () => 'Payment service unavailable'
   const serviceData = [{
     serviceName: 'PAYBC',

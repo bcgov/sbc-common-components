@@ -55,31 +55,20 @@
 <script lang='ts'>
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Notification } from '../models/notification'
-import { mapState, mapActions } from 'vuex'
-import NotificationModule from '../store/modules/notification'
-import { getModule } from 'vuex-module-decorators'
+import { useNotificationStore } from '../stores/notification'
+import { mapState, mapActions } from 'pinia'
 import 'clickout-event'
 
 @Component({
   name: 'NotificationPanel',
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['notification'])) {
-      this.$store.registerModule('notification', NotificationModule)
-    }
     this.$options.computed = {
       ...(this.$options.computed || {}),
-      ...mapState('notification', ['notifications'])
-    }
+      ...mapState(useNotificationStore, ['notifications'])
+    },
     this.$options.methods = {
       ...(this.$options.methods || {}),
-      ...mapActions('notification', ['markAsRead'])
+      ...mapActions(useNotificationStore, ['markAsRead'])
     }
   }
 })
@@ -92,10 +81,6 @@ export default class NotificationPanel extends Vue {
   @Emit('closeNotifications')
   private async emitClose () {
 
-  }
-
-  private async mounted () {
-    getModule(NotificationModule, this.$store)
   }
 }
 </script>

@@ -28,50 +28,32 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { LDClient } from 'launchdarkly-js-client-sdk'
 import { Role, IdpHint, LoginSource, Pages } from '../util/constants'
-import { mapState, mapActions, mapGetters } from 'vuex'
 import { UserSettings } from '../models/userSettings'
-import NavigationMixin from '../mixins/navigation-mixin'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { KCUserProfile } from '../models/KCUserProfile'
 import KeyCloakService from '../services/keycloak.services'
-
-declare module 'vuex' {
-  interface Store<S> {
-    isModuleRegistered(_: string[]): boolean
-  }
-}
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { mapState, mapGetters, mapActions } from 'pinia'
+import NavigationMixin from '../mixins/navigation-mixin'
+import { KCUserProfile } from '../models/KCUserProfile'
 
 @Component({
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
     this.$options.computed = {
       ...(this.$options.computed || {}),
-      ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
-    }
+      ...mapState(useAccountStore, ['currentAccount']),
+      ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
+    },
     this.$options.methods = {
       ...(this.$options.methods || {}),
-      ...mapActions('account', [
+      ...mapActions(useAccountStore, [
         'loadUserInfo',
         'syncAccount',
         'syncCurrentAccount',
         'syncUserProfile',
         'getCurrentUserProfile',
-        'updateUserProfile']),
-      ...mapActions('auth', ['syncWithSessionStorage'])
+        'updateUserProfile'
+      ]),
+      ...mapActions(useAuthStore, ['syncWithSessionStorage'])
     }
   }
 })
@@ -125,8 +107,6 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    getModule(AccountModule, this.$store)
-    getModule(AuthModule, this.$store)
     this.syncWithSessionStorage()
     if (this.isAuthenticated) {
       await this.loadUserInfo()
