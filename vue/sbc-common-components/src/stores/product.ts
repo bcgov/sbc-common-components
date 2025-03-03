@@ -2,7 +2,7 @@ import { Products } from '../models/product'
 import ProductService from '../services/product.services'
 import { ProductsStateIF } from '../interfaces/product-state-interface'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive } from '@vue/composition-api'
 
 export const useProductsStore = defineStore('product', () => {
   const state = reactive<ProductsStateIF>({

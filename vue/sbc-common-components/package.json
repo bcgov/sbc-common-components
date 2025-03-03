@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@mdi/font": "^4.5.95",
+    "@vue/composition-api": "^1.7.2",
     "axios": "^0.21.1",
     "clickout-event": "^1.1.2",
     "core-js": "^3.1.4",
@@ -60,7 +61,7 @@
     "jsdom": "^26.0.0",
     "mutationobserver-shim": "^0.3.7",
     "perfect-debounce": "^1.0.0",
-    "pinia": "^2.1.7",
+    "pinia": "^2.1.6",
     "sass": "~1.32.12",
     "sass-loader": "^7.2.0",
     "typescript": "^5.7.3",
@@ -71,7 +72,7 @@
     "vue-cli-plugin-vuetify": "^2.0.3",
     "vue-plugin-helper-decorator": "^0.0.11",
     "vue-property-decorator": "^8.5.1",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.14",
     "vuepress": "^0.14.11"
   },
   "files": [

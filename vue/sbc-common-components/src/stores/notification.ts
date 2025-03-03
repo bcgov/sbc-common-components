@@ -4,7 +4,7 @@ import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
 import { defineStore } from 'pinia'
 import { NotificationStateIF } from '../interfaces'
-import { reactive } from 'vue'
+import { reactive } from '@vue/composition-api'
 
 export const useNotificationStore = defineStore('notification', () => {
   const state = reactive<NotificationStateIF>({

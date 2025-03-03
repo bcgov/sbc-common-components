@@ -1,4 +1,4 @@
-import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions, KeycloakTokenParsed } from 'keycloak-js'
+import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions } from 'keycloak-js'
 import { KCUserProfile } from '../models/KCUserProfile'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
@@ -161,8 +161,7 @@ class KeyCloakService {
     return isAuthorized
   }
 
-  async initializeToken (store?: Store<any>, isScheduleRefresh: boolean = true, forceLogin: boolean = false) {
-    this.store = store
+  async initializeToken (isScheduleRefresh: boolean = true, forceLogin: boolean = false) {
     const kcOptions: KeycloakInitOptions = {
       onLoad: forceLogin ? 'login-required' : 'check-sso',
       checkLoginIframe: false,

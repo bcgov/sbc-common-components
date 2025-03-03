@@ -2,7 +2,7 @@ import { StatusStateIF } from '../interfaces'
 import { ServiceStatus } from '../models/ServiceStatus'
 import StatusService from '../services/status.services'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive } from '@vue/composition-api'
 
 export const useStatusStore = defineStore('status', () => {
   const state = reactive<StatusStateIF>({

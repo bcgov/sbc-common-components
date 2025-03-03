@@ -9,7 +9,7 @@ import { AccountStateIF } from '../interfaces'
 import { KCUserProfile } from '../models/KCUserProfile'
 import { UserSettings } from '../models/userSettings'
 import { UserProfile } from '../models/UserProfile'
-import { computed, reactive } from 'vue'
+import { computed, reactive } from '@vue/composition-api'
 
 export const useAccountStore = defineStore('account', () => {
   const state = reactive<AccountStateIF>({

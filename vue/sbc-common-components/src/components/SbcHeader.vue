@@ -365,8 +365,8 @@ import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
       ...(this.$options.computed || {}),
       ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
       ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
-      ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
-      ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
+      ...mapState(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
+      ...mapState(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
     },
     this.$options.methods = {
       ...(this.$options.methods || {}),
