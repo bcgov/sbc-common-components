@@ -39,7 +39,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '~': path.resolve(__dirname, './node_modules'),
       '$assets': path.resolve(__dirname, './src/assets'),
-      'vuex-module-decorators': path.resolve(__dirname, './node_modules/vuex-module-decorators/dist/esm/index.js'),
       'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.runtime.js')
     },
     extensions: ['.js', '.ts', '.vue', '.json', '.css']

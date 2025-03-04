@@ -11,7 +11,7 @@ It has two optional arguments:
 
 | Argument | Type | Description |
 | --- | --- | --- | 
-| **store** | vuex store | optional argument to pass the store of the app (default: null)
+| **store** | pinia store | optional argument to pass the store of the app (default: null)
 | **isScheduleRefresh** | boolean | optional argument to disable/enable scheduled refresh (default: true)
 
 
