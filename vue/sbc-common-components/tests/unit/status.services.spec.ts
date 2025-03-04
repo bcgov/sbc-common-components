@@ -3,13 +3,13 @@ import Axios from 'axios'
 import StatusServices from '../../src/services/status.services'
 import { SessionStorageKeys } from '@/util/constants'
 
-vi.mock('axios', async () => {
-  const actual = await vi.importActual('axios')
+vitest.mock('axios', async () => {
+  const actual = await vitest.importActual('axios')
   return {
     ...actual,
-    get: vi.fn(),
-    all: vi.fn(),
-    spread: vi.fn()
+    get: vitest.fn(),
+    all: vitest.fn(),
+    spread: vitest.fn()
   }
 })
 
@@ -17,7 +17,7 @@ const API_URL = 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1'
 
 describe('get status for payment service', () => {
   const results: any = []
-  const mockAxiosSpreadResult = vi.fn()
+  const mockAxiosSpreadResult = vitest.fn()
   var serviceName = 'PAYBC'
   beforeAll(() => {
     // @ts-ignore

@@ -3,15 +3,15 @@ import KeycloakService from '../../src/services/keycloak.services'
 import ConfigHelper from '../../src/util/config-helper'
 import { SessionStorageKeys } from '@/util/constants'
 
-vi.mock('axios', async () => {
-  const actual = await vi.importActual('axios')
+vitest.mock('axios', async () => {
+  const actual = await vitest.importActual('axios')
   return {
     ...actual,
-    get: vi.fn(),
-    all: vi.fn(),
-    post: vi.fn(),
-    put: vi.fn(),
-    patch: vi.fn()
+    get: vitest.fn(),
+    all: vitest.fn(),
+    post: vitest.fn(),
+    put: vitest.fn(),
+    patch: vitest.fn()
   }
 })
 var mockKcJosn = {
@@ -33,7 +33,7 @@ describe('initialize keycloak', () => {
   const results = []
   beforeAll(() => {
     // @ts-ignore
-    vi.clearAllMocks()
+    vitest.clearAllMocks()
   })
 
   it('should clear session storage ', () => {
@@ -46,7 +46,7 @@ describe('configuring keycloak', () => {
   const results = []
   beforeAll(() => {
     // @ts-ignore
-    vi.clearAllMocks()
+    vitest.clearAllMocks()
     // @ts-ignore
     KeycloakService.setKeycloakConfigUrl(KEYCLOAK_URL)
   })

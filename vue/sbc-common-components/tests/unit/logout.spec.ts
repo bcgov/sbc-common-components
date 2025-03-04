@@ -25,8 +25,8 @@ describe('SbcHeader.vue', () => {
       vuetify
     })
 
-    vi.resetModules()
-    vi.clearAllMocks()
+    vitest.resetModules()
+    vitest.clearAllMocks()
   })
 
   it('user account btn exists', () => {
@@ -39,7 +39,7 @@ describe('SbcHeader.vue', () => {
   })
 
   it('logout/in button click invokes logout method', async () => {
-    const stub = vi.fn()
+    const stub = vitest.fn()
     cmp.setMethods({ logout: stub })
     await Vue.nextTick()
     const userBtn = cmp.find('.user-account-btn')

@@ -8,16 +8,18 @@ import Vue2Filters from 'vue2-filters'
 import vuetify from './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
-import { getPiniaStore } from './stores'
+import { createPinia } from 'pinia'
 
 Vue.use(VueCompositionAPI)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
 Vue.config.productionTip = false
+const pinia = createPinia()
+Vue.use(pinia)
 
 new Vue({
   router,
-  pinia: getPiniaStore(),
+  pinia,
   vuetify,
   render: h => h(App)
 }).$mount('#app')

@@ -2,12 +2,12 @@
 import Axios from 'axios'
 import FeeServices from '../../src/services/fee.services'
 
-// Define mock inside vi.mock() factory
-vi.mock('axios', () => ({
+// Define mock inside vitest.mock() factory
+vitest.mock('axios', () => ({
   default: {
-    get: vi.fn(),
-    all: vi.fn(),
-    spread: vi.fn()
+    get: vitest.fn(),
+    all: vitest.fn(),
+    spread: vitest.fn()
   }
 }))
 
@@ -15,11 +15,11 @@ const API_URL = 'https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/'
 
 describe('with 1 fee in the list', () => {
   const results = []
-  const mockAxiosSpreadResult = vi.fn()
+  const mockAxiosSpreadResult = vitest.fn()
   var filingCodes = [{ filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', waiveFees: false, entityType: 'CP', priority: false, futureEffective: false }]
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vitest.clearAllMocks()
     Axios.all.mockResolvedValue(results)
     Axios.spread.mockReturnValue(mockAxiosSpreadResult)
     FeeServices.getFee(filingCodes, API_URL)
@@ -32,14 +32,14 @@ describe('with 1 fee in the list', () => {
 
 describe('with 2 fee in the list', () => {
   const results = []
-  const mockAxiosSpreadResult = vi.fn()
+  const mockAxiosSpreadResult = vitest.fn()
   var filingCodes = [
     { filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false },
     { filingDescription: 'Director Change', filingTypeCode: 'OTADD', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false }
   ]
   
   beforeEach(() => {
-    vi.clearAllMocks()
+    vitest.clearAllMocks()
     Axios.all.mockResolvedValue(results)
     Axios.spread.mockReturnValue(mockAxiosSpreadResult)
     FeeServices.getFee(filingCodes, API_URL)
@@ -53,11 +53,11 @@ describe('with 2 fee in the list', () => {
 
 describe('with 1 fee in the list with extra fees', () => {
   const results = []
-  const mockAxiosSpreadResult = vi.fn()
+  const mockAxiosSpreadResult = vitest.fn()
   var filingCodes = [{ filingTypeCode: 'BCRSF', waiveFees: false, entityType: 'BC', priority: true, futureEffective: true }]
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vitest.clearAllMocks()
     Axios.all.mockResolvedValue(results)
     Axios.spread.mockReturnValue(mockAxiosSpreadResult)
     FeeServices.getFee(filingCodes, API_URL)
