@@ -360,14 +360,14 @@ import { AccountStatus, LDFlags } from '../util/enums'
 import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
 
 @Component({
-  created () {
+  beforeCreate () {
     this.$options.computed = {
       ...(this.$options.computed || {}),
       ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
       ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
       ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
       ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-    }
+    },
     this.$options.methods = {
       ...(this.$options.methods || {}),
       ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),

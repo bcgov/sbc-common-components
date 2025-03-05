@@ -46,8 +46,8 @@ export default class SbcSystemAlert extends Vue {
   private statusURL: string
 
   /* class properties */
-  private isSbcSystemDown: boolean = false
-  private alertMessage: string = ''
+  public isSbcSystemDown: boolean = false
+  public alertMessage: string = ''
 
   private mounted (): void {
     StatusServices.getServiceStatus(this.serviceData['serviceName'])

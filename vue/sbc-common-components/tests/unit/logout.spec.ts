@@ -38,18 +38,14 @@ describe('SbcHeader.vue', () => {
     expect(cmp.find('.user-name').text().startsWith('BCREGTEST')).toBeTruthy()
   })
 
-  it('logout/in button click invokes logout method', async () => {
+  it('logout/in button click invokes logout method', () => {
     const stub = vitest.fn()
     cmp.setMethods({ logout: stub })
-    await Vue.nextTick()
-    const userBtn = cmp.find('.user-account-btn')
-    expect(userBtn.exists()).toBeTruthy()
-    userBtn.trigger('click')
+    cmp.find('.user-account-btn').trigger('click')
     expect(cmp.find('.v-list-item__title')).toBeTruthy()
     const logoutBtn = cmp.findAll('.v-list-item__title').at(2)
     expect(logoutBtn.text().startsWith('Log')).toBeTruthy()
     logoutBtn.trigger('click')
-    await Vue.nextTick()
     expect(cmp.vm.logout).toBeCalled()
   })
 })

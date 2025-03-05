@@ -65,3 +65,27 @@ export enum Pages {
 export const ALLOWED_URIS_FOR_PENDING_ORGS: string[] = ['setup-non-bcsc-account', 'signout']
 
 export const ACCOUNT_ID = 'accountid'
+
+export enum LDFlags {
+  AuthLearnMore = 'auth-options-learn-more',
+  PaymentTypeAccountCreation = 'payment-type-in-account-creation',
+  LinkToNewNameRequestApp ='link-to-new-name-request-app',
+  EnableMandatoryAddress = 'enable-mandatory-address',
+  EnableGovmInvite = 'enable-govm-account-invite',
+  HideProductPackage = 'hide-product-packages',
+  EnableOrgNameAutoComplete = 'enable-org-name-auto-complete',
+  IaSupportedEntities = 'ia-supported-entities',
+  EnableFasDashboard = 'enable-fas-dashboard',
+  DisableGovNAccountCreation='disable-govn-account',
+  EnableBcCccUlc = 'enable-bc-ccc-ulc',
+  ProductBusSearchStatus = 'product-BUSINESS_SEARCH-status',
+  ProductBusSearchPremTooltip = 'product-BUSINESS_SEARCH-prem-tooltip',
+  ProductCSOStatus = 'product-CSO-status',
+  ProductWillsStatus = 'product-VS-status',
+  ProductSiteRegistryStatus = 'product-ESRA-status',
+  ProductBCAStatus = 'product-BCA-status',
+  BusSearchLink = 'bus-search-staff-link',
+  EnableDetailsFilter = 'enable-transactions-detail-filter',
+  SentryEnable = 'sentry-enable',
+  BannerText = 'banner-text'
+}

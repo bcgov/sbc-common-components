@@ -2,21 +2,19 @@ import { Products } from '../models/product'
 import ProductService from '../services/product.services'
 import { ProductsStateIF } from '../interfaces/product-state-interface'
 import { defineStore } from 'pinia'
-import { reactive } from '@vue/composition-api'
 
-export const useProductsStore = defineStore('product', () => {
-  const state = reactive<ProductsStateIF>({
+export const useProductsStore = defineStore('product', {
+  state: (): ProductsStateIF => ({
     products: []
-  })
-  async function syncProducts (): Promise<Products> {
-    const response = await ProductService.getAllProducts()
-    if (response && response.data) {
-      state.products = response.data?.sort((a, b) => a.name.localeCompare(b.name))
-      return state.products
+  }),
+
+  actions: {
+    async syncProducts (): Promise<Products> {
+      const response = await ProductService.getAllProducts()
+      if (response && response.data) {
+        this.products = response.data?.sort((a, b) => a.name.localeCompare(b.name))
+        return this.products
+      }
     }
-  }
-  return {
-    state,
-    syncProducts
   }
 })
