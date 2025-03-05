@@ -111,7 +111,7 @@ export default defineComponent({
     SbcHeader,
     SbcLoader
   },
-  setup ( { root }) {
+  setup ( { root } ) {
     const accountStore = useAccountStore()
     const authStore = useAuthStore()
 
