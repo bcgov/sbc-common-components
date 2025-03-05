@@ -8,14 +8,16 @@ import Vue2Filters from 'vue2-filters'
 import vuetify from './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
-import { createPinia } from 'pinia'
+import { createPinia, PiniaVuePlugin } from 'pinia'
 
 Vue.use(VueCompositionAPI)
+Vue.use(PiniaVuePlugin)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
+
 Vue.config.productionTip = false
+
 const pinia = createPinia()
-Vue.use(pinia)
 
 new Vue({
   router,
