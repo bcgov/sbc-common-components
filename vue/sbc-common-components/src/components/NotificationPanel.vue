@@ -62,16 +62,16 @@ import 'clickout-event'
 @Component({
   name: 'NotificationPanel',
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useNotificationStore, ['notifications'])
-    },
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useNotificationStore, ['markAsRead'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useNotificationStore, ['notifications'])
+  },
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useNotificationStore, ['markAsRead'])
   }
-})
+  }
+  })
 export default class NotificationPanel extends Vue {
   private readonly notifications!: Notification[]
 

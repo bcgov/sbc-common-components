@@ -111,7 +111,7 @@ export default defineComponent({
     SbcHeader,
     SbcLoader
   },
-  setup ( { root } ) {
+  setup ({ root }) {
     const accountStore = useAccountStore()
     const authStore = useAuthStore()
 
@@ -129,7 +129,7 @@ export default defineComponent({
 
     const showNavigationBar = computed(() => root.router.currentRoute.value.meta.showNavBar) // Use router instead of $route
     const showLoginMenu = computed(() =>
-    root.router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
+      root.router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
 
     const bannerText = computed(() => {
       const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)

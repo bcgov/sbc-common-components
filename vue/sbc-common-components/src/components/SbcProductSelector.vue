@@ -117,16 +117,16 @@ import { mapState, mapActions } from 'pinia'
 @Component({
   name: 'SbcProductSelector',
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useProductsStore, ['products', 'partners'])
-    },
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useProductsStore, ['syncProducts'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useProductsStore, ['products', 'partners'])
+  },
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useProductsStore, ['syncProducts'])
   }
-})
+  }
+  })
 export default class SbcProductSelector extends Vue {
   private dialog = false
   private readonly products!: Products

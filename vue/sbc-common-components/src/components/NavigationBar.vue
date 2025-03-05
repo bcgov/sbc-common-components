@@ -65,14 +65,14 @@ import { mapState, mapGetters } from 'pinia'
 @Component({
   name: 'NavigationBar',
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useAuthStore, ['token']),
-      ...mapState(useAccountStore, ['currentAccount']),
-      ...mapGetters(useAuthStore, ['isAuthenticated'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAuthStore, ['token']),
+  ...mapState(useAccountStore, ['currentAccount']),
+  ...mapGetters(useAuthStore, ['isAuthenticated'])
   }
-})
+  }
+  })
 export default class NavigationBar extends Vue {
   @Prop() configuration!: NavigationBarConfig
   @Prop({ default: false }) hide!: boolean

@@ -15,23 +15,23 @@ import NavigationMixin from '../mixins/navigation-mixin'
 
 @Component({
   components: {
-    LoadingScreen
+  LoadingScreen
   },
   beforeCreate () {
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useAccountStore, [
-        'loadUserInfo',
-        'syncAccount',
-        'getCurrentUserProfile',
-        'updateUserProfile'
-      ]),
-      ...mapActions(useAuthStore, [
-        'syncWithSessionStorage'
-      ])
-    }
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, [
+    'loadUserInfo',
+    'syncAccount',
+    'getCurrentUserProfile',
+    'updateUserProfile'
+    ]),
+  ...mapActions(useAuthStore, [
+    'syncWithSessionStorage'
+    ])
   }
-})
+  }
+  })
 export default class SbcSignin extends NavigationMixin {
   private isLoading = true
   @Prop({ default: 'bcsc' }) idpHint!: string

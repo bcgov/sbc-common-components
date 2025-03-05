@@ -34,10 +34,10 @@ const i18n = new VueI18n({
 
 @Component({
   components: {
-    SbcSystemBanner
+  SbcSystemBanner
   },
   i18n
-})
+  })
 export default class SbcSystemAlert extends Vue {
   @Prop({ default: [] })
   private serviceData: { serviceName: string, serviceNameDesc: string }[]

@@ -37,7 +37,7 @@ describe('with 2 fee in the list', () => {
     { filingDescription: 'Annual Filing', filingTypeCode: 'OTANN', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false },
     { filingDescription: 'Director Change', filingTypeCode: 'OTADD', entityType: 'CP', waiveFees: false, priority: false, futureEffective: false }
   ]
-  
+
   beforeEach(() => {
     vitest.clearAllMocks()
     Axios.all.mockResolvedValue(results)

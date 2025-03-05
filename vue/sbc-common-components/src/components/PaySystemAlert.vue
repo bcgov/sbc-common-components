@@ -16,19 +16,19 @@ import { ServiceStatus } from '../models/ServiceStatus'
 
 @Component({
   components: {
-    SbcSystemBanner
+  SbcSystemBanner
   },
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useStatusStore, ['paySystemStatus'])
-    },
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useStatusStore, ['fetchPaySystemStatus'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useStatusStore, ['paySystemStatus'])
+  },
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useStatusStore, ['fetchPaySystemStatus'])
   }
-})
+  }
+  })
 export default class PaySystemAlert extends Vue {
   private statusAPIResponse : ServiceStatus | null = null
   private readonly paySystemStatus!: ServiceStatus

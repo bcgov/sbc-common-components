@@ -361,28 +361,28 @@ import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
 
 @Component({
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
-      ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
-      ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
-      ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-    },
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
-      ...mapActions(useAuthStore, ['syncWithSessionStorage']),
-      ...mapActions(useNotificationStore, ['markAsRead', 'fetchNotificationCount', 'fetchNotificationUnreadPriorityCount', 
-        'fetchNotificationUnreadCount', 'syncNotifications'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
+  ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
+  ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
+  ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
+  },
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
+  ...mapActions(useAuthStore, ['syncWithSessionStorage']),
+  ...mapActions(useNotificationStore, ['markAsRead', 'fetchNotificationCount', 'fetchNotificationUnreadPriorityCount',
+    'fetchNotificationUnreadCount', 'syncNotifications'])
+  }
   },
   components: {
-    SbcProductSelector,
-    BrowserVersionAlert,
-    MobileDeviceAlert,
-    NotificationPanel
+  SbcProductSelector,
+  BrowserVersionAlert,
+  MobileDeviceAlert,
+  NotificationPanel
   }
-})
+  })
 export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
   private readonly currentAccount!: UserSettings | null

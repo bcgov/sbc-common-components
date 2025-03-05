@@ -30,28 +30,28 @@ class KeyCloakService {
     return this.kc
   }
 
-  async initializeKeyCloak(idpHint: string) {
-      this.clearSession()
-      const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
-      const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
-      this.kc = new Keycloak(keycloakConfig)
-      const kcLogin = this.kc.login
-      this.kc.login = (options?: KeycloakLoginOptions) => {
-        if (options) {
-          options.idpHint = idpHint
-        }
-        return kcLogin(options)
+  async initializeKeyCloak (idpHint: string) {
+    this.clearSession()
+    const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
+    const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
+    this.kc = new Keycloak(keycloakConfig)
+    const kcLogin = this.kc.login
+    this.kc.login = (options?: KeycloakLoginOptions) => {
+      if (options) {
+        options.idpHint = idpHint
       }
-      let kcOptions: KeycloakInitOptions = {
-        onLoad: 'login-required',
-        checkLoginIframe: false,
-        timeSkew: 0,
-        token,
-        refreshToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || undefined,
-        idToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || undefined,
-        pkceMethod: 'S256'
-      }
-      return this.kc.init(kcOptions)
+      return kcLogin(options)
+    }
+    let kcOptions: KeycloakInitOptions = {
+      onLoad: 'login-required',
+      checkLoginIframe: false,
+      timeSkew: 0,
+      token,
+      refreshToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || undefined,
+      idToken: ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || undefined,
+      pkceMethod: 'S256'
+    }
+    return this.kc.init(kcOptions)
   }
 
   async initSession () {
@@ -150,7 +150,7 @@ class KeyCloakService {
     }
   }
 
-  verifyRoles (allowedRoles:[], disabledRoles:[]) {
+  verifyRoles (allowedRoles, disabledRoles) {
     let isAuthorized = false
     if (allowedRoles || disabledRoles) {
       let userInfo = this.getUserInfo()

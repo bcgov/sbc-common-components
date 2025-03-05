@@ -38,25 +38,25 @@ import { KCUserProfile } from '../models/KCUserProfile'
 
 @Component({
   beforeCreate () {
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState(useAccountStore, ['currentAccount']),
-      ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-    },
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions(useAccountStore, [
-        'loadUserInfo',
-        'syncAccount',
-        'syncCurrentAccount',
-        'syncUserProfile',
-        'getCurrentUserProfile',
-        'updateUserProfile'
-      ]),
-      ...mapActions(useAuthStore, ['syncWithSessionStorage'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAccountStore, ['currentAccount']),
+  ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
+  },
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, [
+    'loadUserInfo',
+    'syncAccount',
+    'syncCurrentAccount',
+    'syncUserProfile',
+    'getCurrentUserProfile',
+    'updateUserProfile'
+    ]),
+  ...mapActions(useAuthStore, ['syncWithSessionStorage'])
   }
-})
+  }
+  })
 export default class SbcAuthMenu extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
   private readonly currentAccount!: UserSettings | null
