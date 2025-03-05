@@ -38,6 +38,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '~': path.resolve(__dirname, './node_modules'),
+      '@sbc': path.resolve(__dirname, './src'),
       '$assets': path.resolve(__dirname, './src/assets'),
       'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.runtime.js')
     },
@@ -57,6 +58,9 @@ export default defineConfig({
       if (log.includes('Download the Vue Devtools extension')) {
         return false
       }
+    },
+    deps: {
+      inline: ['vuetify']
     }
   },
   optimizeDeps: {
