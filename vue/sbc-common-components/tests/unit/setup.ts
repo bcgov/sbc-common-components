@@ -10,4 +10,3 @@ Vue.use(PiniaVuePlugin)
 setActivePinia(createPinia())
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
-
