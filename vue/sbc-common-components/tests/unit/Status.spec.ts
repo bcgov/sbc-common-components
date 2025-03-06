@@ -37,7 +37,7 @@ describe('SbcSystemAlert.vue', () => {
     expect(wrapper.props().serviceData).toBe(serviceData)
     expect(wrapper.props().statusURL).toBe('https://status-api-dev.pathfinder.gov.bc.ca/api/v1/')
 
-    Vue.nextTick(async () => {
+    Vue.nextTick(() => {
       expect(wrapper.vm.isSbcSystemDown).toBeTruthy()
       expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
 
@@ -56,7 +56,7 @@ describe('SbcSystemAlert.vue', () => {
     })
 
     expect(StatusService.getServiceStatus).toBeCalled()
-    Vue.nextTick(async () => {
+    Vue.nextTick(() => {
       expect(wrapper.vm.isSbcSystemDown).toBeFalsy()
       expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
 

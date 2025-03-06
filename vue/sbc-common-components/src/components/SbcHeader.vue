@@ -165,7 +165,7 @@
             attach="#appHeader"
             v-if="isAuthenticated"
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn
                 large
                 text
@@ -347,7 +347,6 @@ import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { mapState, mapActions, mapGetters } from 'pinia'
 import { UserSettings } from '../models/userSettings'
-import Vue from 'vue'
 import NavigationMixin from '../mixins/navigation-mixin'
 import { KCUserProfile } from '../models/KCUserProfile'
 import keycloakService from '../services/keycloak.services'
