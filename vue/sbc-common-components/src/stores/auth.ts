@@ -53,8 +53,6 @@ export const useAuthStore = defineStore('auth', {
     },
 
     syncWithSessionStorage(): void {
-      console.log('.....')
-      console.log(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken))
       this.setKCToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || '')
       this.setIDToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || '')
       this.setRefreshToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || '')

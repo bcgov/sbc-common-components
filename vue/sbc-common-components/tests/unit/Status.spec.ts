@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import StatusService from '../../src/services/status.services'
 import SbcSystemAlert from '@/components/SbcSystemAlert.vue'
 
@@ -45,25 +45,6 @@ describe('SbcSystemAlert.vue', () => {
       done()
     })
   })
-  it('Check service call with false', done => {
-    let mockDetails = { data: { 'currentStatus': 'False', 'nextUpTime': 0 } }
-    StatusService.getServiceStatus = vitest.fn().mockResolvedValue(mockDetails)
-
-    const wrapper = shallowMount(SbcSystemAlert, {
-      propsData: { serviceData, statusURL: 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1/' },
-      mocks: { $t }
-    })
-    expect(StatusService.getServiceStatus).toBeCalled()
-
-    Vue.nextTick(async () => {
-      console.log('sbcsystemdown: ', wrapper.vm.$data.isSbcSystemDown)
-      expect(wrapper.vm.isSbcSystemDown).toBeFalsy()
-      expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
-
-      wrapper.destroy()
-      done()
-    })
-  })
 
   it('Check service call with false', done => {
     let mockDetails = { data: { 'currentStatus': 'False', 'nextUpTime': 0 } }
@@ -76,7 +57,6 @@ describe('SbcSystemAlert.vue', () => {
 
     expect(StatusService.getServiceStatus).toBeCalled()
     Vue.nextTick(async () => {
-      console.log('sbcsystemdown: ', wrapper.vm.$data.isSbcSystemDown)
       expect(wrapper.vm.isSbcSystemDown).toBeFalsy()
       expect(wrapper.vm.alertMessage).toBe('Payment service unavailable')
 
