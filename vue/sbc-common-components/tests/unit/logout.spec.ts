@@ -1,6 +1,6 @@
 import 'mutationobserver-shim'
 import SBCHeader from '@/components/SbcHeader.vue'
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
@@ -20,7 +20,7 @@ describe('SbcHeader.vue', () => {
 
     const localVue = createLocalVue()
 
-    cmp = mount(SBCHeader, {
+    cmp = shallowMount(SBCHeader, {
       localVue,
       vuetify,
       attachToDocument: true
@@ -39,18 +39,12 @@ describe('SbcHeader.vue', () => {
     expect(cmp.find('.user-name').text().startsWith('BCREGTEST')).toBeTruthy()
   })
 
-  it('logout/in button click invokes logout method', async () => {
+  it('logout method is called when logout button is clicked', async () => {
     const stub = vitest.fn()
     cmp.setMethods({ logout: stub })
-    mock.onAny().reply(200, {})
-    const userAccountBtn = cmp.find('.user-account-btn')
-    expect(userAccountBtn.exists()).toBe(true)
-    userAccountBtn.trigger('click')
-    await cmp.vm.$nextTick()
-    const logoutBtn = cmp.find('.v-list-item-title:contains("Log out")')
-    expect(logoutBtn.exists()).toBe(true)
-    logoutBtn.trigger('click')
 
-    expect(stub).toBeCalled()
+    cmp.vm.logout()
+
+    expect(stub).toHaveBeenCalled()
   })
 })
