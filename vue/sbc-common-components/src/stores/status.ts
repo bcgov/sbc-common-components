@@ -1,4 +1,4 @@
-import { reactive } from '@vue/composition-api'
+import { reactive, toRefs } from '@vue/composition-api'
 import { StatusStateIF } from '../interfaces'
 import { ServiceStatus } from '../models/ServiceStatus'
 import StatusService from '../services/status.services'
@@ -23,7 +23,7 @@ export const useStatusStore = defineStore('status', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     fetchPaySystemStatus
   }
 })

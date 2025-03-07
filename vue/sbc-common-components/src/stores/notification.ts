@@ -1,4 +1,4 @@
-import { reactive } from '@vue/composition-api'
+import { reactive, toRefs } from '@vue/composition-api'
 import { Notifications } from '../models/notification'
 import NotificationService from '../services/notification.services'
 import ConfigHelper from '../util/config-helper'
@@ -56,7 +56,7 @@ export const useNotificationStore = defineStore('notification', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     syncNotifications,
     fetchNotificationCount,
     fetchNotificationUnreadPriorityCount,

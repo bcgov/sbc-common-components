@@ -1,4 +1,4 @@
-import { computed, reactive } from '@vue/composition-api'
+import { computed, reactive, toRefs } from '@vue/composition-api'
 import AccountService from '../services/account.services'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys, LoginSource, Role } from '../util/constants'
@@ -113,7 +113,7 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     accountName,
     switchableAccounts,
     username,

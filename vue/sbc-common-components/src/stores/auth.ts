@@ -1,4 +1,4 @@
-import { computed, reactive } from '@vue/composition-api'
+import { computed, reactive, toRefs } from '@vue/composition-api'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
 import KeycloakServices from '../services/keycloak.services'
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     isAuthenticated,
     keycloakGuid,
     currentLoginSource,

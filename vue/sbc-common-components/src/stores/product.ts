@@ -18,7 +18,7 @@ export const useProductsStore = defineStore('product', () => {
   }
 
   return {
-    state,
+    ...toRefs(state),
     syncProducts
   }
 })
