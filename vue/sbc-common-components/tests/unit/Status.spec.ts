@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'

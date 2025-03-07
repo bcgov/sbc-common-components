@@ -64,6 +64,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['keycloak-js']
+    exclude: ['keycloak-js', '@vue/composition-api']
   }
 })

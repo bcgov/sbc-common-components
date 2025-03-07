@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import 'mutationobserver-shim'
 import SBCHeader from '@/components/SbcHeader.vue'
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils'

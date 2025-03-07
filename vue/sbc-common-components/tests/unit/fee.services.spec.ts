@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 // users.test.js
 import Axios from 'axios'
 import FeeServices from '../../src/services/fee.services'

@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import 'mutationobserver-shim'
 import { shallowMount, mount } from '@vue/test-utils'
 import SbcFeeSummary from '@/components/SbcFeeSummary.vue'

@@ -1,61 +1,71 @@
-/* eslint-disable */
+import { computed, reactive } from '@vue/composition-api'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
 import KeycloakServices from '../services/keycloak.services'
 import { defineStore } from 'pinia'
 import { AuthStateIF } from '../interfaces'
 
-export const useAuthStore = defineStore('auth', {
-  state: (): AuthStateIF => ({
+export const useAuthStore = defineStore('auth', () => {
+  const state = reactive<AuthStateIF>({
     token: '',
     idToken: '',
     refreshToken: '',
     kcGuid: '',
     loginSource: ''
-  }),
+  })
 
-  getters: {
-    isAuthenticated: state => !!state.token,
-    keycloakGuid: state => state.kcGuid || KeycloakServices.getUserInfo().keycloakGuid,
-    currentLoginSource: state => state.loginSource || KeycloakServices.getUserInfo().loginSource
-  },
+  const isAuthenticated = computed(() => !!state.token)
+  const keycloakGuid = computed(() => state.kcGuid || KeycloakServices.getUserInfo().keycloakGuid)
+  const currentLoginSource = computed(() => state.loginSource || KeycloakServices.getUserInfo().loginSource)
 
-  actions: {
-    clearSession(): void {
-      this.token = ''
-      this.idToken = ''
-      this.refreshToken = ''
-      this.kcGuid = ''
-      this.loginSource = ''
-    },
+  const clearSession = (): void => {
+    state.token = ''
+    state.idToken = ''
+    state.refreshToken = ''
+    state.kcGuid = ''
+    state.loginSource = ''
+  }
 
-    setKCToken(token: string): void {
-      this.token = token
-      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakToken, token)
-    },
+  const setKCToken = (token: string): void => {
+    state.token = token
+    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakToken, token)
+  }
 
-    setIDToken(idToken: string): void {
-      this.idToken = idToken
-      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakIdToken, idToken)
-    },
+  const setIDToken = (idToken: string): void => {
+    state.idToken = idToken
+    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakIdToken, idToken)
+  }
 
-    setRefreshToken(refreshToken: string): void {
-      this.refreshToken = refreshToken
-      ConfigHelper.addToSession(SessionStorageKeys.KeyCloakRefreshToken, refreshToken)
-    },
+  const setRefreshToken = (refreshToken: string): void => {
+    state.refreshToken = refreshToken
+    ConfigHelper.addToSession(SessionStorageKeys.KeyCloakRefreshToken, refreshToken)
+  }
 
-    setKCGuid(kcGuid: string): void {
-      this.kcGuid = kcGuid
-    },
+  const setKCGuid = (kcGuid: string): void => {
+    state.kcGuid = kcGuid
+  }
 
-    setLoginSource(loginSource: string): void {
-      this.loginSource = loginSource
-    },
+  const setLoginSource = (loginSource: string): void => {
+    state.loginSource = loginSource
+  }
 
-    syncWithSessionStorage(): void {
-      this.setKCToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || '')
-      this.setIDToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || '')
-      this.setRefreshToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || '')
-    }
+  const syncWithSessionStorage = (): void => {
+    setKCToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || '')
+    setIDToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakIdToken) || '')
+    setRefreshToken(ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakRefreshToken) || '')
+  }
+
+  return {
+    state,
+    isAuthenticated,
+    keycloakGuid,
+    currentLoginSource,
+    clearSession,
+    setKCToken,
+    setIDToken,
+    setRefreshToken,
+    setKCGuid,
+    setLoginSource,
+    syncWithSessionStorage
   }
 })
