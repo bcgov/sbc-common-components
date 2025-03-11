@@ -15,24 +15,24 @@ defaults:
 
 jobs:
   setup-job:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     if: github.repository == 'bcgov/sbc-common-components'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: "true"
 
   linting:
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        node-version: [16.14.2]
+        node-version: [20.5.1]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -46,14 +46,14 @@ jobs:
 
   testing-coverage:
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        node-version: [16.14.2]
+        node-version: [20.5.1]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -74,14 +74,14 @@ jobs:
 
   build-check:
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        node-version: [16.14.2]
+        node-version: [20.5.1]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
