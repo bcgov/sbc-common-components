@@ -11,7 +11,7 @@
               <source media="(max-width: 600px)" srcset="../assets/img/gov_bc_logo_vert.png">
               <img class="brand__image" src="../assets/img/gov_bc_logo_vert.png" alt="Government of British Columbia Logo" title="Government of British Columbia">
             </picture>
-            <span class="brand__title">Service<span class="brand__title--bc">BC</span> <span class="brand__title--wrap">Connect</span></span>
+            <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
           </a>
           <!-- Environment Alert -->
           <v-alert v-if="environment" :color="alertColor" dense class="env-distinction">
@@ -706,11 +706,11 @@ $app-header-font-color: #ffffff;
   overflow-y: scroll;
 
 }
-@media (max-width: 680px) {
-  .brand__title--wrap {
-    display: block;
-  }
-}
+//@media (max-width: 680px) { uncomment for sbc connect
+//  .brand__title--wrap {
+    //display: block;
+  //}
+//}
 
 @media (max-width: 900px) {
   .brand__image {
@@ -721,6 +721,9 @@ $app-header-font-color: #ffffff;
   .brand__title {
     font-size: 1rem;
     line-height: 1.25rem;
+  }
+  .brand__title--wrap { //Comment out for sbc connect
+    display: block;
   }
 }
 

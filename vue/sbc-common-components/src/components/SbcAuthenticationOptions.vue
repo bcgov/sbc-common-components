@@ -4,23 +4,23 @@
       <template v-if="isDialog">
         <v-row>
           <v-col cols="11">
-            <h3>Log in to Service BC Connect</h3>
+            <h3>Log in to BC Registries</h3>
           </v-col>
           <v-col cols="1">
             <v-icon large color="primary" @click="emitClose()">mdi-close</v-icon>
           </v-col>
         </v-row>
         <p>
-          Don't have a Service BC Connect account?
+          Don't have a BC Registries account?
           <a @click="goToCreateAccount">
             <u>Create an account</u>
           </a>
         </p>
       </template>
       <template v-else>
-        <h1 class="view-header__title">Log in to Service BC Connect</h1>
+        <h1 class="view-header__title">Log in to BC Registries</h1>
         <p class="mt-4 mb-0">
-          Don't have a Service BC Connect account? <a class="text-decoration-underline" @click="goToCreateAccount">Create an account</a>
+          Don't have a BC Registries account? <a class="text-decoration-underline" @click="goToCreateAccount">Create an account</a>
         </p>
       </template>
     </div>
@@ -84,7 +84,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
       type: LoginSource.BCSC,
       title: 'BC Services Card',
       description: `Residents of British Columbia can use their government-issued
-                BC Services Card to securly access Service BC Connect.`,
+                BC Services Card to securly access BC Registries.`,
       icon: 'mdi-account-card-details-outline',
       btnLabel: 'Log in with BC Services Card',
       idpHint: IdpHint.BCSC
@@ -93,7 +93,7 @@ export default class SbcAuthenticationOptions extends NavigationMixin {
       type: LoginSource.BCEID,
       title: 'BCeID',
       description: `Non-BC residents and residents do not have a BC Services Card
-                can use a BCeID account to securly access Service BC Connect.`,
+                can use a BCeID account to securly access BC Registries.`,
       icon: 'mdi-two-factor-authentication',
       btnLabel: 'Log in with BCeID',
       idpHint: IdpHint.BCEID
