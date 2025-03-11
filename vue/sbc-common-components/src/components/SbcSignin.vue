@@ -43,7 +43,7 @@ export default class SbcSignin extends NavigationMixin {
 
   private async mounted () {
     // Initialize keycloak session
-    const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint, this.$store)
+    const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint)
     kcInit.then(async (authenticated: boolean) => {
       if (authenticated) {
         // eslint-disable-next-line no-console

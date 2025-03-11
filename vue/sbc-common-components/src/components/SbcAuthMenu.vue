@@ -154,7 +154,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
       }
     } else {
       // Initialize keycloak session
-      const kcInit = KeyCloakService.initializeKeyCloak(idpHint, this.$store)
+      const kcInit = KeyCloakService.initializeKeyCloak(idpHint)
       kcInit.then(async (authenticated: boolean) => {
         if (authenticated) {
           // eslint-disable-next-line no-console
