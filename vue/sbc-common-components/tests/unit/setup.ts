@@ -5,7 +5,6 @@ import VueRouter from 'vue-router'
 import { createPinia, PiniaVuePlugin, setActivePinia } from 'pinia'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { webcrypto } from 'crypto'
 
 Vue.use(VueRouter)
 Vue.use(VueI18n)
