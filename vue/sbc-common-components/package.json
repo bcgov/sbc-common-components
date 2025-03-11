@@ -57,6 +57,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",
     "mutationobserver-shim": "^0.3.7",
+    "node-fetch": "^2.7.0",
     "pinia": "^2.1.6",
     "sass": "~1.32.12",
     "sass-loader": "^7.2.0",
