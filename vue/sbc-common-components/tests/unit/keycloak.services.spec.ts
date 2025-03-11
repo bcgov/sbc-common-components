@@ -1,5 +1,4 @@
 import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
-import Axios from 'axios'
 import KeycloakService from '../../src/services/keycloak.services'
 import ConfigHelper from '../../src/util/config-helper'
 import { SessionStorageKeys } from '@/util/constants'

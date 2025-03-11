@@ -120,7 +120,7 @@ import { mapState, mapActions } from 'pinia'
   this.$options.computed = {
   ...(this.$options.computed || {}),
   ...mapState(useProductsStore, ['products', 'partners'])
-  },
+  }
   this.$options.methods = {
   ...(this.$options.methods || {}),
   ...mapActions(useProductsStore, ['syncProducts'])

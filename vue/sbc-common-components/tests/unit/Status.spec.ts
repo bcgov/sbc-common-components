@@ -1,7 +1,6 @@
 import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import Vuelidate from 'vuelidate'
 import { shallowMount } from '@vue/test-utils'
 import StatusService from '../../src/services/status.services'
 import SbcSystemAlert from '@/components/SbcSystemAlert.vue'

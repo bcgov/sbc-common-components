@@ -2,14 +2,13 @@
   <loading-screen :is-loading="isLoading"></loading-screen>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { Role, LoginSource, Pages } from '../util/constants'
 import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
-import TokenService from '../services/token.services'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
-import { mapActions, mapState } from 'pinia'
+import { mapActions } from 'pinia'
 import { KCUserProfile } from '../models/KCUserProfile'
 import NavigationMixin from '../mixins/navigation-mixin'
 

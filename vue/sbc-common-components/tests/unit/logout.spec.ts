@@ -1,7 +1,7 @@
 import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import 'mutationobserver-shim'
 import SBCHeader from '@/components/SbcHeader.vue'
-import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
