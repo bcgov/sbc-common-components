@@ -100,9 +100,8 @@
 import SbcFooter from '@sbc/components/SbcFooter.vue'
 import SbcHeader from '@sbc/components/SbcHeader.vue'
 import SbcLoader from '@sbc/components/SbcLoader.vue'
-import { LDFlags, Pages, SessionStorageKeys } from '@sbc/util/constants'
+import { LDFlags, SessionStorageKeys } from '@sbc/util/constants'
 import LaunchDarklyService from '@sbc/services/launchdarkly.services'
-import { useAccountStore, useAuthStore } from '@sbc/stores'
 import { ref, computed, onMounted, defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
@@ -112,24 +111,9 @@ export default defineComponent({
     SbcLoader
   },
   setup ({ root }) {
-    const accountStore = useAccountStore()
-    const authStore = useAuthStore()
-
     const showNotification = ref(false)
     const notificationText = ref('')
     const showLoading = ref(true)
-    const toastType = 'primary'
-    const toastTimeout = 6000
-    const logoutUrl = ''
-
-    const currentAccountSettings = computed(() => null)
-    const permissions = computed(() => null)
-    const currentUser = computed(() => null)
-    const isAuthenticated = computed(() => authStore.isAuthenticated)
-
-    const showNavigationBar = computed(() => root.router.currentRoute.value.meta.showNavBar) // Use router instead of $route
-    const showLoginMenu = computed(() =>
-      root.router.currentRoute.value.path !== `/${Pages.LOGIN}`) // Use router instead of $route
 
     const bannerText = computed(() => {
       const bannerText = LaunchDarklyService.getFlag(LDFlags.BannerText)
@@ -137,9 +121,6 @@ export default defineComponent({
     })
 
     const aboutText = 'SBC Common Components being upgraded to Vue 3'
-
-    const setCurrentOrganization = (value) => {}
-    const loadUserInfo = () => {}
 
     onMounted(() => {
       sessionStorage.setItem(SessionStorageKeys.StatusApiUrl,
