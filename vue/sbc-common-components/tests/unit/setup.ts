@@ -13,7 +13,3 @@ Vue.use(PiniaVuePlugin)
 setActivePinia(createPinia())
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
-// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
-document.body.setAttribute('data-app', 'true');
-// TypeError: crypto$2.getRandomValues is not a function
-(global as any).crypto = webcrypto
