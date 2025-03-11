@@ -6,8 +6,6 @@ import { shallowMount } from '@vue/test-utils'
 import StatusService from '../../src/services/status.services'
 import SbcSystemAlert from '@/components/SbcSystemAlert.vue'
 
-Vue.use(Vuetify)
-Vue.use(Vuelidate)
 // suppress "avoid mutating a prop directly" warnings
 // https://vue-test-utils.vuejs.org/api/config.html#silent
 Vue.config.silent = true
