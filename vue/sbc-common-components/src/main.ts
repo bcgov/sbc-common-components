@@ -6,18 +6,18 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vue2Filters from 'vue2-filters'
 import vuetify from './plugins/vuetify'
-import { createPinia, PiniaVuePlugin } from 'pinia'
+import { createPinia, PiniaVuePlugin, setActivePinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(PiniaVuePlugin)
+const pinia = createPinia()
+setActivePinia(pinia)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
 
 Vue.config.productionTip = false
-
-const pinia = createPinia()
 
 new Vue({
   pinia,

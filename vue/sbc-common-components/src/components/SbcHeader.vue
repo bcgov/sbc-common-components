@@ -345,7 +345,7 @@ import ConfigHelper from '../util/config-helper'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-import { mapState, mapActions, mapGetters } from 'pinia'
+import { mapState, mapActions, mapGetters, getActivePinia } from 'pinia'
 import { UserSettings } from '../models/userSettings'
 import NavigationMixin from '../mixins/navigation-mixin'
 import { KCUserProfile } from '../models/KCUserProfile'
@@ -479,7 +479,9 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    this.syncWithSessionStorage()
+    if (getActivePinia()) {
+      this.syncWithSessionStorage()
+    }
     if (this.isAuthenticated) {
       await this.loadUserInfo()
       await this.syncAccount()

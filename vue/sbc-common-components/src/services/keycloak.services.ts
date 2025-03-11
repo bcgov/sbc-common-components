@@ -4,6 +4,7 @@ import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
 import { decodeKCToken } from '../util/common-util'
 import { useAuthStore } from '../stores'
+import { getActivePinia } from 'pinia'
 
 class KeyCloakService {
   private kc: KeycloakInstance | undefined
@@ -56,13 +57,15 @@ class KeyCloakService {
 
   async initSession () {
     const authStore = useAuthStore()
-    authStore.setKCToken(this.kc?.token || '')
-    authStore.setIDToken(this.kc?.idToken || '')
-    authStore.setRefreshToken(this.kc?.refreshToken || '')
+    if (authStore) {
+      authStore.setKCToken(this.kc?.token || '')
+      authStore.setIDToken(this.kc?.idToken || '')
+      authStore.setRefreshToken(this.kc?.refreshToken || '')
 
-    const userInfo = this.getUserInfo()
-    authStore.setKCGuid(userInfo?.keycloakGuid || '')
-    authStore.setLoginSource(userInfo?.loginSource || '')
+      const userInfo = this.getUserInfo()
+      authStore.setKCGuid(userInfo?.keycloakGuid || '')
+      authStore.setLoginSource(userInfo?.loginSource || '')
+    }
 
     await this.syncSessionAndScheduleTokenRefresh()
   }
@@ -260,8 +263,13 @@ class KeyCloakService {
   }
 
   private async clearSession () {
-    const authStore = useAuthStore()
-    authStore.clearSession()
+    // Check if Pinia is available before using the store
+    if (getActivePinia()) {
+      const authStore = useAuthStore()
+      if (authStore) {
+        authStore.clearSession()
+      }
+    }
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakToken)
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakIdToken)
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakRefreshToken)
