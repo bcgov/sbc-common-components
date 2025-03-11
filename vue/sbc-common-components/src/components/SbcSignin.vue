@@ -2,47 +2,35 @@
   <loading-screen :is-loading="isLoading"></loading-screen>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { Role, LoginSource, Pages } from '../util/constants'
 import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
-import TokenService from '../services/token.services'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { mapActions, mapState } from 'vuex'
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { mapActions } from 'pinia'
 import { KCUserProfile } from '../models/KCUserProfile'
 import NavigationMixin from '../mixins/navigation-mixin'
 
 @Component({
   components: {
-    LoadingScreen
+  LoadingScreen
   },
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('account', [
-        'loadUserInfo',
-        'syncAccount',
-        'getCurrentUserProfile',
-        'updateUserProfile'
-      ])
-    }
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, [
+    'loadUserInfo',
+    'syncAccount',
+    'getCurrentUserProfile',
+    'updateUserProfile'
+    ]),
+  ...mapActions(useAuthStore, [
+    'syncWithSessionStorage'
+    ])
   }
-})
+  }
+  })
 export default class SbcSignin extends NavigationMixin {
   private isLoading = true
   @Prop({ default: 'bcsc' }) idpHint!: string
@@ -54,9 +42,8 @@ export default class SbcSignin extends NavigationMixin {
   private readonly updateUserProfile!: () => Promise<void>
 
   private async mounted () {
-    getModule(AccountModule, this.$store)
     // Initialize keycloak session
-    const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint, this.$store)
+    const kcInit = KeyCloakService.initializeKeyCloak(this.idpHint)
     kcInit.then(async (authenticated: boolean) => {
       if (authenticated) {
         // eslint-disable-next-line no-console
@@ -80,9 +67,11 @@ export default class SbcSignin extends NavigationMixin {
           const currentUser = await this.getCurrentUserProfile(this.inAuth)
 
           if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Redirecting. TOS not accepted')
             this.redirectToPath(this.inAuth, Pages.USER_PROFILE_TERMS)
           } else if (isRedirectToCreateAccount) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Redirecting. No Valid Role')
             switch (userInfo.loginSource) {
               case LoginSource.BCSC:

@@ -28,53 +28,35 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { LDClient } from 'launchdarkly-js-client-sdk'
 import { Role, IdpHint, LoginSource, Pages } from '../util/constants'
-import { mapState, mapActions, mapGetters } from 'vuex'
 import { UserSettings } from '../models/userSettings'
-import NavigationMixin from '../mixins/navigation-mixin'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { KCUserProfile } from '../models/KCUserProfile'
 import KeyCloakService from '../services/keycloak.services'
-
-declare module 'vuex' {
-  interface Store<S> {
-    isModuleRegistered(_: string[]): boolean
-  }
-}
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { mapState, mapGetters, mapActions } from 'pinia'
+import NavigationMixin from '../mixins/navigation-mixin'
+import { KCUserProfile } from '../models/KCUserProfile'
 
 @Component({
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
-    }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('account', [
-        'loadUserInfo',
-        'syncAccount',
-        'syncCurrentAccount',
-        'syncUserProfile',
-        'getCurrentUserProfile',
-        'updateUserProfile']),
-      ...mapActions('auth', ['syncWithSessionStorage'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAccountStore, ['currentAccount']),
+  ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
   }
-})
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, [
+    'loadUserInfo',
+    'syncAccount',
+    'syncCurrentAccount',
+    'syncUserProfile',
+    'getCurrentUserProfile',
+    'updateUserProfile'
+    ]),
+  ...mapActions(useAuthStore, ['syncWithSessionStorage'])
+  }
+  }
+  })
 export default class SbcAuthMenu extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
   private readonly currentAccount!: UserSettings | null
@@ -125,8 +107,6 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    getModule(AccountModule, this.$store)
-    getModule(AuthModule, this.$store)
     this.syncWithSessionStorage()
     if (this.isAuthenticated) {
       await this.loadUserInfo()
@@ -174,7 +154,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
       }
     } else {
       // Initialize keycloak session
-      const kcInit = KeyCloakService.initializeKeyCloak(idpHint, this.$store)
+      const kcInit = KeyCloakService.initializeKeyCloak(idpHint)
       kcInit.then(async (authenticated: boolean) => {
         if (authenticated) {
           // eslint-disable-next-line no-console
@@ -192,6 +172,7 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
 
           // if not from the sbc-auth, do the checks and redirect to sbc-auth
           if (!this.inAuth) {
+            // eslint-disable-next-line no-console
             console.log('[SignIn.vue]Not from sbc-auth. Checking account status')
             // redirect to create account page if the user has no 'account holder' role
             const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
@@ -199,9 +180,11 @@ export default class SbcAuthMenu extends Mixins(NavigationMixin) {
             const currentUser = await this.getCurrentUserProfile(this.inAuth)
 
             if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
+              // eslint-disable-next-line no-console
               console.log('[SignIn.vue]Redirecting. TOS not accepted')
               this.redirectToPath(this.inAuth, Pages.USER_PROFILE_TERMS)
             } else if (isRedirectToCreateAccount) {
+              // eslint-disable-next-line no-console
               console.log('[SignIn.vue]Redirecting. No Valid Role')
               switch (userInfo.loginSource) {
                 case LoginSource.BCSC:
