@@ -11,7 +11,7 @@ export const useProductsStore = defineStore('product', () => {
 
   const syncProducts = async (): Promise<Products> => {
     const response = await ProductService.getAllProducts()
-    if (response && response.data) {
+    if (response?.data) {
       state.products = response.data?.sort((a, b) => a.name.localeCompare(b.name))
       return state.products
     }

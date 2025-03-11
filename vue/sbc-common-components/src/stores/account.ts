@@ -20,7 +20,7 @@ export const useAccountStore = defineStore('account', () => {
     currentUser: null
   })
 
-  const accountName = computed(() => state.currentAccount && state.currentAccount.label)
+  const accountName = computed(() => state.currentAccount?.label)
   const switchableAccounts = computed(() => state.userSettings?.filter(setting => setting.type === 'ACCOUNT'))
   const username = computed(() => `${state.currentUser?.firstName || '-'} ${state.currentUser?.lastName || ''}`)
 
@@ -51,7 +51,7 @@ export const useAccountStore = defineStore('account', () => {
     if (state.currentAccount?.id) {
       const response = await AccountService.getPendingMemberCount(
         parseInt(state.currentAccount.id), state.currentUser?.keycloakGuid)
-      state.pendingApprovalCount = (response && response.data && response.data.count) || 0
+      state.pendingApprovalCount = response?.data?.count || 0
     } else {
       state.pendingApprovalCount = 0
     }
@@ -66,7 +66,7 @@ export const useAccountStore = defineStore('account', () => {
 
   const syncUserProfile = async (): Promise<KCUserProfile> => {
     const response = await UserService.getUserProfile('@me')
-    if (response && response.data) {
+    if (response?.data) {
       const userProfile = response.data
       // update the first name and last name for the users
       const updateProfile: KCUserProfile = {

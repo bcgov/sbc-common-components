@@ -16,7 +16,7 @@ export const useNotificationStore = defineStore('notification', () => {
 
   const syncNotifications = async (): Promise<Notifications> => {
     const response = await NotificationService.getNotifications()
-    if (response && response.data) {
+    if (response?.data) {
       state.notifications = response.data?.sort((a, b) => {
         let res = (+b.priority) - (+a.priority)
         if (res === 0) {

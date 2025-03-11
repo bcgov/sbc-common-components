@@ -14,7 +14,7 @@ export const useStatusStore = defineStore('status', () => {
 
   const fetchPaySystemStatus = async (): Promise<ServiceStatus | null> => {
     const response = await StatusService.getServiceStatus('PAYBC')
-    const result = (response && response.data) || null
+    const result = response?.data || null
     state.currentStatus = result.currentStatus
     state.nextUpTime = result.nextUpTime
     state.message = result.message

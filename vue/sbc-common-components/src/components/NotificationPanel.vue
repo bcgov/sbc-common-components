@@ -65,7 +65,7 @@ import 'clickout-event'
   this.$options.computed = {
   ...(this.$options.computed || {}),
   ...mapState(useNotificationStore, ['notifications'])
-  },
+  }
   this.$options.methods = {
   ...(this.$options.methods || {}),
   ...mapActions(useNotificationStore, ['markAsRead'])

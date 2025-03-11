@@ -22,7 +22,7 @@ import { ServiceStatus } from '../models/ServiceStatus'
   this.$options.computed = {
   ...(this.$options.computed || {}),
   ...mapState(useStatusStore, ['paySystemStatus'])
-  },
+  }
   this.$options.methods = {
   ...(this.$options.methods || {}),
   ...mapActions(useStatusStore, ['fetchPaySystemStatus'])

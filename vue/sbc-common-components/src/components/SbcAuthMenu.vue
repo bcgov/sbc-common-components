@@ -42,7 +42,7 @@ import { KCUserProfile } from '../models/KCUserProfile'
   ...(this.$options.computed || {}),
   ...mapState(useAccountStore, ['currentAccount']),
   ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-  },
+  }
   this.$options.methods = {
   ...(this.$options.methods || {}),
   ...mapActions(useAccountStore, [

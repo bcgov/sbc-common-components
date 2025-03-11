@@ -366,7 +366,7 @@ import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
   ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
   ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
   ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-  },
+  }
   this.$options.methods = {
   ...(this.$options.methods || {}),
   ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
