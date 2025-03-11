@@ -65,12 +65,6 @@ jobs:
         id: test
         run: |
           make test
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          flags: sbccommoncomponentsweb
-          name: codecov-vue
-          fail_ci_if_error: true
 
   build-check:
     needs: setup-job
