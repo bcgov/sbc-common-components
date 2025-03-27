@@ -181,7 +181,6 @@ export default defineComponent({
         await accountStore.loadUserInfo()
         await accountStore.syncAccount()
         await updateProfile()
-        // checking for account status
         checkStatus()
       }
     })
