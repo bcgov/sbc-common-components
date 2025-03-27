@@ -32,7 +32,7 @@ import KeyCloakService from '../services/keycloak.services'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { storeToRefs } from 'pinia'
-import NavigationMixin from '../mixins/navigation-mixin'
+import ConfigHelper from '../util/config-helper'
 
 interface UserProfile {
   userTerms?: {
@@ -56,7 +56,6 @@ interface State {
 
 export default defineComponent({
   name: 'SbcAuthMenu',
-  mixins: [NavigationMixin],
   props: {
     redirectOnLoginSuccess: {
       type: String as PropType<string>,
@@ -75,25 +74,33 @@ export default defineComponent({
       default: false
     }
   },
-  methods: {
-    redirectTo (routePath: string) {
-      (this as any).redirectToPath(this.inAuth, routePath)
-    },
-    getContextPath (): string {
-      const baseUrl = (this.$router && this.$router['history'] && this.$router['history'].base) || '/'
-      return baseUrl + (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/' ? '/' : '')
-    }
-  },
   setup (props, { root }) {
     const accountStore = useAccountStore()
     const authStore = useAuthStore()
     const { currentAccount, accountName } = storeToRefs(accountStore)
     const { isAuthenticated, currentLoginSource } = storeToRefs(authStore)
-    const instance = getCurrentInstance()
 
-    const redirectTo = (routePath: string) => {
-      // Access the mixin method through the instance
-      ;(instance?.proxy as any).redirectToPath(props.inAuth, routePath)
+    const redirectInTriggeredApp = (routePath: string) => {
+      const resolvedRoutes = root.$router.resolve({ path: `/${routePath}` })
+      if (resolvedRoutes.resolved.matched.length > 0) {
+        root.$router.push(`/${routePath}`)
+      } else {
+        // navigate to auth app if route is not found in the triggered app
+        window.location.assign(`${ConfigHelper.getAuthContextPath()}/${routePath}`)
+      }
+    }
+
+    const redirectToPath = (inAuth: boolean, routePath: string) => {
+      if (inAuth) {
+        redirectInTriggeredApp(routePath)
+      } else {
+        window.location.assign(`${ConfigHelper.getAuthContextPath()}/${routePath}`)
+      }
+    }
+
+    const getContextPath = (): string => {
+      const baseUrl = (root.$router && root.$router['history'] && root.$router['history'].base) || '/'
+      return baseUrl + (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/' ? '/' : '')
     }
 
     const state = reactive<State>({
@@ -137,9 +144,9 @@ export default defineComponent({
     const checkAccountStatus = () => {
       // redirect if account status is suspended
       if (currentAccount.value?.accountStatus === 'NSF_SUSPENDED') {
-        redirectTo(`${Pages.ACCOUNT_FREEZ}`)
+        redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
       } else if (currentAccount.value?.accountStatus === 'PENDING_AFFIDAVIT_REVIEW') {
-        redirectTo(`${Pages.PENDING_APPROVAL}/${accountName.value}/true`)
+        redirectToPath(props.inAuth, `${Pages.PENDING_APPROVAL}/${accountName.value}/true`)
       }
     }
 
@@ -148,9 +155,9 @@ export default defineComponent({
         if (props.redirectOnLoginSuccess) {
           let url = encodeURIComponent(props.redirectOnLoginSuccess)
           url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
-          window.location.assign(`${(instance?.proxy as any).getContextPath()}signin/${idpHint}/${url}`)
+          window.location.assign(`${getContextPath()}signin/${idpHint}/${url}`)
         } else {
-          window.location.assign(`${(instance?.proxy as any).getContextPath()}signin/${idpHint}`)
+          window.location.assign(`${getContextPath()}signin/${idpHint}`)
         }
       } else {
         try {
@@ -179,16 +186,16 @@ export default defineComponent({
               if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
                 // eslint-disable-next-line no-console
                 console.log('[SignIn.vue]Redirecting. TOS not accepted')
-                redirectTo(Pages.USER_PROFILE_TERMS)
+                redirectToPath(props.inAuth, Pages.USER_PROFILE_TERMS)
               } else if (isRedirectToCreateAccount) {
                 // eslint-disable-next-line no-console
                 console.log('[SignIn.vue]Redirecting. No Valid Role')
                 switch (userInfo.loginSource) {
                   case LoginSource.BCSC:
-                    redirectTo(Pages.CREATE_ACCOUNT)
+                    redirectToPath(props.inAuth, Pages.CREATE_ACCOUNT)
                     break
                   case LoginSource.BCEID:
-                    redirectTo(Pages.CHOOSE_AUTH_METHOD)
+                    redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
                     break
                 }
               }
@@ -220,7 +227,7 @@ export default defineComponent({
     })
 
     const goToCreateBCSCAccount = () => {
-      redirectTo(Pages.CREATE_ACCOUNT)
+      redirectToPath(props.inAuth, Pages.CREATE_ACCOUNT)
     }
 
     return {
