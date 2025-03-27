@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, onMounted, watch, computed, PropType, ComputedRef, unref, getCurrentInstance } from '@vue/composition-api'
+import { defineComponent, reactive, toRefs, onMounted, watch, computed, PropType, ComputedRef, unref } from '@vue/composition-api'
 import { LDClient } from 'launchdarkly-js-client-sdk'
 import { Role, IdpHint, LoginSource, Pages } from '../util/constants'
 import KeyCloakService from '../services/keycloak.services'
@@ -33,6 +33,7 @@ import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { storeToRefs } from 'pinia'
 import ConfigHelper from '../util/config-helper'
+import { useNavigation } from '../composables/navigation-factory'
 
 interface UserProfile {
   userTerms?: {
@@ -79,27 +80,11 @@ export default defineComponent({
     const authStore = useAuthStore()
     const { currentAccount, accountName } = storeToRefs(accountStore)
     const { isAuthenticated, currentLoginSource } = storeToRefs(authStore)
-
-    const redirectInTriggeredApp = (routePath: string) => {
-      const resolvedRoutes = root.$router.resolve({ path: `/${routePath}` })
-      if (resolvedRoutes.resolved.matched.length > 0) {
-        root.$router.push(`/${routePath}`)
-      } else {
-        // navigate to auth app if route is not found in the triggered app
-        window.location.assign(`${ConfigHelper.getAuthContextPath()}/${routePath}`)
-      }
-    }
-
-    const redirectToPath = (inAuth: boolean, routePath: string) => {
-      if (inAuth) {
-        redirectInTriggeredApp(routePath)
-      } else {
-        window.location.assign(`${ConfigHelper.getAuthContextPath()}/${routePath}`)
-      }
-    }
+    const { redirectToPath } = useNavigation()
 
     const getContextPath = (): string => {
-      const baseUrl = (root.$router && root.$router['history'] && root.$router['history'].base) || '/'
+      const router = root.$router
+      const baseUrl = (router && router['history'] && router['history'].base) || '/'
       return baseUrl + (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/' ? '/' : '')
     }
 
