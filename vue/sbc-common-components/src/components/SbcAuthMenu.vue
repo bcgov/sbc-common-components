@@ -129,15 +129,18 @@ export default defineComponent({
       return checkAccountStatus(props.inAuth, currentAccount.value, accountName.value)
     }
 
+    const getRedirectUrl = (idpHint: string) => {
+      if (props.redirectOnLoginSuccess) {
+        let url = encodeURIComponent(props.redirectOnLoginSuccess)
+        url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
+        return `${getContextPath()}signin/${idpHint}/${url}`
+      }
+      return `${getContextPath()}signin/${idpHint}`
+    }
+
     const login = async (idpHint: string) => {
       if (!props.fromLogin) {
-        if (props.redirectOnLoginSuccess) {
-          let url = encodeURIComponent(props.redirectOnLoginSuccess)
-          url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
-          window.location.assign(`${getContextPath()}signin/${idpHint}/${url}`)
-        } else {
-          window.location.assign(`${getContextPath()}signin/${idpHint}`)
-        }
+        window.location.assign(getRedirectUrl(idpHint))
       } else {
         try {
           // Initialize keycloak session
