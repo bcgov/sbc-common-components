@@ -10,6 +10,7 @@ import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { KCUserProfile } from '../models/KCUserProfile'
 import { useNavigation } from '../composables/navigation-factory'
+import { storeToRefs } from 'pinia'
 
 interface UserProfile {
   userTerms?: {
@@ -40,7 +41,8 @@ export default defineComponent({
     const isLoading = ref(true)
     const accountStore = useAccountStore()
     const authStore = useAuthStore()
-    const { redirectToPath } = useNavigation()
+    const { currentAccount, accountName } = storeToRefs(accountStore)
+    const { redirectToPath, handleRedirectByRole, checkAccountStatus } = useNavigation()
 
     onMounted(async () => {
       try {
@@ -63,28 +65,10 @@ export default defineComponent({
           await accountStore.syncAccount()
 
           // if not from the sbc-auth, do the checks and redirect to sbc-auth
+
           if (!props.inAuth) {
-            // redirect to create account page if the user has no 'account holder' role
-            const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
-
             const currentUser = await accountStore.getCurrentUserProfile(props.inAuth) as UserProfile
-
-            if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
-              // eslint-disable-next-line no-console
-              console.log('[SignIn.vue]Redirecting. TOS not accepted')
-              redirectToPath(props.inAuth, Pages.USER_PROFILE_TERMS)
-            } else if (isRedirectToCreateAccount) {
-              // eslint-disable-next-line no-console
-              console.log('[SignIn.vue]Redirecting. No Valid Role')
-              switch (userInfo.loginSource) {
-                case LoginSource.BCSC:
-                  redirectToPath(props.inAuth, Pages.CREATE_ACCOUNT)
-                  break
-                case LoginSource.BCEID:
-                  redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
-                  break
-              }
-            }
+            handleRedirectByRole(props.inAuth, userInfo, currentUser)
           }
 
           emit('sync-user-profile-ready')

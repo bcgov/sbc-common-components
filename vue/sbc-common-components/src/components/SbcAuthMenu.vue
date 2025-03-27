@@ -32,7 +32,6 @@ import KeyCloakService from '../services/keycloak.services'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { storeToRefs } from 'pinia'
-import ConfigHelper from '../util/config-helper'
 import { useNavigation } from '../composables/navigation-factory'
 
 interface UserProfile {
@@ -80,7 +79,7 @@ export default defineComponent({
     const authStore = useAuthStore()
     const { currentAccount, accountName } = storeToRefs(accountStore)
     const { isAuthenticated, currentLoginSource } = storeToRefs(authStore)
-    const { redirectToPath } = useNavigation()
+    const { redirectToPath, handleRedirectByRole, checkAccountStatus } = useNavigation()
 
     const getContextPath = (): string => {
       const router = root.$router
@@ -126,13 +125,8 @@ export default defineComponent({
       }
     }
 
-    const checkAccountStatus = () => {
-      // redirect if account status is suspended
-      if (currentAccount.value?.accountStatus === 'NSF_SUSPENDED') {
-        redirectToPath(props.inAuth, `${Pages.ACCOUNT_FREEZ}`)
-      } else if (currentAccount.value?.accountStatus === 'PENDING_AFFIDAVIT_REVIEW') {
-        redirectToPath(props.inAuth, `${Pages.PENDING_APPROVAL}/${accountName.value}/true`)
-      }
+    const checkStatus = () => {
+      return checkAccountStatus(props.inAuth, currentAccount.value, accountName.value)
     }
 
     const login = async (idpHint: string) => {
@@ -165,25 +159,9 @@ export default defineComponent({
               // eslint-disable-next-line no-console
               console.log('[SignIn.vue]Not from sbc-auth. Checking account status')
               // redirect to create account page if the user has no 'account holder' role
-              const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
               const currentUser = await accountStore.getCurrentUserProfile(props.inAuth) as UserProfile
-
-              if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
-                // eslint-disable-next-line no-console
-                console.log('[SignIn.vue]Redirecting. TOS not accepted')
-                redirectToPath(props.inAuth, Pages.USER_PROFILE_TERMS)
-              } else if (isRedirectToCreateAccount) {
-                // eslint-disable-next-line no-console
-                console.log('[SignIn.vue]Redirecting. No Valid Role')
-                switch (userInfo.loginSource) {
-                  case LoginSource.BCSC:
-                    redirectToPath(props.inAuth, Pages.CREATE_ACCOUNT)
-                    break
-                  case LoginSource.BCEID:
-                    redirectToPath(props.inAuth, Pages.CHOOSE_AUTH_METHOD)
-                    break
-                }
-              }
+              // Handle redirects based on user role and login source
+              handleRedirectByRole(props.inAuth, userInfo, currentUser)
             }
           }
         } catch (error) {
@@ -201,7 +179,7 @@ export default defineComponent({
         await accountStore.syncAccount()
         await updateProfile()
         // checking for account status
-        await checkAccountStatus()
+        checkStatus()
       }
     })
 
