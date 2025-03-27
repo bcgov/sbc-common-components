@@ -3,14 +3,10 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, onMounted, PropType } from '@vue/composition-api'
-import { Role, LoginSource, Pages } from '../util/constants'
 import KeyCloakService from '../services/keycloak.services'
 import LoadingScreen from './LoadingScreen.vue'
 import { useAccountStore } from '../stores/account'
-import { useAuthStore } from '../stores/auth'
-import { KCUserProfile } from '../models/KCUserProfile'
 import { useNavigation } from '../composables/navigation-factory'
-import { storeToRefs } from 'pinia'
 
 interface UserProfile {
   userTerms?: {
@@ -40,9 +36,7 @@ export default defineComponent({
   setup (props, { emit }) {
     const isLoading = ref(true)
     const accountStore = useAccountStore()
-    const authStore = useAuthStore()
-    const { currentAccount, accountName } = storeToRefs(accountStore)
-    const { redirectToPath, handleRedirectByRole, checkAccountStatus } = useNavigation()
+    const { handleRedirectByRole } = useNavigation()
 
     onMounted(async () => {
       try {
