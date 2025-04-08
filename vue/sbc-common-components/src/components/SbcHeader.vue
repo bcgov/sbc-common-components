@@ -479,9 +479,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    if (getActivePinia()) {
-      this.syncWithSessionStorage()
-    }
+    this.syncWithSessionStorage()
     if (this.isAuthenticated) {
       await this.loadUserInfo()
       await this.syncAccount()
