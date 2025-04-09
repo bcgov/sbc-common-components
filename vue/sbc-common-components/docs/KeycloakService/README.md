@@ -11,7 +11,7 @@ It has two optional arguments:
 
 | Argument | Type | Description |
 | --- | --- | --- | 
-| **store** | vuex store | optional argument to pass the store of the app (default: null)
+| **store** | pinia store | optional argument to pass the store of the app (default: null)
 | **isScheduleRefresh** | boolean | optional argument to disable/enable scheduled refresh (default: true)
 
 
@@ -37,8 +37,9 @@ It supports two modes for **refreshing the token**
    4. Start the timer
     
         ```js
-        if (this.$store.getters['auth/isAuthenticated']) {
-           await KeyCloakService.initializeToken(this.$store)
+        const authStore = useAuthStore()
+        if (authStore.isAuthenticated) {
+           await KeyCloakService.initializeToken()
         }
 
          ```
@@ -53,7 +54,7 @@ It supports two modes for **refreshing the token**
   `import KeyCloakService from 'sbc-common-components/src/services/keycloak.services'`
     
   ```js
-      KeyCloakService.initializeToken(this.$store, false).then(function (token) {
+      KeyCloakService.initializeToken(false).then(function (token) {
         originalRequest.headers['Authorization'] = `Bearer ${token}`
         return axios(originalRequest)
       }).catch(error => {
