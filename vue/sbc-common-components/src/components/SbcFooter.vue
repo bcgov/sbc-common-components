@@ -6,7 +6,7 @@
           <li><a href="/">Home</a></li>
           <li><a href="https://www.release-notes.bcregistry.gov.bc.ca" target="_blank">Release Notes</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
-          <li><a href="https://www.bcregistry.gov.bc.ca/product-fees" target="_blank">Fees</a></li>
+          <li v-if="enablePricelistFooter"><a href="https://www.bcregistry.gov.bc.ca/product-fees" target="_blank">Fees</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility" target="_blank">Accessibility</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content?id=C41D8179671441B2BAA3BDDD3D89C9A9" target="_blank">
@@ -29,14 +29,27 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { LDFlags } from '@/util/constants'
+import { computed, defineComponent } from '@vue/composition-api'
+import LaunchDarklyService from '../services/launchdarkly.services'
 
-@Component({})
-export default class SbcFooter extends Vue {
-  /** Optional About text. */
-  @Prop({ default: '' })
-  private aboutText: string
-}
+export default defineComponent({
+  name: 'SbcFooter',
+  props: {
+    aboutText: {
+      type: String,
+      default: ''
+    }
+  },
+  setup () {
+    const enablePricelistFooter = computed(() => {
+      return LaunchDarklyService.getFlag(LDFlags.EnablePricelistFooter, false)
+    })
+    return {
+      enablePricelistFooter
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

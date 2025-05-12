@@ -87,5 +87,6 @@ export enum LDFlags {
   BusSearchLink = 'bus-search-staff-link',
   EnableDetailsFilter = 'enable-transactions-detail-filter',
   SentryEnable = 'sentry-enable',
-  BannerText = 'banner-text'
+  BannerText = 'banner-text',
+  EnablePricelistFooter = 'enable-pricelist'
 }
