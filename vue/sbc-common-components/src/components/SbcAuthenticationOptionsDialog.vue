@@ -12,9 +12,9 @@ import SbcAuthenticationOptions from './SbcAuthenticationOptions.vue'
 
 @Component({
   components: {
-    SbcAuthenticationOptions
+  SbcAuthenticationOptions
   }
-})
+  })
 export default class SbcAuthenticationOptionsDialog extends Vue {
   @Prop({ default: false }) inAuth!: boolean
   @Prop({ default: false }) showModal!: boolean

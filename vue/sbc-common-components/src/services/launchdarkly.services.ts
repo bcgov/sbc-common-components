@@ -47,9 +47,9 @@ class LaunchDarklyService {
     ConfigHelper.addToSession(SessionStorageKeys.LaunchDarklyFlags, JSON.stringify(this.ldClient.allFlags()))
   }
 
-  public getFlag (flagName: string): any {
+  public getFlag (flagName: string, defaultValue = null): any {
     const ldFlags = JSON.parse(ConfigHelper.getFromSession(SessionStorageKeys.LaunchDarklyFlags) || '{}')
-    return (this.flags && this.flags[flagName]) || (ldFlags && ldFlags[flagName])
+    return (this.flags && this.flags[flagName]) || (ldFlags && ldFlags[flagName]) || defaultValue
   }
 }
 

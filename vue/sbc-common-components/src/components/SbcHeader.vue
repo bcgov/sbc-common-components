@@ -2,19 +2,22 @@
   <div class="d-flex">
     <header class="app-header" id="appHeader">
       <v-container class="justify-space-between">
-        <a @click="goToHome()" class="brand">
-          <picture>
-            <source media="(min-width: 601px)"
-              srcset="../assets/img/gov_bc_logo_horiz.png">
-            <source media="(max-width: 600px)"
-              srcset="../assets/img/gov_bc_logo_vert.png">
-            <img class="brand__image"
-              src="../assets/img/gov_bc_logo_vert.png"
-              alt="Government of British Columbia Logo"
-              title="Government of British Columbia">
-          </picture>
-          <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
-        </a>
+        <!-- Group for logo and alert -->
+        <div class="header-group d-flex align-center">
+          <!-- Brand/logo link -->
+          <a @click="goToHome()" class="brand d-flex align-center">
+            <picture>
+              <source media="(min-width: 601px)" srcset="../assets/img/gov_bc_logo_horiz.png">
+              <source media="(max-width: 600px)" srcset="../assets/img/gov_bc_logo_vert.png">
+              <img class="brand__image" src="../assets/img/gov_bc_logo_vert.png" alt="Government of British Columbia Logo" title="Government of British Columbia">
+            </picture>
+            <span class="brand__title">BC Registries <span class="brand__title--wrap">and Online Services</span></span>
+          </a>
+          <!-- Environment Alert -->
+          <v-alert v-if="environment" :color="alertColor" dense class="env-distinction">
+            {{environment}} Environment
+          </v-alert>
+        </div>
         <div v-if="showActions" class="app-header__actions">
 
           <!-- Product Selector -->
@@ -162,7 +165,7 @@
             attach="#appHeader"
             v-if="isAuthenticated"
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn
                 large
                 text
@@ -339,13 +342,12 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { initialize, LDClient } from 'launchdarkly-js-client-sdk'
 import { ALLOWED_URIS_FOR_PENDING_ORGS, Account, IdpHint, LoginSource, Pages, Role } from '../util/constants'
 import ConfigHelper from '../util/config-helper'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { useNotificationStore } from '../stores/notification'
+import { mapState, mapActions, mapGetters, getActivePinia } from 'pinia'
 import { UserSettings } from '../models/userSettings'
-import Vue from 'vue'
 import NavigationMixin from '../mixins/navigation-mixin'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
 import { KCUserProfile } from '../models/KCUserProfile'
 import keycloakService from '../services/keycloak.services'
 import LaunchDarklyService from '../services/launchdarkly.services'
@@ -354,58 +356,32 @@ import MobileDeviceAlert from './MobileDeviceAlert.vue'
 import SbcProductSelector from './SbcProductSelector.vue'
 import NotificationPanel from './NotificationPanel.vue'
 import { AccountStatus, LDFlags } from '../util/enums'
-import NotificationModule from '../store/modules/notification'
 import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
-
-declare module 'vuex' {
-  interface Store<S> {
-    isModuleRegistered(_: string[]): boolean
-  }
-}
 
 @Component({
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
-    if (!this.$store.isModuleRegistered(['notification'])) {
-      this.$store.registerModule('notification', NotificationModule)
-    }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState('account', ['currentAccount', 'pendingApprovalCount', 'currentUser']),
-      ...mapState('notification', ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
-      ...mapGetters('account', ['accountName', 'switchableAccounts', 'username']),
-      ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
-    }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('account', ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
-      ...mapActions('auth', ['syncWithSessionStorage']),
-      ...mapActions('notification', ['markAsRead',
-        'fetchNotificationCount',
-        'fetchNotificationUnreadPriorityCount',
-        'fetchNotificationUnreadCount',
-        'syncNotifications'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
+  ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
+  ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
+  ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
+  }
+  this.$options.methods = {
+  ...(this.$options.methods || {}),
+  ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
+  ...mapActions(useAuthStore, ['syncWithSessionStorage']),
+  ...mapActions(useNotificationStore, ['markAsRead', 'fetchNotificationCount', 'fetchNotificationUnreadPriorityCount',
+    'fetchNotificationUnreadCount', 'syncNotifications'])
+  }
   },
   components: {
-    SbcProductSelector,
-    BrowserVersionAlert,
-    MobileDeviceAlert,
-    NotificationPanel
+  SbcProductSelector,
+  BrowserVersionAlert,
+  MobileDeviceAlert,
+  NotificationPanel
   }
-})
+  })
 export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
   private readonly currentAccount!: UserSettings | null
@@ -439,6 +415,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   @Prop({ default: true }) showActions!: boolean;
   @Prop({ default: true }) showLoginMenu!: boolean;
   @Prop({ default: '' }) dashboardReturnUrl !: string;
+  @Prop({ default: '' }) environment!: string;
 
   private readonly loginOptions = [
     {
@@ -457,6 +434,22 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       icon: 'mdi-account-group-outline'
     }
   ]
+
+  @Watch
+  get alertColor (): string {
+    switch (this.environment.toUpperCase()) {
+      case 'DEV':
+      case 'DEVELOPMENT':
+        return 'success'
+      case 'TEST':
+        return 'error'
+      case 'SANDBOX':
+        return 'warning'
+      default:
+        this.environment = ''
+        return ''
+    }
+  }
 
   // only for internal staff who belongs to bcreg
   get isStaff (): boolean {
@@ -486,11 +479,9 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    getModule(AccountModule, this.$store)
-    getModule(AuthModule, this.$store)
-    getModule(NotificationModule, this.$store)
-
-    this.syncWithSessionStorage()
+    if (getActivePinia()) {
+      this.syncWithSessionStorage()
+    }
     if (this.isAuthenticated) {
       await this.loadUserInfo()
       await this.syncAccount()
@@ -498,6 +489,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
       // checking for account status
       await this.checkAccountStatus()
     }
+    this.$emit('account-data-loaded')
 
     // fetching what's new information, need to wait the notifications load and get the counts
     await this.syncNotifications()
@@ -562,11 +554,12 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
     this.redirectToPath(this.inAuth, `${Pages.ACCOUNT}/${this.currentAccount.id}/${Pages.SETTINGS}/transactions`)
   }
 
-  private checkAccountStatus () {
+  async checkAccountStatus () {
     // redirect if accoutn status is suspended
     if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].some(status => status === this.currentAccount?.accountStatus)) {
       // Avoid redirecting when navigating back from PAYBC for NSF.
-      if (window.location.pathname.indexOf('return-cc-payment') === -1) {
+      if (window.location.pathname.indexOf('return-cc-payment') === -1 &&
+          window.location.pathname.indexOf('signout') === -1) {
         this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
       }
     } else if (this.currentAccount?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
@@ -667,6 +660,16 @@ $app-header-font-color: #ffffff;
     padding-top: 0;
     padding-bottom: 0;
   }
+
+  .app-header__actions {
+    display: flex;
+  }
+}
+
+.env-distinction {
+  padding: 0px 10px;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 .brand {
@@ -690,6 +693,10 @@ $app-header-font-color: #ffffff;
   color: inherit;
 }
 
+.brand__title--bc {
+  color: $BCgovGold5;
+}
+
 .user-avatar {
   border-radius: 0.15rem;
   font-size: 1.1875rem;
@@ -700,6 +707,12 @@ $app-header-font-color: #ffffff;
   overflow-y: scroll;
 
 }
+//@media (max-width: 680px) { uncomment for sbc connect
+//  .brand__title--wrap {
+    //display: block;
+  //}
+//}
+
 @media (max-width: 900px) {
   .brand__image {
     margin-right: 0.75rem;
@@ -710,8 +723,7 @@ $app-header-font-color: #ffffff;
     font-size: 1rem;
     line-height: 1.25rem;
   }
-
-  .brand__title--wrap {
+  .brand__title--wrap { //Comment out for sbc connect
     display: block;
   }
 }

@@ -16,7 +16,7 @@ Vue.extend({
 
 @Component({
 
-})
+  })
 
 export default class LoadingScreen extends Vue {
   @Prop() isLoading: boolean

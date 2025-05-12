@@ -25,209 +25,183 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { defineComponent, reactive, toRefs, onMounted, watch, computed, PropType, ComputedRef, unref } from '@vue/composition-api'
 import { LDClient } from 'launchdarkly-js-client-sdk'
 import { Role, IdpHint, LoginSource, Pages } from '../util/constants'
-import { mapState, mapActions, mapGetters } from 'vuex'
-import { UserSettings } from '../models/userSettings'
-import NavigationMixin from '../mixins/navigation-mixin'
-import { getModule } from 'vuex-module-decorators'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { KCUserProfile } from '../models/KCUserProfile'
 import KeyCloakService from '../services/keycloak.services'
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { storeToRefs } from 'pinia'
+import { useNavigation } from '../composables/navigation-factory'
 
-declare module 'vuex' {
-  interface Store<S> {
-    isModuleRegistered(_: string[]): boolean
+interface UserProfile {
+  userTerms?: {
+    isTermsOfUseAccepted: boolean
   }
 }
 
-@Component({
-  beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
+interface State {
+  ldClient: LDClient | null;
+  loginOptions: Array<{
+    idpHint: string;
+    option: string;
+    icon: string;
+  }>;
+  isIDIR: ComputedRef<boolean>;
+  isBceid: ComputedRef<boolean>;
+  isBcscOrBceid: ComputedRef<boolean>;
+  hasValidRole: ComputedRef<boolean>;
+  needsTOSAcceptance: ComputedRef<boolean>;
+}
+
+export default defineComponent({
+  name: 'SbcAuthMenu',
+  props: {
+    redirectOnLoginSuccess: {
+      type: String as PropType<string>,
+      default: ''
+    },
+    redirectOnLoginFail: {
+      type: String as PropType<string>,
+      default: ''
+    },
+    inAuth: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    fromLogin: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    }
+  },
+  setup (props, { root }) {
+    const accountStore = useAccountStore()
+    const authStore = useAuthStore()
+    const { currentAccount, accountName } = storeToRefs(accountStore)
+    const { isAuthenticated, currentLoginSource } = storeToRefs(authStore)
+    const { redirectToPath, handleRedirectByRole, checkAccountStatus } = useNavigation()
+
+    const getContextPath = (): string => {
+      const router = root.$router
+      const baseUrl = (router && router['history'] && router['history'].base) || '/'
+      return baseUrl + (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/' ? '/' : '')
+    }
+
+    const state = reactive<State>({
+      ldClient: null,
+      loginOptions: [
+        {
+          idpHint: IdpHint.BCSC,
+          option: 'BC Services Card',
+          icon: 'mdi-account-card-details-outline'
+        },
+        {
+          idpHint: IdpHint.BCEID,
+          option: 'BCeID',
+          icon: 'mdi-two-factor-authentication'
+        },
+        {
+          idpHint: IdpHint.IDIR,
+          option: 'IDIR',
+          icon: 'mdi-account-group-outline'
+        }
+      ],
+      isIDIR: computed(() => currentLoginSource.value === LoginSource.IDIR),
+      isBceid: computed(() => currentLoginSource.value === LoginSource.BCEID),
+      isBcscOrBceid: computed(() => [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(currentLoginSource.value) >= 0),
+      hasValidRole: computed(() => {
+        const userInfo = accountStore.currentUser
+        return userInfo?.roles?.includes(Role.AccountHolder) || false
+      }),
+      needsTOSAcceptance: computed(() => {
+        const userInfo = accountStore.currentUser
+        return userInfo?.loginSource !== LoginSource.IDIR
       })
+    })
+
+    const updateProfile = async () => {
+      if (unref(state.isBceid)) {
+        await accountStore.syncUserProfile()
+      }
     }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
+
+    const checkStatus = () => {
+      return checkAccountStatus(props.inAuth, currentAccount.value, accountName.value)
     }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
+
+    const getRedirectUrl = (idpHint: string) => {
+      if (props.redirectOnLoginSuccess) {
+        let url = encodeURIComponent(props.redirectOnLoginSuccess)
+        url += props.redirectOnLoginFail ? `/${encodeURIComponent(props.redirectOnLoginFail)}` : ''
+        return `${getContextPath()}signin/${idpHint}/${url}`
+      }
+      return `${getContextPath()}signin/${idpHint}`
     }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapGetters('auth', ['isAuthenticated', 'currentLoginSource'])
+
+    const login = async (idpHint: string) => {
+      if (!props.fromLogin) {
+        window.location.assign(getRedirectUrl(idpHint))
+      } else {
+        try {
+          // Initialize keycloak session
+          const authenticated = await KeyCloakService.initializeKeyCloak(idpHint)
+          if (authenticated) {
+            // eslint-disable-next-line no-console
+            console.info('[SignIn.vue]Logged in User. Init Session and Starting refreshTimer')
+            // Set values to session storage
+            await KeyCloakService.initSession()
+            // tell KeycloakServices to load the user info
+            const userInfo = await accountStore.loadUserInfo()
+            // update user profile
+            await accountStore.updateUserProfile()
+            // sync the account if there is one
+            await accountStore.syncAccount()
+
+            // if not from the sbc-auth, do the checks and redirect to sbc-auth
+            if (!props.inAuth) {
+              // eslint-disable-next-line no-console
+              console.log('[SignIn.vue]Not from sbc-auth. Checking account status')
+              // redirect to create account page if the user has no 'account holder' role
+              const currentUser = await accountStore.getCurrentUserProfile(props.inAuth) as UserProfile
+              // Handle redirects based on user role and login source
+              handleRedirectByRole(props.inAuth, userInfo, currentUser)
+            }
+          }
+        } catch (error) {
+          if (props.redirectOnLoginFail) {
+            window.location.assign(decodeURIComponent(props.redirectOnLoginFail))
+          }
+        }
+      }
     }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('account', [
-        'loadUserInfo',
-        'syncAccount',
-        'syncCurrentAccount',
-        'syncUserProfile',
-        'getCurrentUserProfile',
-        'updateUserProfile']),
-      ...mapActions('auth', ['syncWithSessionStorage'])
+
+    onMounted(async () => {
+      authStore.syncWithSessionStorage()
+      if (isAuthenticated.value) {
+        await accountStore.loadUserInfo()
+        await accountStore.syncAccount()
+        await updateProfile()
+        checkStatus()
+      }
+    })
+
+    watch(isAuthenticated, async (isAuthenitcated: boolean) => {
+      if (isAuthenitcated) {
+        await updateProfile()
+      }
+    })
+
+    const goToCreateBCSCAccount = () => {
+      redirectToPath(props.inAuth, Pages.CREATE_ACCOUNT)
+    }
+
+    return {
+      ...toRefs(state),
+      login,
+      goToCreateBCSCAccount
     }
   }
 })
-export default class SbcAuthMenu extends Mixins(NavigationMixin) {
-  private ldClient!: LDClient
-  private readonly currentAccount!: UserSettings | null
-  private readonly accountName!: string
-  private readonly currentLoginSource!: string
-  private readonly isAuthenticated!: boolean
-  private readonly loadUserInfo!: () => KCUserProfile
-  private readonly syncAccount!: () => Promise<void>
-  // private readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
-  private readonly syncUserProfile!: () => Promise<void>
-  private readonly syncWithSessionStorage!: () => void
-  private readonly getCurrentUserProfile!: (isAuth: boolean) => Promise<any>
-  private readonly updateUserProfile!: () => Promise<void>
-
-  @Prop({ default: '' }) redirectOnLoginSuccess!: string;
-  @Prop({ default: '' }) redirectOnLoginFail!: string;
-  @Prop({ default: false }) inAuth!: boolean;
-  @Prop({ default: false }) fromLogin!: boolean;
-
-  private readonly loginOptions = [
-    {
-      idpHint: IdpHint.BCSC,
-      option: 'BC Services Card',
-      icon: 'mdi-account-card-details-outline'
-    },
-    {
-      idpHint: IdpHint.BCEID,
-      option: 'BCeID',
-      icon: 'mdi-two-factor-authentication'
-    },
-    {
-      idpHint: IdpHint.IDIR,
-      option: 'IDIR',
-      icon: 'mdi-account-group-outline'
-    }
-  ]
-
-  get isIDIR (): boolean {
-    return this.currentLoginSource === LoginSource.IDIR
-  }
-
-  get isBceid (): boolean {
-    return this.currentLoginSource === LoginSource.BCEID
-  }
-
-  get isBcscOrBceid (): boolean {
-    return [LoginSource.BCSC.valueOf(), LoginSource.BCEID.valueOf()].indexOf(this.currentLoginSource) >= 0
-  }
-
-  private async mounted () {
-    getModule(AccountModule, this.$store)
-    getModule(AuthModule, this.$store)
-    this.syncWithSessionStorage()
-    if (this.isAuthenticated) {
-      await this.loadUserInfo()
-      await this.syncAccount()
-      await this.updateProfile()
-      // checking for account status
-      await this.checkAccountStatus()
-    }
-  }
-
-  @Watch('isAuthenticated')
-  private async onisAuthenticated (isAuthenitcated: string, oldVal: string) {
-    if (isAuthenitcated) {
-      await this.updateProfile()
-    }
-  }
-
-  private async updateProfile () {
-    if (this.isBceid) {
-      await this.syncUserProfile()
-    }
-  }
-
-  private goToCreateBCSCAccount () {
-    this.redirectToPath(this.inAuth, Pages.CREATE_ACCOUNT)
-  }
-
-  private checkAccountStatus () {
-    // redirect if account status is suspended
-    if (this.currentAccount?.accountStatus && this.currentAccount?.accountStatus === 'NSF_SUSPENDED') {
-      this.redirectToPath(this.inAuth, `${Pages.ACCOUNT_FREEZ}`)
-    } else if (this.currentAccount?.accountStatus === 'PENDING_AFFIDAVIT_REVIEW') {
-      this.redirectToPath(this.inAuth, `${Pages.PENDING_APPROVAL}/${this.accountName}/true`)
-    }
-  }
-
-  login (idpHint: string) {
-    if (!this.fromLogin) {
-      if (this.redirectOnLoginSuccess) {
-        let url = encodeURIComponent(this.redirectOnLoginSuccess)
-        url += this.redirectOnLoginFail ? `/${encodeURIComponent(this.redirectOnLoginFail)}` : ''
-        window.location.assign(`${this.getContextPath()}signin/${idpHint}/${url}`)
-      } else {
-        window.location.assign(`${this.getContextPath()}signin/${idpHint}`)
-      }
-    } else {
-      // Initialize keycloak session
-      const kcInit = KeyCloakService.initializeKeyCloak(idpHint, this.$store)
-      kcInit.then(async (authenticated: boolean) => {
-        if (authenticated) {
-          // eslint-disable-next-line no-console
-          console.info('[SignIn.vue]Logged in User. Init Session and Starting refreshTimer')
-          // Set values to session storage
-          await KeyCloakService.initSession()
-          // tell KeycloakServices to load the user info
-          const userInfo = await this.loadUserInfo()
-
-          // update user profile
-          await this.updateUserProfile()
-
-          // sync the account if there is one
-          await this.syncAccount()
-
-          // if not from the sbc-auth, do the checks and redirect to sbc-auth
-          if (!this.inAuth) {
-            console.log('[SignIn.vue]Not from sbc-auth. Checking account status')
-            // redirect to create account page if the user has no 'account holder' role
-            const isRedirectToCreateAccount = (userInfo.roles.includes(Role.PublicUser) && !userInfo.roles.includes(Role.AccountHolder))
-
-            const currentUser = await this.getCurrentUserProfile(this.inAuth)
-
-            if ((userInfo?.loginSource !== LoginSource.IDIR) && !(currentUser?.userTerms?.isTermsOfUseAccepted)) {
-              console.log('[SignIn.vue]Redirecting. TOS not accepted')
-              this.redirectToPath(this.inAuth, Pages.USER_PROFILE_TERMS)
-            } else if (isRedirectToCreateAccount) {
-              console.log('[SignIn.vue]Redirecting. No Valid Role')
-              switch (userInfo.loginSource) {
-                case LoginSource.BCSC:
-                  this.redirectToPath(this.inAuth, Pages.CREATE_ACCOUNT)
-                  break
-                case LoginSource.BCEID:
-                  this.redirectToPath(this.inAuth, Pages.CHOOSE_AUTH_METHOD)
-                  break
-              }
-            }
-          }
-        }
-      }).catch(() => {
-        if (this.redirectOnLoginFail) {
-          window.location.assign(decodeURIComponent(this.redirectOnLoginFail))
-        }
-      })
-    }
-  }
-
-  private getContextPath (): string {
-    let baseUrl = (this.$router && (this.$router as any)['history'] && (this.$router as any)['history'].base) || ''
-    baseUrl += (baseUrl.length && baseUrl[baseUrl.length - 1] !== '/') ? '/' : ''
-    return baseUrl
-  }
-}
 </script>
 
 <style lang="scss" scoped>

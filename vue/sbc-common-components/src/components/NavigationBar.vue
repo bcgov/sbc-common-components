@@ -58,41 +58,22 @@
 <script lang="ts">
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator'
 import { NavigationBarConfig, NavigationMenuItem } from '../models/NavigationBarConfig'
-import { getModule } from 'vuex-module-decorators'
-import { mapState, mapGetters } from 'vuex'
-import ConfigHelper from '../util/config-helper'
-import { SessionStorageKeys } from '../util/constants'
-import AccountModule from '../store/modules/account'
-import AuthModule from '../store/modules/auth'
-import { UserSettings } from '../models/userSettings'
+import { useAccountStore } from '../stores/account'
+import { useAuthStore } from '../stores/auth'
+import { mapState, mapGetters } from 'pinia'
 
 @Component({
   name: 'NavigationBar',
   beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['account'])) {
-      this.$store.registerModule('account', AccountModule)
-    }
-    if (!this.$store.isModuleRegistered(['auth'])) {
-      this.$store.registerModule('auth', AuthModule)
-    }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState('auth', ['token']),
-      ...mapState('account', ['currentAccount']),
-      ...mapGetters('auth', ['isAuthenticated'])
-    }
+  this.$options.computed = {
+  ...(this.$options.computed || {}),
+  ...mapState(useAuthStore, ['token']),
+  ...mapState(useAccountStore, ['currentAccount']),
+  ...mapGetters(useAuthStore, ['isAuthenticated'])
   }
-})
+  }
+  })
 export default class NavigationBar extends Vue {
-  private readonly currentAccount!: UserSettings | null
-  private readonly isAuthenticated!: boolean
   @Prop() configuration!: NavigationBarConfig
   @Prop({ default: false }) hide!: boolean
   private mobileNavDrawer = false
