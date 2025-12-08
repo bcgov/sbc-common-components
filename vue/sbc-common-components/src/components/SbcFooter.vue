@@ -4,7 +4,6 @@
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="https://www.release-notes.bcregistry.gov.bc.ca" target="_blank">Release Notes</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a></li>
           <li v-if="enablePricelistFooter"><a href="https://www.bcregistry.gov.bc.ca/product-fees" target="_blank">Fees</a></li>
           <li><a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy</a></li>
