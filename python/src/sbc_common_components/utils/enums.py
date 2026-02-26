@@ -35,6 +35,7 @@ class QueueMessageTypes(Enum):
     NAMES_MESSAGE_TYPE = 'bc.registry.names.request'
     NON_BCSC_ORG_APPROVED_NOTIFICATION = 'bc.registry.auth.nonbcscOrgApprovedNotification'
     NON_BCSC_ORG_REJECTED_NOTIFICATION = 'bc.registry.auth.nonbcscOrgRejectedNotification'
+    ACCOUNT_CREATED_NOTIFICATION = 'bc.registry.auth.accountCreatedNotification'
     NSF_LOCK_ACCOUNT = 'bc.registry.payment.lockAccount'
     NSF_UNLOCK_ACCOUNT = 'bc.registry.payment.unlockAccount'
     ONLINE_BANKING_OVER_PAYMENT = 'bc.registry.payment.OverPaid'
