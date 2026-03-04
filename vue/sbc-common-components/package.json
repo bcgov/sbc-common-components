@@ -6,7 +6,8 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bcgov/sbc-common-components.git"
+    "url": "git+https://github.com/bcgov/sbc-common-components.git",
+    "directory": "vue/sbc-common-components"
   },
   "scripts": {
     "dev": "vite",
