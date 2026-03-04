@@ -2,7 +2,7 @@
   "name": "sbc-common-components",
   "version": "3.1.8",
   "private": false,
-  "description": "Common Vue Components to be used across BC Registries and Online Services.",
+  "description": "Common Vue 2 Components to be used across BC Registries and Online Services.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
