@@ -9,6 +9,9 @@
     "url": "git+https://github.com/bcgov/sbc-common-components.git",
     "directory": "vue/sbc-common-components"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
