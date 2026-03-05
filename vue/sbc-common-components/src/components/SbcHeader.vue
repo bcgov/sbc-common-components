@@ -345,7 +345,7 @@ import ConfigHelper from '../util/config-helper'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-// pinia stores are used directly via useAuthStore(), useAccountStore(), useNotificationStore()
+// pinia stores are accessed directly
 import { UserSettings } from '../models/userSettings'
 import NavigationMixin from '../mixins/navigation-mixin'
 import { KCUserProfile } from '../models/KCUserProfile'

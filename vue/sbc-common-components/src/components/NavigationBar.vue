@@ -60,23 +60,16 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator'
 import { NavigationBarConfig, NavigationMenuItem } from '../models/NavigationBarConfig'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
-import { mapState, mapGetters } from 'pinia'
-
 @Component({
-  name: 'NavigationBar',
-  beforeCreate () {
-  this.$options.computed = {
-  ...(this.$options.computed || {}),
-  ...mapState(useAuthStore, ['token']),
-  ...mapState(useAccountStore, ['currentAccount']),
-  ...mapGetters(useAuthStore, ['isAuthenticated'])
-  }
-  }
+  name: 'NavigationBar'
   })
 export default class NavigationBar extends Vue {
   @Prop() configuration!: NavigationBarConfig
   @Prop({ default: false }) hide!: boolean
   private mobileNavDrawer = false
+
+  get isAuthenticated (): boolean { return useAuthStore().isAuthenticated }
+  get currentAccount () { return useAccountStore().currentAccount }
 
   private get showNavBar (): boolean {
     return !this.hide && this.configuration && this.configuration.menuItems.length > 0

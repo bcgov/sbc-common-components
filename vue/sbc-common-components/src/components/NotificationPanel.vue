@@ -56,24 +56,14 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Notification } from '../models/notification'
 import { useNotificationStore } from '../stores/notification'
-import { mapState, mapActions } from 'pinia'
 import 'clickout-event'
 
 @Component({
-  name: 'NotificationPanel',
-  beforeCreate () {
-  this.$options.computed = {
-  ...(this.$options.computed || {}),
-  ...mapState(useNotificationStore, ['notifications'])
-  }
-  this.$options.methods = {
-  ...(this.$options.methods || {}),
-  ...mapActions(useNotificationStore, ['markAsRead'])
-  }
-  }
+  name: 'NotificationPanel'
   })
 export default class NotificationPanel extends Vue {
-  private readonly notifications!: Notification[]
+  get notifications (): Notification[] { return useNotificationStore().notifications }
+  markAsRead (): Promise<void> { return useNotificationStore().markAsRead() }
 
   /** Prop to display the dialog. */
   @Prop() showNotifications: boolean
