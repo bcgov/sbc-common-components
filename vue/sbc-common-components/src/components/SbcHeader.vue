@@ -345,7 +345,7 @@ import ConfigHelper from '../util/config-helper'
 import { useAccountStore } from '../stores/account'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-import { mapState, mapActions, mapGetters, getActivePinia } from 'pinia'
+// pinia stores are used directly via useAuthStore(), useAccountStore(), useNotificationStore()
 import { UserSettings } from '../models/userSettings'
 import NavigationMixin from '../mixins/navigation-mixin'
 import { KCUserProfile } from '../models/KCUserProfile'
@@ -359,22 +359,6 @@ import { AccountStatus, LDFlags } from '../util/enums'
 import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
 
 @Component({
-  beforeCreate () {
-  this.$options.computed = {
-  ...(this.$options.computed || {}),
-  ...mapState(useAccountStore, ['currentAccount', 'pendingApprovalCount', 'currentUser']),
-  ...mapState(useNotificationStore, ['notificationCount', 'notificationUnreadPriorityCount', 'notificationUnreadCount']),
-  ...mapGetters(useAccountStore, ['accountName', 'switchableAccounts', 'username']),
-  ...mapGetters(useAuthStore, ['isAuthenticated', 'currentLoginSource'])
-  }
-  this.$options.methods = {
-  ...(this.$options.methods || {}),
-  ...mapActions(useAccountStore, ['loadUserInfo', 'syncAccount', 'syncCurrentAccount', 'syncUserProfile']),
-  ...mapActions(useAuthStore, ['syncWithSessionStorage']),
-  ...mapActions(useNotificationStore, ['markAsRead', 'fetchNotificationCount', 'fetchNotificationUnreadPriorityCount',
-    'fetchNotificationUnreadCount', 'syncNotifications'])
-  }
-  },
   components: {
   SbcProductSelector,
   BrowserVersionAlert,
@@ -384,28 +368,32 @@ import { appendAccountId, trimTrailingSlashURL } from '../util/common-util'
   })
 export default class SbcHeader extends Mixins(NavigationMixin) {
   private ldClient!: LDClient
-  private readonly currentAccount!: UserSettings | null
-  private readonly pendingApprovalCount!: number
-  private readonly username!: string
-  private readonly accountName!: string
-  private readonly currentLoginSource!: string
-  private readonly isAuthenticated!: boolean
-  private readonly switchableAccounts!: UserSettings[]
-  private readonly loadUserInfo!: () => KCUserProfile
-  private readonly syncAccount!: () => Promise<void>
-  private readonly syncCurrentAccount!: (userSettings: UserSettings) => Promise<UserSettings>
-  private readonly syncUserProfile!: () => Promise<void>
-  private readonly syncWithSessionStorage!: () => void
-  private readonly currentUser!: any
   private notificationPanel = false
-  private readonly notificationUnreadPriorityCount!: number
-  private readonly notificationUnreadCount!: number
-  private readonly fetchNotificationUnreadPriorityCount!: () => Promise<void>
-  private readonly fetchNotificationUnreadCount!: () => Promise<void>
-  private readonly markAsRead!: () => Promise<void>
-  private readonly notificationCount!: number
-  private readonly fetchNotificationCount!: () => Promise<void>
-  private readonly syncNotifications!: () => Promise<void>
+
+  get currentAccount (): UserSettings | null { return useAccountStore().currentAccount }
+  get pendingApprovalCount (): number { return useAccountStore().pendingApprovalCount }
+  get currentUser (): any { return useAccountStore().currentUser }
+  get accountName (): string { return useAccountStore().accountName }
+  get switchableAccounts (): UserSettings[] { return useAccountStore().switchableAccounts }
+  get username (): string { return useAccountStore().username }
+
+  get isAuthenticated (): boolean { return useAuthStore().isAuthenticated }
+  get currentLoginSource (): string { return useAuthStore().currentLoginSource }
+
+  get notificationCount (): number { return useNotificationStore().notificationCount }
+  get notificationUnreadPriorityCount (): number { return useNotificationStore().notificationUnreadPriorityCount }
+  get notificationUnreadCount (): number { return useNotificationStore().notificationUnreadCount }
+
+  loadUserInfo (): KCUserProfile { return useAccountStore().loadUserInfo() }
+  syncAccount (): Promise<void> { return useAccountStore().syncAccount() }
+  syncCurrentAccount (settings: UserSettings): Promise<UserSettings> { return useAccountStore().syncCurrentAccount(settings) }
+  syncUserProfile (): Promise<void> { return useAccountStore().syncUserProfile() }
+
+  markAsRead (): Promise<void> { return useNotificationStore().markAsRead() }
+  fetchNotificationCount (): Promise<void> { return useNotificationStore().fetchNotificationCount() }
+  fetchNotificationUnreadPriorityCount (): Promise<void> { return useNotificationStore().fetchNotificationUnreadPriorityCount() }
+  fetchNotificationUnreadCount (): Promise<void> { return useNotificationStore().fetchNotificationUnreadCount() }
+  syncNotifications (): Promise<void> { return useNotificationStore().syncNotifications() }
 
   @Prop({ default: '' }) redirectOnLoginSuccess!: string;
   @Prop({ default: '' }) redirectOnLoginFail!: string;
@@ -479,9 +467,7 @@ export default class SbcHeader extends Mixins(NavigationMixin) {
   }
 
   private async mounted () {
-    if (getActivePinia()) {
-      this.syncWithSessionStorage()
-    }
+    useAuthStore().syncWithSessionStorage()
     if (this.isAuthenticated) {
       await this.loadUserInfo()
       await this.syncAccount()
