@@ -11,28 +11,17 @@
 import { Component, Vue } from 'vue-property-decorator'
 import SbcSystemBanner from './SbcSystemBanner.vue'
 import { useStatusStore } from '../stores/status'
-import { mapState, mapActions } from 'pinia'
 import { ServiceStatus } from '../models/ServiceStatus'
 
 @Component({
   components: {
   SbcSystemBanner
-  },
-  beforeCreate () {
-  this.$options.computed = {
-  ...(this.$options.computed || {}),
-  ...mapState(useStatusStore, ['paySystemStatus'])
-  }
-  this.$options.methods = {
-  ...(this.$options.methods || {}),
-  ...mapActions(useStatusStore, ['fetchPaySystemStatus'])
-  }
   }
   })
 export default class PaySystemAlert extends Vue {
   private statusAPIResponse : ServiceStatus | null = null
-  private readonly paySystemStatus!: ServiceStatus
-  private readonly fetchPaySystemStatus!: () => Promise<ServiceStatus>
+  get paySystemStatus (): ServiceStatus { return useStatusStore().paySystemStatus }
+  fetchPaySystemStatus (): Promise<ServiceStatus> { return useStatusStore().fetchPaySystemStatus() }
   private getBoolean (value: boolean | string | number): boolean {
     var resultVal = value
     if (typeof value === 'string') {

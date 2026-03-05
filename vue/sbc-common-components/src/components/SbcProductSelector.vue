@@ -112,25 +112,14 @@ import { Component, Vue } from 'vue-property-decorator'
 import ConfigHelper from '../util/config-helper'
 import { Product, Products } from '../models/product'
 import { useProductsStore } from '../stores/product'
-import { mapState, mapActions } from 'pinia'
-
 @Component({
-  name: 'SbcProductSelector',
-  beforeCreate () {
-  this.$options.computed = {
-  ...(this.$options.computed || {}),
-  ...mapState(useProductsStore, ['products', 'partners'])
-  }
-  this.$options.methods = {
-  ...(this.$options.methods || {}),
-  ...mapActions(useProductsStore, ['syncProducts'])
-  }
-  }
+  name: 'SbcProductSelector'
   })
 export default class SbcProductSelector extends Vue {
   private dialog = false
-  private readonly products!: Products
-  private readonly syncProducts!: () => Promise<void>
+  get products (): Products { return useProductsStore().products }
+  get partners () { return useProductsStore().partners }
+  syncProducts (): Promise<void> { return useProductsStore().syncProducts() }
 
   private async mounted () {
     await this.syncProducts()
