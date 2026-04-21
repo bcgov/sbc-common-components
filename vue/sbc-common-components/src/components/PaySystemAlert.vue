@@ -10,46 +10,18 @@
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator'
 import SbcSystemBanner from './SbcSystemBanner.vue'
-import StatusModule from '../store/modules/status'
-import { getModule } from 'vuex-module-decorators'
+import { useStatusStore } from '../stores/status'
 import { ServiceStatus } from '../models/ServiceStatus'
-import { mapState, mapActions } from 'vuex'
-
-declare module 'vuex' {
-  interface Store<S> {
-    hasModule(_: string[]): boolean
-  }
-}
 
 @Component({
   components: {
-    SbcSystemBanner
-  },
-  beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['status'])) {
-      this.$store.registerModule('status', StatusModule)
-    }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState('status', ['paySystemStatus'])
-    }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('status', ['fetchPaySystemStatus'])
-    }
+  SbcSystemBanner
   }
-})
+  })
 export default class PaySystemAlert extends Vue {
   private statusAPIResponse : ServiceStatus | null = null
-  private readonly paySystemStatus!: ServiceStatus
-  private readonly fetchPaySystemStatus!: () => Promise<ServiceStatus>
+  get paySystemStatus (): ServiceStatus { return useStatusStore().paySystemStatus }
+  fetchPaySystemStatus (): Promise<ServiceStatus> { return useStatusStore().fetchPaySystemStatus() }
   private getBoolean (value: boolean | string | number): boolean {
     var resultVal = value
     if (typeof value === 'string') {
@@ -70,7 +42,6 @@ export default class PaySystemAlert extends Vue {
   }
 
   private async mounted () {
-    getModule(StatusModule, this.$store)
     try {
       this.statusAPIResponse = await this.fetchPaySystemStatus()
     } catch (error) {
