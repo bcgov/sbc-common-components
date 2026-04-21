@@ -19,6 +19,7 @@ class QueueMessageTypes(Enum):
     CGI_ACK_MESSAGE_TYPE = 'bc.registry.payment.cgi.ACKReceived'
     CGI_FEEDBACK_MESSAGE_TYPE = 'bc.registry.payment.cgi.FEEDBACKReceived'
     CONFIRMATION_PERIOD_OVER = 'bc.registry.payment.confirmationPeriodOver'
+    CONTINUATION_IN = 'bc.registry.business.continuationIn'
     DIRSEARCH_BUSINESS_INVITATION = 'bc.registry.auth.dirsearchBusinessInvitation'
     EFT_AVAILABLE_NOTIFICATION = 'bc.registry.payment.eftAvailableNotification'
     EFT_FILE_UPLOADED = 'bc.registry.payment.eft.fileUploaded'
