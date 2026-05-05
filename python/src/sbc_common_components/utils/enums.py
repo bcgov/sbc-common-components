@@ -30,6 +30,7 @@ class QueueMessageTypes(Enum):
     GOVM_MEMBER_INVITATION = 'bc.registry.auth.govmMemberInvitation'
     GOVM_REJECTED_NOTIFICATION = 'bc.registry.auth.govmRejectedNotification'
     INCORPORATION = 'bc.registry.business.incorporationApplication'
+    MEMBERSHIP_REJECTED_NOTIFICATION = 'bc.registry.auth.membershipRejectedNotification'
     MEMBERSHIP_APPROVED_NOTIFICATION = 'bc.registry.auth.membershipApprovedNotification'
     MEMBERSHIP_APPROVED_NOTIFICATION_FOR_BCEID = 'bc.registry.auth.membershipApprovedNotificationForBceid'
     NAMES_EVENT = 'bc.registry.names.events'
