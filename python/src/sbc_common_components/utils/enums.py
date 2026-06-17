@@ -67,3 +67,4 @@ class QueueMessageTypes(Enum):
     TEAM_MEMBER_INVITED = 'bc.registry.auth.teamMemberInvited'
     TEAM_MEMBER_REMOVED = 'bc.registry.auth.teamMemberRemoved'
     TEAM_MODIFIED = 'bc.registry.auth.teamModified'
+    AMALGAMATION_APPLICATION = 'bc.registry.business.amalgamationApplication'
