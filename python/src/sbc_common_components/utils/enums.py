@@ -6,6 +6,9 @@ class QueueMessageTypes(Enum):
     # Note some of these need to match inside of SubjectType in account_mailer.enums.
 
     ACTIVITY_LOG = 'bc.registry.auth.activity'
+    ACCOUNT_LINK_CREATED = 'bc.registry.auth.accountLinkCreated'
+    ACCOUNT_LINK_EXPIRY = 'bc.registry.auth.accountLinkExpiry'
+    ACCOUNT_LINK_REMOVED = 'bc.registry.auth.accountLinkRemoved'
     ADMIN_NOTIFICATION = 'bc.registry.auth.adminNotification'
     ADMIN_REMOVED = 'bc.registry.auth.adminRemoved'
     AFFILIATION_INVITATION = 'bc.registry.auth.affiliationInvitation'
