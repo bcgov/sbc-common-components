@@ -9,8 +9,10 @@ class QueueMessageTypes(Enum):
     ADMIN_NOTIFICATION = 'bc.registry.auth.adminNotification'
     ADMIN_REMOVED = 'bc.registry.auth.adminRemoved'
     AFFILIATION_INVITATION = 'bc.registry.auth.affiliationInvitation'
+    AFFILIATION_CONFIRMATION_EMAIL = "bc.registry.auth.affiliationConfirmationEmail"
     AFFILIATION_INVITATION_REQUEST = 'bc.registry.auth.affiliationInvitationRequest'
     AFFILIATION_INVITATION_REQUEST_AUTHORIZATION = 'bc.registry.auth.affiliationInvitationRequestAuthorization'
+    AFFILIATION_INVITATION_UNAFFILIATED_EMAIL = "bc.registry.auth.affiliationInvitationUnaffiliatedEmail"
     BUSINESS_AFFILIATED = 'bc.registry.auth.businessAffiliated'
     BUSINESS_UNAFFILIATED = 'bc.registry.auth.businessUnaffiliated'
     BUSINESS_INVITATION = 'bc.registry.auth.businessInvitation'
