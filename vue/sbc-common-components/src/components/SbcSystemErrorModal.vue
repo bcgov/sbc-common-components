@@ -9,7 +9,7 @@ import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
 import SbcSystemError from '../components/SbcSystemError.vue'
 @Component({
   components: { SbcSystemError }
-})
+  })
 export default class SbcSystemErrorModal extends Vue {
     @Prop() title: String
     @Prop() readonly description: string

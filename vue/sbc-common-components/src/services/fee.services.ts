@@ -23,7 +23,12 @@ export default {
         Promise.resolve()
       }
       let url = prepareUrl(filing, payApiUrl)
-      promises.push(Axios.get(url, { headers: { Authorization: `Bearer ${token}`, 'Account-Id': accountId } }))
+      const payGatewayApiKey = import.meta.env.VUE_APP_PAY_API_KEY
+      const headers: Record<string, string> = { Authorization: `Bearer ${token}`, 'Account-Id': accountId }
+      if (payGatewayApiKey) {
+        headers['x-apikey'] = payGatewayApiKey
+      }
+      promises.push(Axios.get(url, { headers }))
     }
 
     return Axios.all(promises)
