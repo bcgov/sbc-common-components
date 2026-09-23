@@ -10,9 +10,9 @@ import LoadingScreen from './LoadingScreen.vue'
   methods: {
   },
   components: {
-    LoadingScreen
+  LoadingScreen
   }
-})
+  })
 
 export default class SbcSignout extends Vue {
   private isLoading = true

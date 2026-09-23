@@ -1,19 +1,7 @@
 import Vue from 'vue'
-import Vuetify, {
-  VAlert,
-  VContainer,
-  VIcon,
-  VBtn
-} from 'vuetify/lib'
+import Vuetify from 'vuetify'
 
-Vue.use(Vuetify, {
-  components: {
-    VAlert,
-    VContainer,
-    VIcon,
-    VBtn
-  }
-})
+Vue.use(Vuetify)
 
 export default new Vuetify({
   theme: {

@@ -45,9 +45,9 @@ import SbcAuthMenu from './SbcAuthMenu.vue'
 
 @Component({
   components: {
-    SbcAuthMenu
+  SbcAuthMenu
   }
-})
+  })
 export default class Login extends Vue {
   @Prop({ default: '' }) redirectUrl!: string
 }
