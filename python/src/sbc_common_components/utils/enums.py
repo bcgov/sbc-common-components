@@ -56,6 +56,7 @@ class QueueMessageTypes(Enum):
     EXPRESS_CHECKOUT_PAYMENT_REMINDER = 'bc.registry.payment.expressCheckout.paymentReminder'
     PAYMENT_DUE_NOTIFICATION = 'bc.registry.payment.statementDueNotification'
     PAYMENT_PENDING = 'bc.registry.payment.ob.outstandingInvoice'
+    PAYMENT_RECEIPT = 'bc.registry.payment.receipt'
     PAYMENT_REMINDER_NOTIFICATION = 'bc.registry.payment.statementReminderNotification'
     PROD_PACKAGE_APPROVED_NOTIFICATION = 'bc.registry.auth.prodPackageApprovedNotification'
     PROD_PACKAGE_REJECTED_NOTIFICATION = 'bc.registry.auth.prodPackageRejectedNotification'
