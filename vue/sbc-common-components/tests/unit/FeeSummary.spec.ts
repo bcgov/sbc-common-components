@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import 'mutationobserver-shim'
 import { shallowMount, mount } from '@vue/test-utils'
 import SbcFeeSummary from '@/components/SbcFeeSummary.vue'
@@ -10,7 +11,7 @@ Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.filter('currency', () => 'foo')
 
-jest.mock('../../src/services/fee.services')
+vitest.mock('../../src/services/fee.services')
 
 describe('SbcFeeSummary.vue', () => {
   let vuetify
@@ -19,7 +20,7 @@ describe('SbcFeeSummary.vue', () => {
   })
   it('renders page .msg when passed', () => {
     let mockDetails = [{ 'filingType': 'Change of Director', 'filingTypeCode': 'OTADD', 'filingFees': 55, 'serviceFees': 0, 'fee': 0, 'tax': { 'gst': 0, 'pst': 0 } }]
-    FeeService.getFee = jest.fn().mockResolvedValue(mockDetails)
+    FeeService.getFee = vitest.fn().mockResolvedValue(mockDetails)
 
     const filingData = [{
       filingTypeCode: 'OTANN',
@@ -42,7 +43,7 @@ describe('SbcFeeSummary.vue', () => {
 
   it('setting props works', () => {
     let mockDetails = [{ 'filingType': 'Change of Director', 'filingTypeCode': 'OTADD', 'filingFees': 55, 'serviceFees': 0, 'fee': 0, 'tax': { 'gst': 0, 'pst': 0 } }]
-    FeeService.getFee = jest.fn().mockResolvedValue(mockDetails)
+    FeeService.getFee = vitest.fn().mockResolvedValue(mockDetails)
 
     const filingData = [{
       filingTypeCode: 'OTANN',
@@ -62,7 +63,7 @@ describe('SbcFeeSummary.vue', () => {
 
   it('fires service calls', () => {
     let mockDetails = [{ 'filingType': 'Change of Director', 'filingTypeCode': 'OTADD', 'filingFees': 55, 'serviceFees': 0, 'fee': 0, 'tax': { 'gst': 0, 'pst': 0 } }]
-    FeeService.getFee = jest.fn().mockResolvedValue(mockDetails)
+    FeeService.getFee = vitest.fn().mockResolvedValue(mockDetails)
 
     const filingData = [{
       filingTypeCode: 'OTANN',

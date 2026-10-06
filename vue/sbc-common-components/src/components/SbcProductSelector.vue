@@ -108,44 +108,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import ConfigHelper from '../util/config-helper'
 import { Product, Products } from '../models/product'
-import { mapState, mapActions } from 'vuex'
-import ProductModule from '../store/modules/product'
-import { getModule } from 'vuex-module-decorators'
-
+import { useProductsStore } from '../stores/product'
 @Component({
-  name: 'SbcProductSelector',
-  beforeCreate () {
-    this.$store.isModuleRegistered = function (aPath: string[]) {
-      let m = (this as any)._modules.root
-      return aPath.every((p) => {
-        m = m._children[p]
-        return m
-      })
-    }
-    if (!this.$store.isModuleRegistered(['product'])) {
-      this.$store.registerModule('product', ProductModule)
-    }
-    this.$options.computed = {
-      ...(this.$options.computed || {}),
-      ...mapState('product', ['products', 'partners'])
-    }
-    this.$options.methods = {
-      ...(this.$options.methods || {}),
-      ...mapActions('product', ['syncProducts'])
-    }
-  }
-})
+  name: 'SbcProductSelector'
+  })
 export default class SbcProductSelector extends Vue {
   private dialog = false
-  private readonly products!: Products
-  private readonly syncProducts!: () => Promise<void>
+  get products (): Products { return useProductsStore().products }
+  get partners () { return useProductsStore().partners }
+  syncProducts (): Promise<void> { return useProductsStore().syncProducts() }
 
   private async mounted () {
-    getModule(ProductModule, this.$store)
     await this.syncProducts()
   }
 
