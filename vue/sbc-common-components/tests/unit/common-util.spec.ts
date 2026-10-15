@@ -1,3 +1,4 @@
+import '@/composition-api-setup' // ensure this happens before any imports trigger use of composition-api
 import { getBoolean } from '../../src/util/common-util'
 
 describe('Common Util Test', () => {

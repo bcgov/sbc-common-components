@@ -17,6 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import HTTPException, default_exceptions
 import logging
 logger = logging.getLogger('api-exceptions')
+http_logger = logging.getLogger('api-exceptions-http')
 
 RESPONSE_HEADERS = {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}
 
@@ -31,7 +32,7 @@ class ExceptionHandler():
 
     def auth_handler(self, error):  # pylint: disable=no-self-use
         """Handle AuthError."""
-        logger.error(error.error)
+        http_logger.error(error.error)
         return error.error, error.status_code, RESPONSE_HEADERS
 
     def db_handler(self, error):  # pylint: disable=no-self-use
@@ -46,7 +47,7 @@ class ExceptionHandler():
     def std_handler(self, error):  # pylint: disable=no-self-use
         """Handle standard exception."""
         if isinstance(error, HTTPException):
-            logger.error(error)
+            http_logger.error(error)
             message = dict(message=error.message if hasattr(error, 'message') else error.description)
         else:
             logger.exception(error)

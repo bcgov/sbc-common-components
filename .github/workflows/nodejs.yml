@@ -5,28 +5,28 @@ on:
     branches: master
     paths:
     - '**package.json'
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required for OIDC
+  contents: read
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.14.2]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        registry-url: 'https://registry.npmjs.org'
+        node-version: 24
+    - name: Update npm
+      # This is critical. Older npm versions have a bug with subfolder OIDC.
+      run: npm install -g npm@latest
     - name: npm publisher script
       working-directory: ./vue/sbc-common-components/
       run: |
         npm install
         npm run build
-        npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        npm publish --access public

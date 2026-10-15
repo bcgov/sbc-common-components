@@ -1,17 +1,15 @@
-import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions, KeycloakTokenParsed } from 'keycloak-js'
+import Keycloak, { KeycloakInitOptions, KeycloakInstance, KeycloakLoginOptions } from 'keycloak-js'
 import { KCUserProfile } from '../models/KCUserProfile'
 import ConfigHelper from '../util/config-helper'
 import { SessionStorageKeys } from '../util/constants'
-import { Store } from 'vuex'
-import { getModule } from 'vuex-module-decorators'
-import AuthModule from '../store/modules/auth'
 import { decodeKCToken } from '../util/common-util'
+import { useAuthStore } from '../stores'
+import { getActivePinia } from 'pinia'
 
 class KeyCloakService {
   private kc: KeycloakInstance | undefined
   private parsedToken: any
   private static instance: KeyCloakService
-  private store: Store<any> | null = null
   private counter = 0
   private REFRESH_ATTEMPT_INTERVAL = 10 // in seconds
   private timerId: any = 0
@@ -33,12 +31,11 @@ class KeyCloakService {
     return this.kc
   }
 
-  async initializeKeyCloak (idpHint: string, store: Store<any>) {
-    this.store = store
+  async initializeKeyCloak (idpHint: string) {
     this.clearSession()
     const token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     const keycloakConfig = ConfigHelper.getKeycloakConfigUrl()
-    this.kc = Keycloak(keycloakConfig)
+    this.kc = new Keycloak(keycloakConfig)
     const kcLogin = this.kc.login
     this.kc.login = (options?: KeycloakLoginOptions) => {
       if (options) {
@@ -46,7 +43,7 @@ class KeyCloakService {
       }
       return kcLogin(options)
     }
-    let kcOptions :KeycloakInitOptions = {
+    let kcOptions: KeycloakInitOptions = {
       onLoad: 'login-required',
       checkLoginIframe: false,
       timeSkew: 0,
@@ -59,18 +56,16 @@ class KeyCloakService {
   }
 
   async initSession () {
-    if (!this.store) {
-      return
+    const authStore = useAuthStore()
+    if (authStore) {
+      authStore.setKCToken(this.kc?.token || '')
+      authStore.setIDToken(this.kc?.idToken || '')
+      authStore.setRefreshToken(this.kc?.refreshToken || '')
+
+      const userInfo = this.getUserInfo()
+      authStore.setKCGuid(userInfo?.keycloakGuid || '')
+      authStore.setLoginSource(userInfo?.loginSource || '')
     }
-
-    const authModule = getModule(AuthModule, this.store)
-    authModule.setKCToken(this.kc?.token || '')
-    authModule.setIDToken(this.kc?.idToken || '')
-    authModule.setRefreshToken(this.kc?.refreshToken || '')
-
-    const userInfo = this.getUserInfo()
-    authModule.setKCGuid(userInfo?.keycloakGuid || '')
-    authModule.setLoginSource(userInfo?.loginSource || '')
 
     await this.syncSessionAndScheduleTokenRefresh()
   }
@@ -95,7 +90,7 @@ class KeyCloakService {
   async logout (redirectUrl?: string) {
     let token = ConfigHelper.getFromSession(SessionStorageKeys.KeyCloakToken) || undefined
     if (token) {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       let kcOptions :KeycloakInitOptions = {
         onLoad: 'login-required',
         checkLoginIframe: false,
@@ -158,7 +153,7 @@ class KeyCloakService {
     }
   }
 
-  verifyRoles (allowedRoles:[], disabledRoles:[]) {
+  verifyRoles (allowedRoles, disabledRoles) {
     let isAuthorized = false
     if (allowedRoles || disabledRoles) {
       let userInfo = this.getUserInfo()
@@ -169,8 +164,7 @@ class KeyCloakService {
     return isAuthorized
   }
 
-  async initializeToken (store?: Store<any>, isScheduleRefresh: boolean = true, forceLogin: boolean = false) {
-    this.store = store
+  async initializeToken (isScheduleRefresh: boolean = true, forceLogin: boolean = false) {
     const kcOptions: KeycloakInitOptions = {
       onLoad: forceLogin ? 'login-required' : 'check-sso',
       checkLoginIframe: false,
@@ -182,10 +176,11 @@ class KeyCloakService {
     }
 
     return new Promise((resolve, reject) => {
-      this.kc = Keycloak(ConfigHelper.getKeycloakConfigUrl())
+      this.kc = new Keycloak(ConfigHelper.getKeycloakConfigUrl())
       ConfigHelper.addToSession(SessionStorageKeys.SessionSynced, false)
       this.kc.init(kcOptions)
         .then(authenticated => {
+          // eslint-disable-next-line no-console
           console.info('[TokenServices] is User Authenticated?: Syncing ' + authenticated)
           resolve(this.syncSessionAndScheduleTokenRefresh(isScheduleRefresh))
         })
@@ -230,12 +225,15 @@ class KeyCloakService {
       throw new Error('Refresh Token Expired. No more token refreshes')
     }
     let refreshInMilliSeconds = (expiresIn * 1000) - refreshEarlyTimeinMilliseconds // in milliseconds
+    // eslint-disable-next-line no-console
     console.info('[TokenServices] Token Refresh Scheduled in %s Seconds', (refreshInMilliSeconds / 1000))
     this.timerId = setTimeout(() => {
+      // eslint-disable-next-line no-console
       console.log('[TokenServices] Refreshing Token Attempt: %s ', ++this.counter)
       this.kc!.updateToken(-1)
         .then(refreshed => {
           if (refreshed) {
+            // eslint-disable-next-line no-console
             console.log('Token successfully refreshed')
             this.syncSessionStorage()
             this.scheduleRefreshToken(refreshEarlyTimeinMilliseconds)
@@ -265,9 +263,12 @@ class KeyCloakService {
   }
 
   private async clearSession () {
-    if (this.store) {
-      const authModule = getModule(AuthModule, this.store)
-      authModule.clearSession()
+    // Check if Pinia is available before using the store
+    if (getActivePinia()) {
+      const authStore = useAuthStore()
+      if (authStore) {
+        authStore.clearSession()
+      }
     }
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakToken)
     ConfigHelper.removeFromSession(SessionStorageKeys.KeyCloakIdToken)
